@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>동탄보건소 민원안내 검색</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/app.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <p class="eyebrow">DONGTAN PUBLIC HEALTH CENTER</p>
+      <h1>보건민원 정보 검색</h1>
+      <p>민원 내용을 입력하면 담당 업무와 위치를 안내합니다.</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="search-panel" aria-labelledby="search-heading">
+      <h2 id="search-heading" class="sr-only">민원 검색</h2>
+      <label for="query">어떤 업무를 찾으십니까?</label>
+      <div class="search-row">
+        <input id="query" type="search" maxlength="80" autocomplete="off"
+               placeholder="예: 연명치료, 기저귀 지원, 예방접종 수납"
+               aria-describedby="search-help" aria-controls="suggestions">
+        <button id="search-button" type="button">검색</button>
+        <button id="clear-button" class="secondary" type="button">지우기</button>
+      </div>
+      <p id="search-help" class="help">두 글자 이상의 핵심어를 입력하십시오.</p>
+      <div id="suggestions" class="suggestions" aria-label="추천 검색어" aria-live="polite"></div>
+      <p id="status" role="status" aria-live="polite">검색어를 입력하십시오.</p>
+    </section>
+
+    <div class="workspace">
+      <section class="results-panel" aria-labelledby="results-heading">
+        <h2 id="results-heading">검색 결과</h2>
+        <div id="results" class="results">
+          <p class="empty">검색 결과가 이곳에 표시됩니다.</p>
+        </div>
+      </section>
+
+      <section class="map-panel" aria-labelledby="map-heading">
+        <div class="section-head">
+          <h2 id="map-heading">위치 안내</h2>
+          <span id="floor-label">층을 선택하십시오</span>
+        </div>
+        <div class="floor-tabs" aria-label="층별 배치도">
+          <button type="button" data-floor="1층" aria-pressed="false">1층</button>
+          <button type="button" data-floor="2층" aria-pressed="false">2층</button>
+          <button type="button" data-floor="3층" aria-pressed="false">3층</button>
+        </div>
+        <div class="map-stage">
+          <img id="floor-image" alt="선택한 층의 배치도">
+          <div id="map-marker" aria-hidden="true"></div>
+          <div id="map-label" aria-hidden="true"></div>
+        </div>
+        <p id="route-text" class="help">검색 결과를 선택하면 위치가 표시됩니다.</p>
+      </section>
+
+      <aside class="detail-panel" aria-labelledby="detail-heading">
+        <h2 id="detail-heading">상세 안내</h2>
+        <div id="detail" class="empty">검색 결과를 선택하십시오.</div>
+      </aside>
+    </div>
+  </main>
+
+  <dialog id="sms-dialog" aria-labelledby="sms-title">
+    <form id="sms-form" method="dialog">
+      <h2 id="sms-title">담당 연락처 문자로 받기</h2>
+      <p id="sms-task-name"></p>
+      <label for="recipient">받을 휴대전화번호</label>
+      <input id="recipient" name="recipient" inputmode="numeric" autocomplete="tel"
+             placeholder="01012345678" maxlength="13" required>
+      <label class="consent-row">
+        <input id="consent" type="checkbox" required>
+        <span>입력한 번호를 문자 발송 목적으로 일시 이용하는 데 동의합니다.</span>
+      </label>
+      <p class="help">이 예제는 번호를 DB와 분석 로그에 저장하지 않습니다.</p>
+      <p id="sms-status" role="status" aria-live="polite"></p>
+      <div class="dialog-actions">
+        <button id="cancel-sms" type="button" class="secondary">취소</button>
+        <button id="send-sms" type="submit">문자 보내기</button>
+      </div>
+    </form>
+  </dialog>
+
+  <footer>운영 전 모든 담당 업무·위치·공식 연락처를 담당 부서에서 검증하십시오.</footer>
+</body>
+</html>
