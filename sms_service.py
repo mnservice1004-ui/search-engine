@@ -18,7 +18,7 @@ def build_message(task):
     if not phone:
         raise ValueError("공식 담당 연락처가 아직 등록되지 않았습니다.")
     return (
-        f'[동탄보건소 민원안내]\n업무: {task.get("name")}\n'
+        f'[동탄구보건소 민원안내]\n업무: {task.get("name")}\n'
         f'담당: {department}\n'
         f'담당자/직위: {contact or "공식 확인 필요"}\n'
         f'전화: {phone}\n'

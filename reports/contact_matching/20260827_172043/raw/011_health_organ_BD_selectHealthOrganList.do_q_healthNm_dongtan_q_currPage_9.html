@@ -1,0 +1,3320 @@
+
+
+
+
+
+
+
+    
+
+
+
+
+<!DOCTYPE html>
+<html lang="ko">
+<head> 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+	<link rel="shortcut icon" type="image/x-icon" href="https://www.hscity.go.kr/favicon.ico">
+	<link rel="icon" type="image/x-icon" href="https://www.hscity.go.kr/favicon.ico">
+    <title>화성특례시 보건소</title>
+    <!-- customize -->
+                        <link rel="stylesheet" type="text/css" href="/resources/health/css/reset.css">
+                        <link rel="stylesheet" type="text/css" href="/resources/health/css/master.css">
+                        <!-- <link rel="stylesheet" type="text/css" href="/resources/openworks4/css/openworks4-custom.css"> -->
+    <script type="text/javascript">var CTX_PATH="";</script>
+                        <!-- jquery core -->
+                        <script type="text/javascript" src="/resources/health/js/lib/jquery-1.12.4.min.js"></script>
+                        <script type="text/javascript" src="/resources/libs/jquery-ui-1.11.3.custom/jquery-ui.min.js"></script>
+                        <script type="text/javascript" src="/resources/health/js/lib/jquery.bxslider.min.js"></script>
+                        <script type="text/javascript" src="/resources/health/js/master.js"></script>
+
+                        <!-- 설정 동기화 -->
+                        <script type="text/javascript" src="/component/js/ND_globalConfig.do"></script>
+                        <script type="text/javascript" src="/component/js/ND_massageConfig.do"></script>
+
+                        <!-- Openworks 공통 메소드 -->
+                        <script type="text/javascript" src="/resources/openworks4/js/openworks.global.js"></script>
+                        <script type="text/javascript" src="/resources/openworks4/js/openworks.message.js"></script>
+                        <script type="text/javascript" src="/resources/openworks4/js/openworks.initialize.js"></script>
+    
+    <link rel="stylesheet" type="text/css" href="/resources/health/css/190723.css">
+    <link rel="stylesheet" type="text/css" href="/resources/health/css/layout2021.css"><!-- 2021개편 메인개편추가 css -->
+    <script type="text/javascript" src="/resources/health/js/layout2021.js"></script><!-- 2021개편 메인개편추가 js -->
+  
+    
+<script type="text/javascript">
+    var CTX_PATH="";
+</script>
+
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<script type="text/javascript">
+	$(document).ready(function() {
+
+	});
+   
+	var opSearch = function(page){
+	    $("#q_currPage").val(page);
+        $("#dataForm").submit();
+	}
+</script>
+
+
+
+<script type="text/javascript">
+    var anlzSessionId = "y2F19mrirJ51glAHIkCDaUMFNlxsSiHoer2Rgz4UzkeYnEHhTuREhhgcPEXuiLuv.amV1c19kb21haW4vd3d3";
+    var anlzClientIp = "221.147.129.244";
+    var anlzMenuCode = "dongtan";
+</script>
+<script type="text/javascript" src="/resources/openworks4/js/analyze/tracker.js"></script>
+
+
+
+    <script type="text/javascript">
+    $(document).ready(function() {
+        
+        $("#fb_banner").load("/health/INC_banner.do");
+        $("#family_site").load("/www/siteFamily.do");
+        
+		$("#topSearchVal").on("keydown", function (e) {
+			if (e.key === "Enter") {
+				e.preventDefault();   // 기본 submit 막기
+				topSearch();
+			}
+		});
+
+        $('a[target="_blank"]').attr('rel','noopener noreferrer');
+    });
+
+    function mail() {
+        window.open("/popup/e-mail.jsp","mail","status=no,toolbar=no,resizable=no,scrollbars=no, menubar=no,width=300,height=210,top=0,left=10");
+    }
+    
+    var topSearch = function (collection) {
+		var chkKeyowrd = $("#topSearchVal").val().trim();
+		
+        if (chkKeyowrd === "") {
+            alert("검색어를 입력하세요.");
+            $("#topSearchVal").focus();
+            return;
+        }
+        $("#topSearchForm input[name=query]").val(chkKeyowrd);
+        if (collection) $("#topSearchForm input[name=collection]").val(collection);
+        $("#topSearchForm").submit();
+    };
+    </script>
+    
+</head>
+<body>
+<!-- 20251231 -->
+		<script>
+			function setLanguage(){
+				let targetId = 'pc-lang';//워난 위치 id="앞 이름"로 추가
+				window.aiTranslatorConfig = {
+					chat_bot_id: 'bdf8e305-99e3-42fc-850b-eaf2a100edcc', // 필수
+					select_user_name: 'hscity', // 필수
+					currentDomain: 'https://hscity.han.kr', // 필수
+					defaultLanguage: 'ko', // 내 사이트 언어  (기본값: 한국어)
+					panelClass: 'lang', // 패널에 추가할 커스텀 클래스 (class="ai-translate-panel" 에 클래스가 추가됩니다.)
+					targetElementId: targetId, // 특정 위치에 패널을 생성할 대상 요소의 ID (지정한 ID 내부에 번역 패널이 생성됩니다.)
+					buttonText: 'KOREAN(한국어)', //처음 접속시 언어선택박스 문구 (HTML 태그 사용 가능합니다.)
+					// 사용자 정의 이미지 설정
+					userImages: {
+					playImage: 'https://www.hscity.go.kr/resources/www/_ai_/images/path/to/play.png', //재생 버튼
+					pauseImage: 'https://www.hscity.go.kr/resources/www/_ai_/images/path/to/pause.png', // 정지 버튼
+					loadingImage: 'https://www.hscity.go.kr/resources/www/_ai_/images/path/to/loading.png', //로딩 버튼
+					toolsImage: 'https://www.hscity.go.kr/resources/www/_ai_/images/path/to/tools.png' //환경설정
+					}
+				};
+			}
+			setLanguage();
+		</script>
+		<style>
+			.ai-translate-panel.lang{position: static;}
+			.changelang{position: absolute;z-index: 99999;right: 216px;top: 36px;}
+			.header_search{width: calc(100% - 860px);}
+			.h_search_con{width: 100% !important;}
+
+			@media screen and (max-width: 1417px) {
+				.header_search{margin-left: 350px;}
+				.header_search{width: calc(100% - 810px);}
+			}
+			@media screen and (max-width: 1199px) {
+				.header_search{width: 100%;margin: 0 auto;padding: 50px 15px 0;}
+				.changelang{right: 55px;top: 9px;}
+				.mobile_position{z-index: 99999;}
+			}
+			@media screen and (max-width: 500px) {
+				.header_top{height: auto;}
+				.header_top .logo{top: 50px;width: auto;}
+				.logo img{width: 200px;}
+				.m_gnb_btn{top: 50px;}
+				.header_search{padding: 100px 15px 10px;}
+				.changelang{right: 18px;top: 9px;}
+			}
+		</style>
+		<script type='text/javascript' src='https://www.hscity.go.kr/resources/www/_ai_/js/ai-translator.js'></script>
+		<!-- //20251231 -->
+<div class="skip-navigation">
+    <p><a href="#container">본문바로가기</a></p>
+    <p><a href="#header">주메뉴 바로가기</a></p>
+</div>
+
+<div id="header">
+    <div class="header_top">
+        <!-- <ul class="header_btn mobile_none">
+            <li class="home_icon">
+                <a href="/health/index.do"><img src="/resources/health/img/common/home_icon.png" alt="">Home</a>
+            </li>
+            <li class="pc_none">
+                <a href="#"><img src="/resources/health/img/common/menu_icon.png" alt="메뉴"></a>
+            </li>
+        </ul>header_btn END -->
+        <ul class="logo">
+            <li><a href="/health/index.do" title="메인으로"><img src="/resources/health/img/common/logo.png" alt="길이 열리는 화성특례시 보건소 로고"></a> </li>
+        </ul><!--logo END-->
+        
+        <!-- 2019-07-23 검색추가 -->
+        <ul class="header_search">
+            <li class="h_search_con">
+                <input type="text" title="검색어 입력" id="topSearchVal" name="topSearchVal" value="" placeholder="무엇을 도와드릴까요?">
+                <button type="button" onclick="topSearch();"><img src="/resources/health/img/layout/search_btn.png" alt="검색버튼"></button>
+            </li>
+        </ul><!--header_search END-->
+		<div class="changelang" id="pc-lang"></div><!-- 20251231 -->
+        
+        <ul class="header_member mobile_none">
+        
+        
+            <li class="member_btn">
+                <p>
+                    <a href="/www/login/BD_loginForm.do?returnUrl=/health/index.do"><img src="/resources/health/img/common/member_icon.png" alt="로그인">로그인</a>
+                </p>
+            </li><!--member_btn END-->
+        
+            <li class="hs_go_btn">
+                <a href="/www/index.do" target="_blank"  title="화성특례시청 홈페이지 새창열기">화성특례시청<img src="/resources/health/img/common/arrow_icon.png" alt="화성특례시청 새창열기"></a>
+            </li>
+        </ul><!--member_btn END-->
+
+		<!-- 2026-07-23 -->
+		<script>
+			$(function(){
+				var zoom = 100;
+				var minZoom = 70;
+				var maxZoom = 130;
+				var step = 10;
+
+				// 화면 확대
+				$('.zoom-in').on('click', function(e){
+					e.preventDefault();
+
+					if(zoom >= maxZoom){
+						alert('더이상 확대할 수 없습니다.');
+						return;
+					}
+
+					zoom += step;
+
+					if(zoom > maxZoom){
+						zoom = maxZoom;
+					}
+
+					applyZoom();
+				});
+
+				// 화면 축소
+				$('.zoom-out').on('click', function(e){
+					e.preventDefault();
+
+					if(zoom <= minZoom){
+						alert('더이상 축소할 수 없습니다.');
+						return;
+					}
+
+					zoom -= step;
+
+					if(zoom < minZoom){
+						zoom = minZoom;
+					}
+
+					applyZoom();
+				});
+
+				// 확대/축소 적용
+				function applyZoom(){
+
+					$('.util-zoom > span').text(zoom + '%');
+
+					// 실제 화면 확대/축소
+					$('body').css('zoom', zoom / 100);
+
+				}
+
+			});
+		</script>
+		<style type="text/css">
+			.util-zoom{position: absolute;right: 0;top: 10px;display: flex;align-items: center;}
+			.util-zoom > a{display: inline-block;font-size: 0;width: 20px;height: 20px;}
+			.util-zoom > span{display: inline-block;font-size: 15px;font-weight: 300;color: #333;line-height: 20px;width: 48px;text-align: center;}
+			.util-zoom > .zoom-out{background: url(/resources/www/img/common/zoom_m.png) center center no-repeat;}
+			.util-zoom > .zoom-in{background: url(/resources/www/img/common/zoom_p.png) center center no-repeat;}
+			@media screen and (max-width: 1200px){
+				.util-zoom{right: 290px;top: 17px;}
+			}
+			@media screen and (max-width: 1024px){
+				.util-zoom{display: none;}
+			}
+		</style>
+		<div class="util-zoom">
+			<p style="font-size: 15px;font-weight: 300;color: #444;padding-right: 5px;">화면</p>
+			<a href="#" class="zoom-out" aria-label="화면 축소">화면 축소</a>
+			<span>100%</span>
+			<a href="#" class="zoom-in" aria-label="화면 확대">화면 확대</a>
+		</div>
+		<!-- // 2026-07-23 -->
+
+    </div><!--header_top END-->
+
+    <div class="m_gnb_btn mobile_b">
+        <a href="#"><img src="/resources/health/img/common/mobile_gnb.png" alt="메뉴버튼"> </a>
+    </div>
+
+    <div class="mobile_position">
+        <div id="gnb" class="gnb">
+        	<div class="gnb_m_top">
+                <img src="/resources/health/img/layout/gnb_logo.png?ver=0" alt="길이 열리는 화성특례시 보건소 로고">
+                <a href="#;" id="m_gnb_close"><img src="/resources/health/img/layout/m_gnb_close.png" alt="닫기"></a>
+            </div>
+            <ul class="gnb_member pc_none mobile_b">
+            
+            
+                <li class="member_btn">
+                    <p>
+                        <a href="/www/login/BD_loginForm.do?returnUrl=/health/index.do"><img src="/resources/health/img/common/member_icon.png" alt="">로그인</a>
+                    </p>
+                </li><!--member_btn END-->
+            
+                <li class="hs_go_btn">
+                    <a href="/www/index.do" target="_blank">화성특례시청<img src="/resources/health/img/common/arrow_icon.png" alt=">"></a>
+                </li>
+            </ul><!--member_btn END-->
+            <ul class="gnb_wrap">
+                
+                    
+                        
+                            
+                            
+                            
+                        
+                        
+                        
+
+                        <li>
+                            <h2><a href="#">보건소안내</a></h2>
+                            <a href="#" class="mobile_m"><span>보건소안내</span></a>
+                            <div class="gnb_sub">
+                                <ul  >
+                                    
+                                        
+                                            
+                                            
+
+                                            
+                                                
+                                                
+                                                
+                                            
+
+                                            
+                                                
+                                                
+                                                    <li  >
+                                                        
+                                                            
+                                                            
+                                                            
+                                                                <a href="/health/intro/greeting.jsp" >인사말</a>
+                                                            
+                                                        
+                                                        
+                                                    </li>
+                                                
+                                            
+                                        
+                                    
+                                        
+                                            
+                                            
+
+                                            
+                                                
+                                                
+                                                
+                                            
+
+                                            
+                                                
+                                                
+                                                    <li  >
+                                                        
+                                                            
+                                                            
+                                                            
+                                                                <a href="/health/intro/vision.jsp" >보건소 비전</a>
+                                                            
+                                                        
+                                                        
+                                                    </li>
+                                                
+                                            
+                                        
+                                    
+                                        
+                                            
+                                            
+
+                                            
+                                                
+                                                
+                                                
+                                            
+
+                                            
+                                                
+                                                
+                                                    <li  >
+                                                        
+                                                            
+                                                            
+                                                            
+                                                                <a href="/health/intro/charter.jsp" >보건의료서비스헌장</a>
+                                                            
+                                                        
+                                                        
+                                                    </li>
+                                                
+                                            
+                                        
+                                    
+                                        
+                                            
+                                            
+
+                                            
+                                                
+                                                
+                                                
+                                            
+
+                                            
+                                                
+                                                
+                                                    <li  >
+                                                        
+                                                            
+                                                            
+                                                            
+                                                                <a href="/health/intro/history/hwaseongOrg.jsp" >연혁 및 조직안내</a>
+                                                            
+                                                        
+                                                        
+                                                    </li>
+                                                
+                                            
+                                        
+                                    
+                                        
+                                            
+                                            
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                            
+
+                                            
+                                                
+                                                
+                                                
+                                            
+
+                                            
+                                                
+                                                
+                                                    <li  >
+                                                        
+                                                            
+                                                            
+                                                            
+                                                            	
+		                                                    		
+		                                                        		
+		                                                        	
+		                                                        
+		                                                    		
+		                                                        
+		                                                    		
+		                                                        
+		                                                    		
+		                                                        
+                                                            
+                                                                <a href="/health/organ/BD_selectHealthOrganList.do?q_healthNm=manse" >직원안내</a>
+                                                            
+                                                            
+                                                        
+                                                        
+                                                    </li>
+                                                
+                                            
+                                        
+                                    
+                                        
+                                            
+                                            
+
+                                            
+                                                
+                                                
+                                                
+                                            
+
+                                            
+                                                
+                                                
+                                                    <li  >
+                                                        
+                                                            
+                                                            
+                                                            
+                                                                <a href="/health/intro/floorFacilities/hwaseongInfo.jsp" >층별시설안내</a>
+                                                            
+                                                        
+                                                        
+                                                    </li>
+                                                
+                                            
+                                        
+                                    
+                                        
+                                            
+                                            
+
+                                            
+                                                
+                                                
+                                                
+                                            
+
+                                            
+                                                
+                                                
+                                                    <li  >
+                                                        
+                                                            
+                                                            
+                                                            
+                                                                <a href="/health/intro/clinic.jsp" >지소/진료소 안내</a>
+                                                            
+                                                        
+                                                        
+                                                    </li>
+                                                
+                                            
+                                        
+                                    
+                                        
+                                            
+                                            
+
+                                            
+                                                
+                                                
+                                                
+                                            
+
+                                            
+                                                
+                                                
+                                                    <li  >
+                                                        
+                                                            
+                                                            
+                                                            
+                                                                <a href="/health/intro/location/hwaseongMap.jsp" >찾아오시는길</a>
+                                                            
+                                                        
+                                                        
+                                                    </li>
+                                                
+                                            
+                                        
+                                    
+                                </ul>
+                            </div>
+                        </li>
+                    
+                
+                    
+                        
+                            
+                            
+                            
+                        
+                        
+                        
+
+                        <li>
+                            <h2><a href="#">민원안내</a></h2>
+                            <a href="#" class="mobile_m"><span>민원안내</span></a>
+                            <div class="gnb_sub">
+                                <ul class="gnb_sub3dep" >
+                                    
+                                        
+                                            
+                                            
+
+                                            
+                                                
+                                                
+                                                
+                                            
+
+                                            
+                                                
+                                                
+                                                    <li  >
+                                                        
+                                                            
+                                                            
+                                                            
+                                                                <a href="/health/minwon/guidance.jsp" >각종검사안내</a>
+                                                            
+                                                        
+                                                        
+                                                    </li>
+                                                
+                                            
+                                        
+                                    
+                                        
+                                            
+                                            
+
+                                            
+                                                
+                                                
+                                                
+                                            
+
+                                            
+                                                
+                                                
+                                                    <li  >
+                                                        
+                                                            
+                                                            
+                                                            
+                                                                <a href="/health/minwon/certificate.jsp" >제증명발급안내</a>
+                                                            
+                                                        
+                                                        
+                                                    </li>
+                                                
+                                            
+                                        
+                                    
+                                        
+                                            
+                                            
+
+                                            
+                                                
+                                                
+                                                
+                                            
+
+                                            
+                                                
+                                                
+                                                    <li  >
+                                                        
+                                                            
+                                                            
+                                                            
+                                                                <a href="/health/minwon/licensing.jsp" >인허가안내</a>
+                                                            
+                                                        
+                                                        
+                                                    </li>
+                                                
+                                            
+                                        
+                                    
+                                        
+                                            
+                                            
+
+                                            
+                                                
+                                                
+                                                
+                                            
+
+                                            
+                                                
+                                                
+                                                    <li  >
+                                                        
+                                                            
+                                                            
+                                                            
+                                                                <a href="/www/user/bbs/BD_selectBbsList.do?q_bbsCode=1018&q_healthChk=1" target="_blank" title="새창으로 이동합니다.">민원서식모음</a>
+                                                            
+                                                        
+                                                        
+                                                    </li>
+                                                
+                                            
+                                        
+                                    
+                                        
+                                            
+                                            
+
+                                            
+                                                
+                                                
+                                                
+                                            
+
+                                            
+                                                
+                                                
+                                                    <li  >
+                                                        
+                                                            
+                                                            
+                                                            
+                                                                <a href="/health/slfchck/BD_selectHealthSlfchckMenuList.do" >의약업소자율점검</a>
+                                                            
+                                                        
+                                                        
+                                                    </li>
+                                                
+                                            
+                                        
+                                    
+                                        
+                                    
+                                </ul>
+                            </div>
+                        </li>
+                    
+                
+                    
+                        
+                            
+                            
+                            
+                        
+                        
+                        
+
+                        <li>
+                            <h2><a href="#">진료안내</a></h2>
+                            <a href="#" class="mobile_m"><span>진료안내</span></a>
+                            <div class="gnb_sub">
+                                <ul  >
+                                    
+                                        
+                                            
+                                            
+
+                                            
+                                                
+                                                
+                                                
+                                            
+
+                                            
+                                                
+                                                
+                                                    <li  >
+                                                        
+                                                            
+                                                            
+                                                            
+                                                                <a href="/health/medical/general.jsp" >일반진료</a>
+                                                            
+                                                        
+                                                        
+                                                    </li>
+                                                
+                                            
+                                        
+                                    
+                                        
+                                            
+                                            
+
+                                            
+                                                
+                                                
+                                                
+                                            
+
+                                            
+                                                
+                                                
+                                                    <li  >
+                                                        
+                                                            
+                                                            
+                                                            
+                                                                <a href="/health/medical/dental.jsp" >치과진료</a>
+                                                            
+                                                        
+                                                        
+                                                    </li>
+                                                
+                                            
+                                        
+                                    
+                                </ul>
+                            </div>
+                        </li>
+                    
+                
+                    
+                        
+                            
+                            
+                            
+                        
+                        
+                        
+
+                        <li>
+                            <h2><a href="#">보건사업안내</a></h2>
+                            <a href="#" class="mobile_m"><span>보건사업안내</span></a>
+                            <div class="gnb_sub">
+                                <ul class="gnb_sub3dep" >
+                                    
+                                        
+                                            
+                                            
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                            
+
+                                            
+                                                
+                                                
+                                                
+                                            
+
+                                            
+                                                
+                                                
+                                                    <li class="gnb_sub3dep_m" >
+                                                        
+                                                            
+                                                                <a href="#">건강증진사업</a>
+                                                            
+                                                            
+                                                            
+                                                        
+                                                        
+                                                            <ul>
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/promotion/healthLiving.jsp" >- 건강생활 실천 사업</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/promotion/cerebrovascular.jsp" >- 심뇌혈관질환 예방사업</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/promotion/nonsmoking/nonsmoking01.jsp" >- 금연사업</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/promotion/wellbeing.jsp" >- 웰빙건강클리닉</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/promotion/oralcavity.jsp" >- 구강보건사업</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/promotion/Rehabilitation.jsp" >- 지역사회중심재활사업</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/promotion/healthcity.jsp" >- 건강도시</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/region/nutrition.jsp" >- 영양플러스사업</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/promotion/mobilhealthcarebusiness.jsp" >- 모바일헬스케어사업</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                            </ul>
+                                                        
+                                                    </li>
+                                                
+                                            
+                                        
+                                    
+                                        
+                                            
+                                            
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                            
+
+                                            
+                                                
+                                                
+                                                
+                                            
+
+                                            
+                                                
+                                                
+                                                    <li class="gnb_sub3dep_m" >
+                                                        
+                                                            
+                                                                <a href="#">지역보건사업</a>
+                                                            
+                                                            
+                                                            
+                                                        
+                                                        
+                                                            <ul>
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/region/visit.jsp" >- 방문보건사업</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/region/carcinoma.jsp" >- 국가암검진사업</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/region/healthcheckup.jsp" >- 일반건강검진 사업</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/region/caremedicalcenter.jsp" >- 찾아가는 경기도 화성시 돌봄의료센터</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                            </ul>
+                                                        
+                                                    </li>
+                                                
+                                            
+                                        
+                                    
+                                        
+                                            
+                                            
+
+                                            
+                                                
+                                                
+                                                
+                                            
+
+                                            
+                                                
+                                                
+                                                    <li class="gnb_sub3dep_m" >
+                                                        
+                                                            
+                                                                <a href="#">모자보건사업</a>
+                                                            
+                                                            
+                                                            
+                                                        
+                                                        
+                                                            <ul>
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/region/motherchild/motherchild04.jsp" >- 산모신생아 건강관리 지원 사업</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/region/motherchild/motherchild06.jsp" >- 저소득층 기저귀 · 조제분유 지원</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/region/motherchild/motherchild10.jsp" >- 산후조리비 지원</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/region/motherchild/motherchild09.jsp" >- 임산부 영양제 및 임산부 초기ㆍ막달 검사 지원</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                            </ul>
+                                                        
+                                                    </li>
+                                                
+                                            
+                                        
+                                    
+                                        
+                                            
+                                            
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                            
+
+                                            
+                                                
+                                                
+                                                
+                                            
+
+                                            
+                                                
+                                                
+                                                    <li class="gnb_sub3dep_m" >
+                                                        
+                                                            
+                                                                <a href="#">감염병관리사업</a>
+                                                            
+                                                            
+                                                            
+                                                        
+                                                        
+                                                            <ul>
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/infection/currentState.jsp" >- 기본현황</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/infection/infectionManage.jsp" >- 감염병관리 일반</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/infection/disinfection.jsp" >- 환경친화적 방역소독</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/infection/tuberculosis.jsp" >- 결핵환자 관리</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/infection/aids.jsp" >- 성매개감염병/에이즈 관리</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                            </ul>
+                                                        
+                                                    </li>
+                                                
+                                            
+                                        
+                                    
+                                        
+                                            
+                                            
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                            
+
+                                            
+                                                
+                                                
+                                                
+                                            
+
+                                            
+                                                
+                                                
+                                                    <li class="gnb_sub3dep_m" >
+                                                        
+                                                            
+                                                                <a href="#">정신건강증진사업</a>
+                                                            
+                                                            
+                                                            
+                                                        
+                                                        
+                                                            <ul>
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/remedial/convalesce.jsp" >- 정신요양시설 및 정신재활시설 운영지원</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="http://hsmind.or.kr/" target="_blank" title="새창으로 이동합니다.">- 정신건강복지센터</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="http://www.hsalcohol.kr/" target="_blank" title="새창으로 이동합니다.">- 중독관리통합지원센터</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="https://www.hsmindstep.or.kr/" target="_blank" title="새창으로 이동합니다.">- 아동청소년정신건강복지센터</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/remedial/sucdeprevnt.jsp" >- 자살예방 화성특례시 핫라인</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                            </ul>
+                                                        
+                                                    </li>
+                                                
+                                            
+                                        
+                                    
+                                        
+                                            
+                                            
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                            
+
+                                            
+                                                
+                                                
+                                                
+                                            
+
+                                            
+                                                
+                                                
+                                                    <li class="gnb_sub3dep_m" >
+                                                        
+                                                            
+                                                                <a href="#">의료비지원사업</a>
+                                                            
+                                                            
+                                                            
+                                                        
+                                                        
+                                                            <ul>
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/region/motherchild/motherchild11.jsp" >- 가다실9가 예방접종 비용 지원</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/expense/motherchild07.jsp" >- 고위험임산부 의료비 지원</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/region/motherchild/motherchild02.jsp" >- 난임부부 시술비 지원</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/region/motherchild/motherchild15.jsp" >- 난임시술 중단 의료비 지원</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/expense/supporttreatmentcosts.jsp" >- 난자동결 시술비 지원사업</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/expense/preservingpermanently.jsp" >- 영구 불임 예상 난자·정자 냉동 지원사업</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/expense/preemie.jsp" >- 미숙아 및 선천성이상아 의료비 지원</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/expense/deafness.jsp" >- 선천성 난청검사 및 보청기 지원</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/expense/inbornError.jsp" >- 선천성대사이상 검사 및 환아관리</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/expense/medicalExpenses.jsp" >- 암환자의료비 지원</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/region/motherchild/motherchild08.jsp" >- 영유아 발달장애 정밀검사비 지원</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/expense/motherchild12.jsp" >- 청소년 월경통 한방치료비 지원</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/region/motherchild/motherchild05.jsp" >- 청소년 임신출산 의료비 지원</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/expense/dchildExpenses.jsp" >- 태아 기형아 검사비 지원</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/expense/incurable.jsp" >- 희귀질환자 의료비 지원</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/region/motherchild/motherchild14.jsp" >- 임신 사전건강관리 지원</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                            </ul>
+                                                        
+                                                    </li>
+                                                
+                                            
+                                        
+                                    
+                                        
+                                            
+                                            
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                            
+
+                                            
+                                                
+                                                
+                                                
+                                            
+
+                                            
+                                                
+                                                
+                                                    <li class="gnb_sub3dep_m" >
+                                                        
+                                                            
+                                                                <a href="#">치매관리사업</a>
+                                                            
+                                                            
+                                                            
+                                                        
+                                                        
+                                                            <ul>
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/dementia/dementia01.jsp" >- 화성시치매안심센터 안내</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/dementia/dementia02.jsp" >- 치매조기검진</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/dementia/dementia03.jsp" >- 치매환자 등록관리</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/dementia/dementia04.jsp" >- 프로그램 운영 및 가족지원</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/dementia/dementia06.jsp" >- 치매인식개선 교육ㆍ홍보</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/business/dementia/dementia05.jsp" >- 노인보건센터</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                            </ul>
+                                                        
+                                                    </li>
+                                                
+                                            
+                                        
+                                    
+                                </ul>
+                            </div>
+                        </li>
+                    
+                
+                    
+                        
+                            
+                            
+                            
+                        
+                        
+                        
+
+                        <li>
+                            <h2><a href="#">예방접종안내</a></h2>
+                            <a href="#" class="mobile_m"><span>예방접종안내</span></a>
+                            <div class="gnb_sub">
+                                <ul  >
+                                    
+                                        
+                                            
+                                            
+
+                                            
+                                                
+                                                
+                                                
+                                            
+
+                                            
+                                                
+                                                
+                                                    <li  >
+                                                        
+                                                            
+                                                            
+                                                            
+                                                                <a href="/health/vaccination/infants.jsp" >영유아예방접종</a>
+                                                            
+                                                        
+                                                        
+                                                    </li>
+                                                
+                                            
+                                        
+                                    
+                                        
+                                            
+                                            
+
+                                            
+                                                
+                                                
+                                                
+                                            
+
+                                            
+                                                
+                                                
+                                                    <li  >
+                                                        
+                                                            
+                                                            
+                                                            
+                                                                <a href="/health/vaccination/adult.jsp" >성인예방접종</a>
+                                                            
+                                                        
+                                                        
+                                                    </li>
+                                                
+                                            
+                                        
+                                    
+                                        
+                                            
+                                            
+
+                                            
+                                                
+                                                
+                                                
+                                            
+
+                                            
+                                                
+                                                
+                                                    <li  >
+                                                        
+                                                            
+                                                            
+                                                            
+                                                                <a href="/health/vaccination/tourist.jsp" >해외여행자 예방접종</a>
+                                                            
+                                                        
+                                                        
+                                                    </li>
+                                                
+                                            
+                                        
+                                    
+                                        
+                                            
+                                            
+
+                                            
+                                                
+                                                
+                                                
+                                            
+
+                                            
+                                                
+                                                
+                                                    <li  >
+                                                        
+                                                            
+                                                            
+                                                            
+                                                                <a href="https://nip.kdca.go.kr" target="_blank" title="새창으로 이동합니다.">예방접종 도우미</a>
+                                                            
+                                                        
+                                                        
+                                                    </li>
+                                                
+                                            
+                                        
+                                    
+                                </ul>
+                            </div>
+                        </li>
+                    
+                
+                    
+                        
+                            
+                            
+                            
+                        
+                        
+                        
+
+                        <li>
+                            <h2><a href="#">열린마당</a></h2>
+                            <a href="#" class="mobile_m"><span>열린마당</span></a>
+                            <div class="gnb_sub">
+                                <ul class="gnb_sub3dep" >
+                                    
+                                        
+                                            
+                                            
+
+                                            
+                                                
+                                                
+                                                
+                                            
+
+                                            
+                                                
+                                                
+                                                    <li  >
+                                                        
+                                                            
+                                                            
+                                                            
+                                                                <a href="/health/user/bbs/BD_selectBbsList.do?q_bbsCode=1001" >보건소식</a>
+                                                            
+                                                        
+                                                        
+                                                    </li>
+                                                
+                                            
+                                        
+                                    
+                                        
+                                            
+                                            
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                                    
+                                                        
+                                                        
+                                                    
+                                                
+                                            
+
+                                            
+                                                
+                                                
+                                                
+                                            
+
+                                            
+                                                
+                                                
+                                                    <li class="gnb_sub3dep_m" >
+                                                        
+                                                            
+                                                                <a href="#">입찰공고</a>
+                                                            
+                                                            
+                                                            
+                                                        
+                                                        
+                                                            <ul>
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/user/bbs/BD_selectBbsList.do?q_bbsCode=1002" >- 입찰공고</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                                    
+                                                                        
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                            
+                                                                        
+
+                                                                        
+                                                                            
+                                                                            
+                                                                                <li><a href="/health/user/bbs/BD_selectBbsList.do?q_bbsCode=1003" >- 고시공고</a></li>
+                                                                            
+                                                                        
+                                                                    
+                                                                
+                                                            </ul>
+                                                        
+                                                    </li>
+                                                
+                                            
+                                        
+                                    
+                                        
+                                            
+                                            
+
+                                            
+                                                
+                                                
+                                                
+                                            
+
+                                            
+                                                
+                                                
+                                                    <li  >
+                                                        
+                                                            
+                                                            
+                                                            
+                                                                <a href="/health/user/bbs/BD_selectBbsList.do?q_bbsCode=1004" >감염병자료실</a>
+                                                            
+                                                        
+                                                        
+                                                    </li>
+                                                
+                                            
+                                        
+                                    
+                                        
+                                            
+                                            
+
+                                            
+                                                
+                                                
+                                                
+                                            
+
+                                            
+                                                
+                                                
+                                                    <li  >
+                                                        
+                                                            
+                                                            
+                                                            
+                                                                <a href="/health/user/bbs/BD_selectBbsList.do?q_bbsCode=1005" >보건교육자료실</a>
+                                                            
+                                                        
+                                                        
+                                                    </li>
+                                                
+                                            
+                                        
+                                    
+                                        
+                                            
+                                            
+
+                                            
+                                                
+                                                
+                                                
+                                            
+
+                                            
+                                                
+                                                
+                                                    <li  >
+                                                        
+                                                            
+                                                            
+                                                            
+                                                                <a href="/health/user/bbs/BD_selectBbsList.do?q_bbsCode=1006" >의료기관/약국</a>
+                                                            
+                                                        
+                                                        
+                                                    </li>
+                                                
+                                            
+                                        
+                                    
+                                        
+                                            
+                                            
+
+                                            
+                                                
+                                                
+                                                
+                                            
+
+                                            
+                                                
+                                                
+                                                    <li  >
+                                                        
+                                                            
+                                                            
+                                                            
+                                                                <a href="/health/user/bbs/BD_selectBbsList.do?q_bbsCode=1007" >산후조리원</a>
+                                                            
+                                                        
+                                                        
+                                                    </li>
+                                                
+                                            
+                                        
+                                    
+                                        
+                                            
+                                            
+
+                                            
+                                                
+                                                
+                                                
+                                            
+
+                                            
+                                                
+                                                
+                                                    <li  >
+                                                        
+                                                            
+                                                            
+                                                            
+                                                                <a href="/health/user/bbs/BD_selectBbsList.do?q_bbsCode=1008" >사진자료실</a>
+                                                            
+                                                        
+                                                        
+                                                    </li>
+                                                
+                                            
+                                        
+                                    
+                                        
+                                            
+                                            
+
+                                            
+                                                
+                                                
+                                                
+                                            
+
+                                            
+                                                
+                                                
+                                                    <li  >
+                                                        
+                                                            
+                                                            
+                                                            
+                                                                <a href="/health/user/schdul/BD_selectSchdulCal.do?q_seCode=" >주요행사</a>
+                                                            
+                                                        
+                                                        
+                                                    </li>
+                                                
+                                            
+                                        
+                                    
+                                        
+                                            
+                                            
+
+                                            
+                                                
+                                                
+                                                
+                                            
+
+                                            
+                                                
+                                                
+                                                    <li  >
+                                                        
+                                                            
+                                                            
+                                                            
+                                                                <a href="/health/user/bbs/BD_selectBbsList.do?q_bbsCode=1009" >칭찬해주세요</a>
+                                                            
+                                                        
+                                                        
+                                                    </li>
+                                                
+                                            
+                                        
+                                    
+                                        
+                                            
+                                            
+
+                                            
+                                                
+                                                
+                                                
+                                            
+
+                                            
+                                                
+                                                
+                                                    <li  >
+                                                        
+                                                            
+                                                            
+                                                            
+                                                                <a href="https://www.epeople.go.kr/" target="_blank" title="새창으로 이동합니다.">국민신문고</a>
+                                                            
+                                                        
+                                                        
+                                                    </li>
+                                                
+                                            
+                                        
+                                    
+                                </ul>
+                            </div>
+                        </li>
+                    
+                
+                    
+                
+            </ul><!--gnb_wrap END-->
+        </div><!--gnb END-->
+    </div>
+    <div class="header_2depth_bg mobile_none"></div>
+</div><!--header END-->
+
+<div id="container" class="sub_container">
+    <div class="sub_container_wrap">
+        <div class="sta">
+            <ul>
+                
+                <li class="sta_home"><a href="/health/index.do"><img src="/resources/health/img/common/sta_home.png" alt="메인으로"></a></li>
+                
+                
+                    
+                        
+                            
+                            
+                                
+                            
+                        
+                    
+                    
+                
+
+                
+                    <li>
+                        
+                            
+                             보건소안내 
+                        
+                    </li>
+                
+                    <li>
+                        
+                            
+                             직원안내 
+                        
+                    </li>
+                
+                    <li>
+                        
+                            <span> 화성시 동탄구보건소</span>
+                            
+                        
+                    </li>
+                
+
+            </ul>
+        </div><!--sta END-->
+
+        <div class="sub_content">
+            <div class="lnb">
+                <h2 class="lnb_title">보건소안내</h2>
+                <div class="lnb_wrap">
+                    <ul>
+                        
+                            
+                                
+                                    
+                                    
+                                    
+                                
+
+                                <li  >
+                                    <a href="/health/intro/greeting.jsp" 
+                                     >인사말
+                                        
+                                    </a>
+
+                                    
+                                </li>
+                            
+                        
+                            
+                                
+                                    
+                                    
+                                    
+                                
+
+                                <li  >
+                                    <a href="/health/intro/vision.jsp" 
+                                     >보건소 비전
+                                        
+                                    </a>
+
+                                    
+                                </li>
+                            
+                        
+                            
+                                
+                                    
+                                    
+                                    
+                                
+
+                                <li  >
+                                    <a href="/health/intro/charter.jsp" 
+                                     >보건의료서비스헌장
+                                        
+                                    </a>
+
+                                    
+                                </li>
+                            
+                        
+                            
+                                
+                                    
+                                    
+                                    
+                                
+
+                                <li  >
+                                    <a href="/health/intro/history/hwaseongOrg.jsp" 
+                                     >연혁 및 조직안내
+                                        
+                                    </a>
+
+                                    
+                                </li>
+                            
+                        
+                            
+                                
+                                    
+                                    
+                                    
+                                
+
+                                <li  >
+                                    <a href="" 
+                                    class="lnb_on" >직원안내
+                                        
+                                    </a>
+
+                                    
+                                        
+                                        
+                                            
+                                                
+                                                    
+                                                
+                                            
+                                        
+                                            
+                                                
+                                                    
+                                                
+                                            
+                                        
+                                            
+                                                
+                                                    
+                                                
+                                            
+                                        
+                                            
+                                                
+                                                    
+                                                
+                                            
+                                        
+                                        <ul class="lnb_2dep" style="display: block;">
+                                            
+                                                
+                                                    
+                                                        
+                                                        
+                                                        
+                                                    
+                                                    
+                                                    
+                                                    <li>
+                                                        <a href="/health/organ/BD_selectHealthOrganList.do?q_healthNm=manse" 
+                                                        >- 화성시 만세구보건소
+                                                        </a>
+                                                        
+                                                    </li>
+                                                
+                                            
+                                                
+                                                    
+                                                        
+                                                        
+                                                        
+                                                    
+                                                    
+                                                    
+                                                    <li>
+                                                        <a href="/health/organ/BD_selectHealthOrganList.do?q_healthNm=hyohaeng" 
+                                                        >- 화성시 효행구보건소
+                                                        </a>
+                                                        
+                                                    </li>
+                                                
+                                            
+                                                
+                                                    
+                                                        
+                                                        
+                                                        
+                                                    
+                                                    
+                                                    
+                                                    <li>
+                                                        <a href="/health/organ/BD_selectHealthOrganList.do?q_healthNm=byeongjeom" 
+                                                        >- 화성시 병점구보건소
+                                                        </a>
+                                                        
+                                                    </li>
+                                                
+                                            
+                                                
+                                                    
+                                                        
+                                                        
+                                                        
+                                                    
+                                                    
+                                                    
+                                                    <li>
+                                                        <a href="/health/organ/BD_selectHealthOrganList.do?q_healthNm=dongtan" 
+                                                        class="lnb_on2">- 화성시 동탄구보건소
+                                                        </a>
+                                                        
+                                                    </li>
+                                                
+                                            
+                                        </ul>
+                                    
+                                </li>
+                            
+                        
+                            
+                                
+                                    
+                                    
+                                    
+                                
+
+                                <li  >
+                                    <a href="/health/intro/floorFacilities/hwaseongInfo.jsp" 
+                                     >층별시설안내
+                                        
+                                    </a>
+
+                                    
+                                </li>
+                            
+                        
+                            
+                                
+                                    
+                                    
+                                    
+                                
+
+                                <li  >
+                                    <a href="/health/intro/clinic.jsp" 
+                                     >지소/진료소 안내
+                                        
+                                    </a>
+
+                                    
+                                </li>
+                            
+                        
+                            
+                                
+                                    
+                                    
+                                    
+                                
+
+                                <li  >
+                                    <a href="/health/intro/location/hwaseongMap.jsp" 
+                                     >찾아오시는길
+                                        
+                                    </a>
+
+                                    
+                                </li>
+                            
+                        
+                    </ul>
+                </div>
+            </div><!--lnb END-->
+
+            
+            
+            <!-- 페이지 내용 -->
+            
+    
+	<div class="sub_rgtCon">
+		<h3 class="content_title"> 
+			동탄구보건소 직원안내
+            
+		</h3>
+		<div class="staff_info">
+			<ul>
+				<li class="staff_img"><img src="/resources/health/img/sub/staff_img.png" alt=""> </li>
+				<li class="staff_txt">
+					<ul class="list_type01">
+						<li>직원 찾기 문의 : 1577-4200</li>
+						<li>
+							 스마트폰에서 화성시 행정전화번호부를 모바일 앱 다운로드 방법
+							<ul>
+								<li>- 가. 구글플레이 스토어 : '화성시' 혹은 '화성시행정전화' 로 검색</li>
+								<li>- 나. 애플 앱스토어 : '화성시' 혹은 '행정전화번호' 로 검색</li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</div><!--staff_info END-->
+
+		<form name="dataForm" id="dataForm" method="get" action="BD_selectHealthOrganList.do" class="form-inline">
+			<input type="hidden" id="q_healthNm" name="q_healthNm" value="dongtan"/>
+			<div class="board_search">
+				<ul>
+
+						<li class="search_select">
+							<select name="q_healthCd" id="q_healthCd" class="select" title="보건소 선택" >
+<option value="">-- 선택 --</option>
+<option value="55306870000" >보건행정과</option>
+<option value="55306880000" >건강증진과</option>
+</select>
+
+						</li>
+
+					<li class="search_select m_mr_0">
+						<select id="q_searchType" name="q_searchType" title="검색 선택">
+							<option value="" >전체</option>
+							<option value="1001" >소속</option>
+							<option value="1002" >직위</option>
+							<option value="1004" >전화번호</option>
+							<option value="1005" >업무</option>
+						</select>
+					</li>
+					<li class="search_txt wd_410">
+						<input type="text" id="q_searchVal" name="q_searchVal" value="" class="text_type01" title="검색어 입력" placeholder="검색어를 입력해주세요.">
+					</li>
+					<li class="search_btn">
+						<button type="submit">검색</button>
+					</li>
+				</ul>
+			</div><!--board_search END-->
+
+			<div class="page_num mt_18">
+				
+
+
+                    <div class="row" style="position:inline;">
+                        <div class="col-xs-12">
+                            
+                                
+                                        <legend class="sr-only">페이지당 목록갯수 선택</legend>
+                                        <div class="pull-left" style="float: left;margin-top : 10px;">
+                                            <h4>
+                                                
+                                                <small> 총 <span class="point_color"><strong>82</strong></span>건, 페이지 <span class="point_color">9</span> / 9</small>
+                                            </h4>
+                                        </div>
+                                        
+	        	
+	            
+					
+                    	<div class="pull-right" style="float: right;padding-left: 10px;">
+                        	<label for="q_rowPerPage">페이지당 목록</label>
+                       		<select name="q_rowPerPage" id="q_rowPerPage" class="select" style="width:50px;height:22px;">
+                       		
+                           		
+	                                <option value="10" selected="selected">10</option>
+	                                <option value="20" >20</option>
+	                                <option value="30" >30</option>
+	                            
+                       		</select>
+                       		<button type="submit" id="searchBtn" class="btn btn-primary " style= "width:45px; line-height:30px;border-radius:5px;padding-left:0px;padding-right:0px;" data-loading-text="<i class='icon-spinner7 spin'></i>">변경</button>
+                       		
+                    	</div>
+            	
+        	
+
+                                
+                                
+                            
+
+
+                            <input type="hidden" name="q_currPage" id="q_currPage" value="9" />
+
+                            <input type="hidden" name="q_sortName" id="q_sortName" value="" />
+
+                            <input type="hidden" name="q_sortOrder" id="q_sortOrder" value="" />
+                        </div>
+                    </div>
+
+			</div>
+
+			<div class="board_list mt_25">
+				<table>
+					<caption>입찰공고(번호, 제목, 담당부서, 등록일자)</caption>
+					<colgroup>
+						<col style="width: 98px">
+						<col style="width: 98px">
+						<col style="width: 125px">
+						<col style="width: auto">
+					</colgroup>
+					<thead>
+						<tr>
+							<th scope="col">소속</th>
+							<th scope="col">직위</th>
+							<th scope="col">전화번호</th>
+							<th scope="col">업무</th>
+						</tr>
+					</thead>
+					<tbody>
+						
+	 					
+							<tr>
+								<td>동탄구보건소 건강증진과 </td>
+								<td>주무관</td>
+								<td style="text-decoration: underline;"><a href="tel:--">--</a></td>
+								<td class="ta_lft"> </td>
+							</tr>
+						
+							<tr>
+								<td>동탄구보건소 건강증진과 </td>
+								<td>주무관</td>
+								<td style="text-decoration: underline;"><a href="tel:--">--</a></td>
+								<td class="ta_lft"> </td>
+							</tr>
+						
+					</tbody>
+				</table>
+			</div><!--board_list END-->
+
+			<div class="paging">
+				
+
+
+
+
+    <div class="paging">
+            <ul>
+                
+                    
+                        
+                        
+                            
+                            
+                                <li><a href="#" onclick="opSearch(1); return false;" title="1 페이지">1</a></li>
+                            
+                        
+                            
+                            
+                                <li><a href="#" onclick="opSearch(2); return false;" title="2 페이지">2</a></li>
+                            
+                        
+                            
+                            
+                                <li><a href="#" onclick="opSearch(3); return false;" title="3 페이지">3</a></li>
+                            
+                        
+                            
+                            
+                                <li><a href="#" onclick="opSearch(4); return false;" title="4 페이지">4</a></li>
+                            
+                        
+                            
+                            
+                                <li><a href="#" onclick="opSearch(5); return false;" title="5 페이지">5</a></li>
+                            
+                        
+                            
+                            
+                                <li><a href="#" onclick="opSearch(6); return false;" title="6 페이지">6</a></li>
+                            
+                        
+                            
+                            
+                                <li><a href="#" onclick="opSearch(7); return false;" title="7 페이지">7</a></li>
+                            
+                        
+                            
+                            
+                                <li><a href="#" onclick="opSearch(8); return false;" title="8 페이지">8</a></li>
+                            
+                        
+                            
+                                <li class="paging_on">
+                                    
+                                    <span aria-current="page" title="현재 9 페이지" onclick="return false;">9</span>
+                                </li>
+                            
+                            
+                        
+
+                        
+                    
+                    
+                
+            </ul>
+    </div>
+       
+
+
+			</div><!--paging END-->
+		</form>
+
+	</div><!--sub_rgtCon END-->
+
+
+            
+            
+
+            
+
+        </div><!--sub_content END-->
+    </div>
+</div>
+
+<div id="footer">
+
+    <div class="foot-tp">
+		<div>
+			<ul class="foot-tp-lk">
+				<li><a href="#n">직속기관/사업소/구청/행정복지센터<i></i></a>
+					<ul>
+						<li><a href="http://atc.hscity.go.kr" target="_blank">농업기술센터</a></li>
+						<li><a href="/health/index.do" target="_blank">보건소</a> </li>
+						<li><a href="/www/user/bbs/BD_selectBbsList.do?q_bbsCode=1183&q_bbscttSn=&q_seachType=where&q_deptCode=55303230000&q_searchWhereTy=AND&q_searchVal=&q_currPage=1&q_sortName=&q_sortOrder=" target="_blank">맑은물사업소</a></li>
+						<li><a href="/www/user/bbs/BD_selectBbsList.do?q_bbsCode=1183&q_bbscttSn=&q_seachType=where&q_deptCode=55305170000&q_searchWhereTy=AND&q_searchVal=&q_currPage=1&q_sortName=&q_sortOrder=" target="_blank">공원녹지사업소</a></li>
+						<li><a href="/www/user/bbs/BD_selectBbsList.do?q_bbsCode=1183&q_bbscttSn=&q_seachType=where&q_deptCode=55302950000&q_searchWhereTy=AND&q_searchVal=&q_currPage=1&q_sortName=&q_sortOrder=" target="_blank">대외협력사무소</a></li>
+						<li><a href="/manse/index.do" target="_blank">만세구청</a></li>
+						<li><a href="/hyohaeng/index.do" target="_blank">효행구청</a></li>
+						<li><a href="/byeongjeom/index.do" target="_blank">병점구청</a></li>
+						<li><a href="/dongtan/index.do" target="_blank">동탄구청</a></li>
+						<li><a href="/town/index.do" target="_blank">행정복지센터</a> </li>
+
+					</ul>
+				</li>
+				<li><a href="#n">화성특례시 패밀리 사이트 <i></i></a>
+					<ul id ="family_site" style="color: #e5e5e5;">
+						
+					</ul>
+                </li>
+				<li><a href="#n">공공/기타기관 <i></i></a>
+					<ul>
+						<li><a href="https://www.hsswf.or.kr" target="_blank" title="새창열림">화성시사회복지재단</a></li>
+						<li><a href="https://hipa.hscity.go.kr" target="_blank" title="새창열림">화성산업진흥원</a></li>
+						<li><a href="http://www.hsef.or.kr" target="_blank" title="새창열림">화성시환경재단</a></li>
+						<li><a href="https://www.hsdr.or.kr/" target="_blank" title="새창열림">두리하나화성장애인자립센터</a></li>
+						<li><a href="https://tour.hscity.go.kr/Water/" target="_blank" title="새창열림">화성시저수조관리시스템</a></li>
+						<li><a href="https://air.rbinsight.co.kr/hwaseong" target="_blank" title="새창열림">화성시대기환경</a></li>
+						<li><a href="http://hspark.hscity.go.kr/" target="_blank" title="새창열림">동탄호수공원</a></li>
+						<li><a href="https://www.hskdream.or.kr/index.php" target="_blank" title="새창열림">화성시 학교밖청소년지원센터</a></li>
+						<li><a href="http://www.dtsenior.or.kr" target="_blank" title="새창열림">화성시동탄노인복지관</a></li>
+						<li><a href="https://www.hs-seobu.or.kr" target="_blank" title="새창열림">화성시서부노인복지관</a></li>
+						<li><a href="https://parking.hscity.go.kr/index.jsp" target="_blank" title="새창열림">화성시주정차민원서비스</a></li>
+						<li><a href="http://data.hscity.go.kr/" target="_blank" title="새창열림">화성 데이터 로</a></li>
+						<li><a href="http://www.hsfamily.or.kr/" target="_blank" title="새창열림">화성시장애인가족지원센터</a></li>
+						<li><a href="http://www.hcf.or.kr/hcf/1" target="_blank" title="새창열림">화성시문화재단</a></li>
+						<li><a href="http://mars1318.or.kr" target="_blank" title="새창열림">화성시청소년상담복지센터</a></li>
+						<!-- <li><a href="http://www.jeam.or.kr" target="_blank" title="새창열림">제암리3.1운동순국기념관</a></li> -->
+						<li><a href="http://www.family119.net" target="_blank" title="새창열림">화성가족상담소</a></li>
+						<li><a href="https://parkingsms.hscity.go.kr/parkingsms/new/" target="_blank" title="새창열림">주정차 문자 알림 서비스</a></li>
+						<li><a href="https://www.narewul.or.kr/" target="_blank" title="새창열림">나래울종합사회복지관</a></li>
+						<li><a href="http://www.liveinkorea.kr/center/main/main.do?centerId=hwaseongsi" target="_blank" title="새창열림">화성시다문화가족지원센터</a></li>
+						<li><a href="https://tour.hscity.go.kr/citytour/" target="_blank" title="새창열림">화성시 시티투어</a></li>
+						<li><a href="http://www.hsccie.com" target="_blank" title="새창열림">화성교육협력지원센터</a></li>
+						<li><a href="https://www.hsuco.or.kr/www/M040000/M040500/M0405007/M04050071.jsp" target="_blank" title="새창열림">화성종합경기타운</a></li>
+						<li><a href="https://www.hsuco.or.kr/" target="_blank" title="새창열림">화성도시공사</a></li>
+						<li><a href="http://www.dreamstart.go.kr/hscity/index.asp" target="_blank" title="새창열림">화성시드림스타트센터</a></li>
+						<li><a href="http://www.hsicare.or.kr" target="_blank" title="새창열림">화성시육아종합지원센터</a></li>
+						<li><a href="http://www.hsvolunteer.or.kr" target="_blank" title="새창열림">화성시자원봉사센터</a></li>
+						<li><a href="http://www.hstree.org/" target="_blank" title="새창열림">화성시인재육성재단</a></li>
+						<li><a href="http://council.hscity.go.kr" target="_blank" title="새창열림">화성시의회</a></li>
+						<li><a href="http://www.hsbluebird.co.kr/" target="_blank" title="새창열림">화성시외국인복지센터</a></li>
+						<li><a href="https://www.hssenior.or.kr/index" target="_blank" title="새창열림">화성시남부노인복지관</a></li>
+						<li><a href="https://www.hsuco.or.kr/www/M040000/M040500/M0405003/M04050031.jsp" target="_blank" title="새창열림">화성시추모공원</a></li>
+						<li><a href="http://hsnambu.or.kr" target="_blank" title="새창열림">화성시남부종합사회복지관</a></li>
+						<li><a href="http://botanic.hscity.go.kr/" target="_blank" title="새창열림">화성시우리꽃식물원</a></li>
+						<li><a href="http://www.hscitylib.or.kr" target="_blank" title="새창열림">화성시시립도서관</a></li>
+						<li><a href="https://parking.hscity.go.kr" target="_blank" title="새창열림">화성시 주정차 민원 서비스</a></li>
+						<li><a href="http://art.hcf.or.kr/" target="_blank" title="새창열림">화성시문화재단 화성아트홀</a></li>
+						<li><a href="http://hssports.hscity.go.kr" target="_blank" title="새창열림">화성시체육회</a></li>
+						<li><a href="http://gyeonggi.work.go.kr/hwaseong/main.do" target="_blank" title="새창열림">화성일자리센터</a></li>
+						<li><a href="http://u-life.hscity.go.kr" target="_blank" title="새창열림">화성시 평생학습관</a></li>
+						<li><a href="http://www.hssesc.or.kr" target="_blank" title="새창열림">화성시사회적경제센터</a></li>
+						<li><a href="http://www.hswf.or.kr/" target="_blank" title="새창열림">화성시여성가족재단</a></li>
+						<li><a href="http://www.hsnsmj.or.kr/" target="_blank" title="새창열림">화성시노사민정협의회</a></li>
+						<li><a href="https://www.kopo.ac.kr/hwaseong/index.do" target="_blank" title="새창열림">화성 폴리텍대학</a></li>
+						<li><a href="http://gg-hwaseong.kfme.or.kr" target="_blank" title="새창열림">화성시소상공인연합회</a></li>
+						<li><a href="http://hsseniorclub.or.kr/
+						" target="_blank" title="새창열림">화성시니어클럽</a></li>
+						<li><a href="https://www.hsfoodcenter.or.kr" target="_blank" title="새창열림">화성푸드통합종합지원센터</a></li>
+						<li><a href="https://hi.re.kr/" target="_blank" title="새창열림">화성시연구원</a></li>
+						<li><a href="https://childrenjob.hscity.go.kr/index.do
+						" target="_blank" title="새창열림">화성시어린이문화센터</a></li>
+						<!-- <li><a href="http://hssad.or.kr/" target="_blank" title="새창열림">화성시장애인체육회</a></li> -->
+					</ul>
+				</li>
+				<li><a href="#n">관계기관<i></i></a>
+					<ul>
+						<li><a href="https://gg.go.kr" target="_blank">경기도</a></li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+    </div>
+	<script>
+		$(function(){
+			$('.foot-tp-lk > li > a').click(function(){
+				if ($(this).parents('li').hasClass('on')){
+					$(this).next('ul').slideUp(200);
+					$(this).parents('li').removeClass('on');
+				}else{
+					$('.foot-tp-lk > li > ul').slideUp(200);
+					$('.foot-tp-lk > li').removeClass('on');
+					$(this).next('ul').slideDown(200);
+					$(this).parents('li').addClass('on');
+				}
+			});
+			$('.foot-tp-lk a').focusout(function(){
+				setTimeout(function(){
+					if($('.foot-tp-lk a:focus').length < 1){
+						$('.foot-tp-lk > li > ul').slideUp(200);
+						$(".foot-tp-lk > li").removeClass('on');
+					}
+				},100);
+			});
+		});
+	</script>
+
+
+    <div class="footer_body">
+        <div class="footer_inner">
+            <div class="footer_logo">
+                <img src="/resources/health/img/layout/footer_logo.png" alt="화성시 보건소">
+            </div><!-- footer_logo end -->
+            <div class="footer_addr">
+                <ul class="footer_link">
+					<li><a href="/agree/member_agree.jsp" class="emp1">개인정보처리방침</a></li>
+                    <li><a href="#;" onclick="mail();" >이메일무단수집거부</a></li>
+                    
+                </ul>
+                <div class="addr">
+                    <address>만세구 보건소 우)18596 경기도 화성시 만세구 향남읍 3.1만세로 1055</address>
+                    <address>효행구 보건소 우)18301 경기도 화성시 효행구 봉담읍 동화새터길 109</address>
+                    <address>병점구 보건소 우)18412 경기도 화성시 병점구 떡전골로 72-3</address>
+					<address>동탄구 보건소 우)18640 경기도 화성시 동탄구 노작로 226-9</address>
+                    <cite>COPYRIGHT (C) 화성시보건소 ALL RIGHTS RESERVED</cite>
+                </div>
+            </div><!-- footer_addr end -->
+            <div class="footer_call">
+                <p>민원안내콜센터</p>
+                <p class="emp1">1577-4200(유료)</p>
+                <p>031-370-3900(유료)</p>
+            </div>
+        </div><!-- footer_inner end -->
+    </div><!-- footer_body end -->
+
+</div><!--footer END-->
+
+
+<script type="text/javascript" src="/resources/dongbu/js/wcslog.js"></script>
+<script type="text/javascript">
+if(!wcs_add) var wcs_add = {};
+wcs_add["wa"] = "b789bb45987198";
+wcs_do();
+</script>
+
+<form name="topSearchForm" id="topSearchForm" action="/health/search.do" method="POST">
+    <input type="hidden" name="sort" value="DATE">   
+    <input type="hidden" name="domn_code" value="2"/>
+    <input type="hidden" name="query" value="">
+    <input type="hidden" name="collection" value="">
+</form>
+</body>
+</html>
+

@@ -3,20 +3,26 @@ const state = {
   mapPoints: {},
   mapPointsReady: false,
   mapPointsError: false,
+  mapSelectionToken: 0,
   suggestionTimer: null,
   searchController: null,
-  suggestionController: null
+  suggestionController: null,
+  detailTrigger: null
 };
 
 const el = (id) => document.getElementById(id);
 const queryInput = el('query');
 const statusEl = el('status');
 const resultsEl = el('results');
+const resultsHeadingEl = el('results-heading');
 const suggestionsEl = el('suggestions');
 const detailEl = el('detail');
 const markerEl = el('map-marker');
 const mapLabelEl = el('map-label');
+const routeEl = el('map-route');
+const routeLineEl = el('map-route-line');
 const floorImageEl = el('floor-image');
+const detailDialogEl = el('detail-dialog');
 
 async function getJson(url, options) {
   const response = await fetch(url, options);
@@ -36,9 +42,45 @@ function createText(tag, className, text) {
   return node;
 }
 
-function resetMap() {
+function hideMapLocation() {
   markerEl.classList.remove('show');
+  markerEl.classList.remove('arrived');
   mapLabelEl.classList.remove('show');
+  routeEl.classList.remove('show');
+}
+
+function isValidMapPoint(point) {
+  return Number.isFinite(Number(point?.x)) && Number.isFinite(Number(point?.y))
+    && Number(point.x) >= 0 && Number(point.x) <= 100
+    && Number(point.y) >= 0 && Number(point.y) <= 100;
+}
+
+function createMapRoutePath(startPoint, point) {
+  const startX = Number(startPoint.x);
+  const startY = Number(startPoint.y);
+  const endX = Number(point.x);
+  const endY = Number(point.y);
+  const distance = Math.hypot(endX - startX, endY - startY);
+  const bend = Math.min(12, Math.max(5, distance * 0.28));
+  const normalX = distance ? -(endY - startY) / distance : 0;
+  const normalY = distance ? (endX - startX) / distance : 0;
+  const controlX = Math.max(4, Math.min(96, (startX + endX) / 2 + normalX * bend));
+  const controlY = Math.max(4, Math.min(96, (startY + endY) / 2 + normalY * bend));
+
+  return `M ${startX} ${startY} Q ${controlX.toFixed(2)} ${controlY.toFixed(2)} ${endX} ${endY}`;
+}
+
+function showMapRoute(startPoint, point, selectionToken) {
+  routeEl.classList.remove('show');
+  void routeEl.offsetWidth;
+  if (selectionToken !== state.mapSelectionToken) return;
+  routeLineEl.setAttribute('d', createMapRoutePath(startPoint, point));
+  routeEl.classList.add('show');
+}
+
+function resetMap() {
+  state.mapSelectionToken += 1;
+  hideMapLocation();
   floorImageEl.removeAttribute('src');
   floorImageEl.alt = '층별 배치도';
   el('floor-label').textContent = '층을 선택하십시오';
@@ -49,8 +91,9 @@ function resetMap() {
   });
 }
 
-function resetSearchView(message = '검색 결과가 이곳에 표시됩니다.') {
+function resetSearchView(message = '검색 결과가 이곳에 표시됩니다.', preserveHeading = false) {
   state.selectedTask = null;
+  if (!preserveHeading) resultsHeadingEl.textContent = '민원 검색 결과';
   clearChildren(resultsEl);
   resultsEl.appendChild(createText('p', 'empty', message));
   detailEl.className = 'empty';
@@ -64,23 +107,97 @@ function setActiveFloor(floor, preserveMarker = false) {
     button.setAttribute('aria-pressed', button.dataset.floor === floor ? 'true' : 'false');
   });
   const floorNumber = String(floor || '').replace('층', '');
-  floorImageEl.src = floorNumber ? `/images/floor-${floorNumber}.jpg` : '';
+  const floorImagePath = floorNumber ? `/images/floor-${floorNumber}.jpg` : '';
+  if (floorImagePath) {
+    if (floorImageEl.getAttribute('src') !== floorImagePath) floorImageEl.src = floorImagePath;
+  } else {
+    floorImageEl.removeAttribute('src');
+  }
   floorImageEl.alt = floor ? `${floor} 배치도` : '층별 배치도';
   el('floor-label').textContent = floor || '층을 선택하십시오';
   if (!preserveMarker) {
-    markerEl.classList.remove('show');
-    mapLabelEl.classList.remove('show');
+    hideMapLocation();
     el('route-text').textContent = floor
       ? `${floor} 배치도를 수동으로 보고 있습니다. 검색 결과를 선택하면 위치가 표시됩니다.`
       : '검색 결과를 선택하면 위치가 표시됩니다.';
   }
 }
 
+function startRunnerJourney(startPoint, point, task, selectionToken) {
+  const finishJourney = () => {
+    if (selectionToken !== state.mapSelectionToken) return;
+    mapLabelEl.classList.add('show');
+    markerEl.classList.add('arrived');
+  };
+  const setMarkerPosition = (position) => {
+    markerEl.style.left = `${position.x}%`;
+    markerEl.style.top = `${position.y}%`;
+  };
+
+  mapLabelEl.style.left = `${point.x}%`;
+  mapLabelEl.style.top = `${point.y}%`;
+  mapLabelEl.textContent = `${task.floor} ${task.place}`;
+  mapLabelEl.classList.remove('show');
+  el('route-text').textContent = task.route || `${task.floor} ${task.place}로 안내합니다.`;
+
+  if (!isValidMapPoint(startPoint)) {
+    routeEl.classList.remove('show');
+    setMarkerPosition(point);
+    markerEl.classList.add('show');
+    finishJourney();
+    return;
+  }
+
+  const samePosition = Number(startPoint.x) === Number(point.x) && Number(startPoint.y) === Number(point.y);
+  if (samePosition) routeEl.classList.remove('show');
+  else showMapRoute(startPoint, point, selectionToken);
+  markerEl.classList.remove('arrived');
+  markerEl.classList.add('is-resetting');
+  setMarkerPosition(startPoint);
+  markerEl.classList.add('show');
+  void markerEl.offsetWidth;
+  markerEl.classList.remove('is-resetting');
+
+  const reducedMotion = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  if (reducedMotion || samePosition) {
+    setMarkerPosition(point);
+    finishJourney();
+    return;
+  }
+
+  let journeyFinished = false;
+  let fallbackTimer;
+  const completeJourney = () => {
+    if (journeyFinished) return;
+    journeyFinished = true;
+    if (fallbackTimer) globalThis.clearTimeout(fallbackTimer);
+    markerEl.removeEventListener('transitionend', onTransitionEnd);
+    finishJourney();
+  };
+  const onTransitionEnd = (event) => {
+    if (event.target === markerEl && event.propertyName === 'top') completeJourney();
+  };
+  markerEl.addEventListener('transitionend', onTransitionEnd);
+  fallbackTimer = globalThis.setTimeout(completeJourney, 320);
+  const nextFrame = globalThis.requestAnimationFrame || ((callback) => globalThis.setTimeout(callback, 0));
+  nextFrame(() => {
+    if (selectionToken !== state.mapSelectionToken) return;
+    setMarkerPosition(point);
+  });
+}
+
 function showMap(task) {
+  const selectionToken = ++state.mapSelectionToken;
+  if (!task?.floor || !task?.place) {
+    hideMapLocation();
+    setActiveFloor(task?.floor || '', true);
+    el('route-text').textContent = '선택한 업무의 위치 정보가 없습니다.';
+    return;
+  }
+
+  hideMapLocation();
   setActiveFloor(task.floor, true);
   if (!state.mapPointsReady) {
-    markerEl.classList.remove('show');
-    mapLabelEl.classList.remove('show');
     el('route-text').textContent = state.mapPointsError
       ? '지도 좌표를 불러오지 못했습니다. 새로고침 후 다시 시도하십시오.'
       : '지도 좌표를 불러오는 중입니다.';
@@ -88,22 +205,34 @@ function showMap(task) {
   }
   const points = state.mapPoints[task.floor] || {};
   const point = points[task.place] || Object.entries(points).find(([name]) =>
-    name !== 'start' && (String(task.place).includes(name) || name.includes(String(task.place)))
+    name !== 'start' && name !== '정문'
+      && (String(task.place).includes(name) || name.includes(String(task.place)))
   )?.[1];
-  if (!point) {
-    markerEl.classList.remove('show');
-    mapLabelEl.classList.remove('show');
+  if (!isValidMapPoint(point)) {
+    hideMapLocation();
     el('route-text').textContent = `${task.floor} ${task.place}: 지도 좌표 확인이 필요합니다.`;
     return;
   }
-  markerEl.style.left = `${point.x}%`;
-  markerEl.style.top = `${point.y}%`;
-  mapLabelEl.style.left = `${point.x}%`;
-  mapLabelEl.style.top = `${point.y}%`;
-  mapLabelEl.textContent = `${task.floor} ${task.place}`;
-  markerEl.classList.add('show');
-  mapLabelEl.classList.add('show');
-  el('route-text').textContent = task.route || `${task.floor} ${task.place}로 안내합니다.`;
+  const startPoint = isValidMapPoint(points.정문)
+    ? points.정문
+    : isValidMapPoint(points.start) ? points.start : null;
+
+  const revealPoint = () => {
+    if (selectionToken !== state.mapSelectionToken) return;
+    startRunnerJourney(startPoint, point, task, selectionToken);
+  };
+
+  if (floorImageEl.complete && floorImageEl.naturalWidth > 0) {
+    revealPoint();
+    return;
+  }
+
+  floorImageEl.addEventListener('load', revealPoint, {once: true});
+  floorImageEl.addEventListener('error', () => {
+    if (selectionToken !== state.mapSelectionToken) return;
+    hideMapLocation();
+    el('route-text').textContent = `${task.floor} 배치도를 불러오지 못했습니다.`;
+  }, {once: true});
 }
 
 function addDetailRow(container, label, value, className = '') {
@@ -164,7 +293,7 @@ function showDetail(task) {
 function renderResults(items) {
   clearChildren(resultsEl);
   if (!items.length) {
-    resetSearchView('일치하는 결과가 없습니다. 핵심어를 바꾸어 다시 검색하십시오.');
+    resetSearchView('일치하는 결과가 없습니다. 핵심어를 바꾸어 다시 검색하십시오.', true);
     return;
   }
   items.forEach((task, index) => {
@@ -172,8 +301,35 @@ function renderResults(items) {
     button.type = 'button';
     button.dataset.taskId = task.id;
     button.setAttribute('aria-pressed', 'false');
-    button.appendChild(createText('span', 'result-name', `${index + 1}. ${task.name}`));
-    button.appendChild(createText('span', 'result-meta', `${task.department || '담당부서 확인 필요'} · ${task.floor || ''} ${task.place || ''}`));
+    button.setAttribute('aria-haspopup', 'dialog');
+    button.setAttribute('aria-controls', 'detail-dialog');
+
+    button.appendChild(createText('span', 'result-index', String(index + 1).padStart(2, '0')));
+
+    const main = createText('span', 'result-main', '');
+    main.appendChild(createText(
+      'span',
+      'result-department',
+      [task.department || '담당부서 확인 필요', task.team].filter(Boolean).join(' · ')
+    ));
+    main.appendChild(createText('span', 'result-name', task.name));
+
+    const facts = createText('span', 'result-facts', '');
+    const addFact = (className, value) => {
+      if (value) facts.appendChild(createText('span', `result-fact ${className}`, value));
+    };
+    addFact('fact-floor', task.floor);
+    addFact('fact-place', task.place);
+    addFact('fact-route', task.route);
+    addFact('fact-hours', '방문 전 업무시간 확인');
+    main.appendChild(facts);
+    button.appendChild(main);
+
+    const side = createText('span', 'result-side', '');
+    side.appendChild(createText('span', 'relevance-badge', index === 0 ? '높은 관련도' : '관련 안내'));
+    side.appendChild(createText('span', 'result-action', '위치와 상세정보'));
+    button.appendChild(side);
+
     button.addEventListener('click', () => {
       document.querySelectorAll('.result-card').forEach((card) => {
         card.classList.remove('active');
@@ -182,12 +338,11 @@ function renderResults(items) {
       button.classList.add('active');
       button.setAttribute('aria-pressed', 'true');
       showDetail(task);
+      state.detailTrigger = button;
+      if (!detailDialogEl.open) detailDialogEl.showModal();
     });
     resultsEl.appendChild(button);
   });
-  resultsEl.firstElementChild.classList.add('active');
-  resultsEl.firstElementChild.setAttribute('aria-pressed', 'true');
-  showDetail(items[0]);
 }
 
 async function runSearch(value = queryInput.value) {
@@ -212,9 +367,10 @@ async function runSearch(value = queryInput.value) {
       ? ' · AI 보조 검색어를 사용했습니다.'
       : '';
     const shown = data.displayed_count < data.total_count
-      ? `총 ${data.total_count}건 중 상위 ${data.displayed_count}건`
-      : `${data.total_count}건`;
-    statusEl.textContent = `“${query}” 관련 결과 ${shown}${aiNotice}`;
+      ? `관련 업무 ${data.total_count}건 · 상위 ${data.displayed_count}건 표시`
+      : `관련 업무 ${data.total_count}건`;
+    resultsHeadingEl.textContent = `“${query}” 검색 결과`;
+    statusEl.textContent = `${shown}${aiNotice}`;
     renderResults(data.items);
   } catch (error) {
     if (error.name === 'AbortError') return;
@@ -293,8 +449,16 @@ el('clear-button').addEventListener('click', () => {
   queryInput.value = '';
   clearChildren(suggestionsEl);
   resetSearchView();
-  statusEl.textContent = '검색어를 입력하십시오.';
+  statusEl.textContent = '검색어를 입력해 주세요.';
   queryInput.focus();
+});
+document.querySelectorAll('.quick-suggestion').forEach((button) => {
+  button.addEventListener('click', () => {
+    const query = button.dataset.query || button.textContent;
+    queryInput.value = query;
+    clearChildren(suggestionsEl);
+    runSearch(query);
+  });
 });
 queryInput.addEventListener('keydown', (event) => { if (event.key === 'Enter') runSearch(); });
 queryInput.addEventListener('input', () => {
@@ -303,10 +467,38 @@ queryInput.addEventListener('input', () => {
   state.suggestionTimer = setTimeout(loadSuggestions, 300);
 });
 document.querySelectorAll('.floor-tabs button').forEach((button) =>
-  button.addEventListener('click', () => setActiveFloor(button.dataset.floor, false))
+  button.addEventListener('click', () => {
+    if (state.selectedTask?.floor === button.dataset.floor) {
+      showMap(state.selectedTask);
+      return;
+    }
+    state.mapSelectionToken += 1;
+    setActiveFloor(button.dataset.floor, false);
+  })
 );
 el('sms-form').addEventListener('submit', submitSms);
 el('cancel-sms').addEventListener('click', () => el('sms-dialog').close());
+el('close-detail').addEventListener('click', () => detailDialogEl.close());
+detailDialogEl.addEventListener('close', () => {
+  if (state.detailTrigger?.isConnected) state.detailTrigger.focus();
+  state.detailTrigger = null;
+});
+
+const heroSubtitleViewport = document.querySelector('.hero-subtitle-viewport');
+if (heroSubtitleViewport) {
+  const toggleHeroSubtitle = () => {
+    const paused = !heroSubtitleViewport.classList.contains('is-paused');
+    heroSubtitleViewport.classList.toggle('is-paused', paused);
+    heroSubtitleViewport.setAttribute('aria-pressed', paused ? 'true' : 'false');
+    if (!paused) heroSubtitleViewport.blur();
+  };
+  heroSubtitleViewport.addEventListener('click', toggleHeroSubtitle);
+  heroSubtitleViewport.addEventListener('keydown', (event) => {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    event.preventDefault();
+    toggleHeroSubtitle();
+  });
+}
 
 getJson('/api/map-points').then((data) => {
   state.mapPoints = data;

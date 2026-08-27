@@ -3,67 +3,144 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>동탄보건소 민원안내 검색</title>
+  <title>동탄구보건소 보건민원 정보 검색</title>
   <link rel="stylesheet" href="/css/style.css">
   <script src="/js/app.js" defer></script>
 </head>
 <body>
-  <header class="site-header">
-    <div class="header-inner">
-      <p class="eyebrow">DONGTAN PUBLIC HEALTH CENTER</p>
-      <h1>보건민원 정보 검색</h1>
-      <p>민원 내용을 입력하면 담당 업무와 위치를 안내합니다.</p>
-    </div>
-  </header>
-
-  <main>
-    <section class="search-panel" aria-labelledby="search-heading">
-      <h2 id="search-heading" class="sr-only">민원 검색</h2>
-      <label for="query">어떤 업무를 찾으십니까?</label>
-      <div class="search-row">
-        <input id="query" type="search" maxlength="80" autocomplete="off"
-               placeholder="예: 연명치료, 기저귀 지원, 예방접종 수납"
-               aria-describedby="search-help" aria-controls="suggestions">
-        <button id="search-button" type="button">검색</button>
-        <button id="clear-button" class="secondary" type="button">지우기</button>
+  <div class="hero-stage">
+    <header class="site-header">
+      <div class="topbar">
+        <div class="topbar-brand-row">
+          <a class="city-bi-link" href="https://www.hscity.go.kr/"
+             aria-label="화성특례시 홈페이지">
+            <img class="city-bi" src="/images/hwaseong-special-city-bi.png" alt="화성특례시">
+          </a>
+          <a class="health-center-link" href="https://www.hscity.go.kr/health/index.do">동탄구보건소</a>
+        </div>
       </div>
-      <p id="search-help" class="help">두 글자 이상의 핵심어를 입력하십시오.</p>
-      <div id="suggestions" class="suggestions" aria-label="추천 검색어" aria-live="polite"></div>
-      <p id="status" role="status" aria-live="polite">검색어를 입력하십시오.</p>
-    </section>
 
-    <div class="workspace">
-      <section class="results-panel" aria-labelledby="results-heading">
-        <h2 id="results-heading">검색 결과</h2>
-        <div id="results" class="results">
-          <p class="empty">검색 결과가 이곳에 표시됩니다.</p>
+      <div class="hero-intro">
+        <div class="service-signature">
+          <span>보건민원 길찾기</span>
+        </div>
+        <h1 class="hero-title">
+          <span class="hero-title-line hero-title-line--top">찾고 싶은 보건민원을</span>
+          <span class="hero-title-line hero-title-line--bottom">말하듯 검색하세요</span>
+        </h1>
+        <div class="hero-subtitle-viewport" tabindex="0" role="button" aria-pressed="false"
+             aria-label="필요한 업무와 담당 부서, 찾아가는 위치까지 한 화면에서 안내해 드립니다.">
+          <p class="hero-subtitle-moving">필요한 업무와 담당 부서, 찾아가는 위치까지 한 화면에서 안내해 드립니다.</p>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="search-panel" aria-labelledby="search-heading">
+        <h2 id="search-heading" class="sr-only">민원 검색</h2>
+        <label for="query" class="sr-only">어떤 업무를 찾으십니까?</label>
+        <div class="search-row">
+          <div class="query-shell">
+            <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <circle cx="10.8" cy="10.8" r="6.6"/>
+              <path d="m16 16 4.2 4.2"/>
+            </svg>
+            <input id="query" type="search" maxlength="80" autocomplete="off"
+                   placeholder="찾으시는 민원을 말하듯 입력해 보세요"
+                   aria-describedby="search-help" aria-controls="suggestions">
+            <button id="clear-button" class="clear-button" type="button" aria-label="검색어 지우기">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <button id="search-button" type="button">
+            <span>검색</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M5 12h14M14 7l5 5-5 5"/>
+            </svg>
+          </button>
+        </div>
+        <p id="search-help" class="sr-only">두 글자 이상의 핵심어를 입력하십시오.</p>
+        <div class="recommendation-row">
+          <span class="recommendation-label">추천</span>
+          <div class="quick-suggestions" aria-label="추천 검색어">
+            <button type="button" class="quick-suggestion" data-query="연명치료">연명치료</button>
+            <button type="button" class="quick-suggestion" data-query="예방접종">예방접종</button>
+            <button type="button" class="quick-suggestion" data-query="산후도우미">산후도우미</button>
+            <button type="button" class="quick-suggestion" data-query="건강진단서">건강진단서</button>
+          </div>
+          <div id="suggestions" class="suggestions" aria-label="입력어 추천" aria-live="polite"></div>
         </div>
       </section>
 
-      <section class="map-panel" aria-labelledby="map-heading">
-        <div class="section-head">
-          <h2 id="map-heading">위치 안내</h2>
-          <span id="floor-label">층을 선택하십시오</span>
-        </div>
-        <div class="floor-tabs" aria-label="층별 배치도">
-          <button type="button" data-floor="1층" aria-pressed="false">1층</button>
-          <button type="button" data-floor="2층" aria-pressed="false">2층</button>
-          <button type="button" data-floor="3층" aria-pressed="false">3층</button>
-        </div>
-        <div class="map-stage">
-          <img id="floor-image" alt="선택한 층의 배치도">
-          <div id="map-marker" aria-hidden="true"></div>
-          <div id="map-label" aria-hidden="true"></div>
-        </div>
-        <p id="route-text" class="help">검색 결과를 선택하면 위치가 표시됩니다.</p>
-      </section>
+      <div class="workspace">
+        <section class="results-panel" aria-labelledby="results-heading">
+          <div class="results-head">
+            <div>
+              <p class="results-kicker">가장 관련 있는 안내</p>
+              <h2 id="results-heading">민원 검색 결과</h2>
+            </div>
+            <p id="status" class="sr-only" role="status" aria-live="polite">검색어를 입력해 주세요.</p>
+          </div>
+          <div id="results" class="results">
+            <p class="empty">검색 결과가 이곳에 표시됩니다.</p>
+          </div>
+        </section>
+      </div>
+    </main>
 
-      <aside class="detail-panel" aria-labelledby="detail-heading">
-        <h2 id="detail-heading">상세 안내</h2>
-        <div id="detail" class="empty">검색 결과를 선택하십시오.</div>
-      </aside>
+    <footer class="site-footer">
+      <p class="footer-tagline">오늘의 하늘처럼, 민원 안내도 맑고 편안하게</p>
+    </footer>
+  </div>
+
+  <dialog id="detail-dialog" class="detail-dialog" aria-labelledby="detail-dialog-title">
+    <div class="detail-dialog-shell">
+      <div class="detail-dialog-head">
+        <div>
+          <p>선택한 민원 안내</p>
+          <h2 id="detail-dialog-title">위치와 상세정보</h2>
+        </div>
+        <button id="close-detail" class="dialog-close" type="button" aria-label="상세 안내 닫기">
+          <span>닫기</span><span aria-hidden="true">×</span>
+        </button>
+      </div>
+
+      <div class="guidance-grid">
+        <section class="map-panel" aria-labelledby="map-heading">
+          <div class="section-head">
+            <h2 id="map-heading">위치 안내</h2>
+            <span id="floor-label">층을 선택하십시오</span>
+          </div>
+          <div class="floor-tabs" aria-label="층별 배치도">
+            <button type="button" data-floor="1층" aria-pressed="false">1층</button>
+            <button type="button" data-floor="2층" aria-pressed="false">2층</button>
+            <button type="button" data-floor="3층" aria-pressed="false">3층</button>
+          </div>
+          <div class="map-stage">
+            <img id="floor-image" alt="선택한 층의 배치도">
+            <svg id="map-route" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+              <path id="map-route-line" pathLength="1"></path>
+            </svg>
+            <div id="map-marker" aria-hidden="true"></div>
+            <div id="map-label" aria-hidden="true"></div>
+          </div>
+          <p id="route-text" class="help">검색 결과를 선택하면 위치가 표시됩니다.</p>
+        </section>
+
+        <aside class="detail-panel" aria-labelledby="detail-heading">
+          <h2 id="detail-heading">상세 안내</h2>
+          <div id="detail" class="empty">검색 결과를 선택하십시오.</div>
+        </aside>
+      </div>
+
+      <div class="guidance-note">
+        <p>운영 전 모든 담당 업무·위치·공식 연락처를 담당 부서에서 검증하십시오.</p>
+        <a href="https://www.hscity.go.kr/health/index.do"
+           target="_blank"
+           rel="noopener noreferrer">동탄구보건소 공식 홈페이지</a>
+      </div>
     </div>
-  </main>
+  </dialog>
 
   <dialog id="sms-dialog" aria-labelledby="sms-title">
     <form id="sms-form" method="dialog">
@@ -85,6 +162,5 @@
     </form>
   </dialog>
 
-  <footer>운영 전 모든 담당 업무·위치·공식 연락처를 담당 부서에서 검증하십시오.</footer>
 </body>
 </html>

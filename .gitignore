@@ -10,3 +10,4 @@ logs/
 reports/private/
 .pytest_cache/
 .DS_Store
+.tools/
