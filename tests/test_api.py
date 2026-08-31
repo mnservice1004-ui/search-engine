@@ -1,4 +1,5 @@
 import os
+import shutil
 from hashlib import sha256
 from pathlib import Path
 
@@ -6,21 +7,34 @@ import pytest
 
 
 os.environ["DATA_BACKEND"] = "sqlite"
-os.environ["SQLITE_PATH"] = "data/health_search.db"
+os.environ["SQLITE_PATH"] = "__pytest_requires_synthetic_contact_fixture__.db"
 os.environ["ENABLE_LLM"] = "false"
 os.environ["SMS_MODE"] = "mock"
+os.environ["PYTHON_DOTENV_DISABLED"] = "1"
 
 from app import app  # noqa: E402
 from sms_service import send_contact_sms  # noqa: E402
 
 
+@pytest.fixture(scope="module")
+def temporary_api_db(tmp_path_factory, synthetic_contact_dataset):
+    destination_path = tmp_path_factory.mktemp("api-database") / "health_search.db"
+    shutil.copy2(synthetic_contact_dataset.populated_db, destination_path)
+    return destination_path
+
+
 @pytest.fixture(autouse=True)
-def disable_event_logging(monkeypatch):
+def configure_test_database_and_disable_logging(monkeypatch, temporary_api_db):
+    monkeypatch.setenv("DATA_BACKEND", "sqlite")
+    monkeypatch.setenv("SQLITE_PATH", str(temporary_api_db))
+    monkeypatch.setenv("ENABLE_LLM", "false")
+    monkeypatch.setenv("SMS_MODE", "mock")
     monkeypatch.setattr("app.log_event", lambda *args, **kwargs: None)
+    monkeypatch.setattr("app.expand_query", lambda _query: [])
 
 
 def client():
-    app.config.update(TESTING=True)
+    app.config.update(TESTING=True, RATELIMIT_ENABLED=False)
     return app.test_client()
 
 
@@ -102,6 +116,24 @@ def test_frontend_script_opens_details_only_after_result_selection():
     assert "aria-controls" in script
 
 
+def test_frontend_contact_renderer_uses_safe_text_and_digit_only_tel_links():
+    script = Path("public/js/app.js").read_text(encoding="utf-8")
+
+    assert "function appendPublicContacts(container, contacts)" in script
+    assert "contact.display_phone || contact.phone" in script
+    assert "replace(/\\D/g, '')" in script
+    assert "link.href = `tel:${telDigits}`" in script
+    assert "contact.is_primary" in script
+    assert "contact.purpose" in script
+    assert "contact.condition" in script
+    assert "innerHTML" not in script
+    assert "task.primary_contact?.phone" in script
+    assert "const verifiedContact = task.primary_contact || contacts.find((contact) => contact.is_primary);" in script
+    assert "verifiedContact?.verified_date" in script
+    assert "task.contact_verified_at" not in script
+    assert "showMap(task);" in script
+
+
 @pytest.mark.parametrize(
     ("path", "content_type"),
     (
@@ -127,6 +159,83 @@ def test_search_post_returns_expected_first_item():
     assert response.status_code == 200
     assert body["total_count"] >= 1
     assert body["items"][0]["id"] == "R003"
+    assert "primary_contact" in body["items"][0]
+    assert "contacts" in body["items"][0]
+
+
+def test_search_api_returns_only_public_contact_fields_for_core_tasks():
+    response = client().post("/api/search", json={"query": "결핵"})
+    items = {item["id"]: item for item in response.get_json()["items"]}
+    public_fields = {
+        "phone",
+        "display_phone",
+        "purpose",
+        "role",
+        "condition",
+        "status",
+        "verified_date",
+        "is_primary",
+    }
+
+    assert response.status_code == 200
+    for task_id in ("A011", "A012", "F101"):
+        assert task_id in items
+        assert all(set(contact) == public_fields for contact in items[task_id]["contacts"])
+        assert all(contact["phone"] != "031-5189-4354" for contact in items[task_id]["contacts"])
+        assert items[task_id]["primary_contact"] in items[task_id]["contacts"]
+
+    assert len(items["A011"]["contacts"]) == 1
+    assert items["A011"]["primary_contact"]["phone"] == "031-5189-4364"
+    assert len(items["F101"]["contacts"]) == 1
+    assert items["F101"]["primary_contact"]["phone"] == "031-5189-4364"
+    assert len(items["A012"]["contacts"]) == 5
+    assert sum(contact["is_primary"] for contact in items["A012"]["contacts"]) == 1
+    assert items["A012"]["contacts"] == sorted(
+        items["A012"]["contacts"],
+        key=lambda contact: (
+            0 if contact["is_primary"] else 1,
+            contact["purpose"].casefold(),
+            contact["phone"],
+        ),
+    )
+    assert {
+        (contact["phone"], contact["purpose"], contact["is_primary"])
+        for contact in items["A012"]["contacts"]
+    } == {
+        ("031-5189-4364", "대표전화", True),
+        ("031-5189-4344", "흉부 X선", False),
+        ("031-5189-4369", "검체검사", False),
+        ("031-5189-4368", "진단검사실", False),
+        ("031-5189-4377", "민원접수", False),
+    }
+    assert items["A012"]["primary_contact"] == items["A012"]["contacts"][0]
+
+
+def test_held_task_has_no_public_contacts():
+    response = client().post("/api/search", json={"query": "금연아파트 지정"})
+    item = next(item for item in response.get_json()["items"] if item["id"] == "H004")
+
+    assert response.status_code == 200
+    assert item["primary_contact"] is None
+    assert item["contacts"] == []
+
+
+def test_search_uses_one_bulk_contact_lookup(monkeypatch):
+    from app import get_contacts_by_task_ids as original_loader
+
+    calls = []
+
+    def counted_loader(task_ids):
+        task_ids = list(task_ids)
+        calls.append(task_ids)
+        return original_loader(task_ids)
+
+    monkeypatch.setattr("app.get_contacts_by_task_ids", counted_loader)
+    response = client().post("/api/search", json={"query": "결핵"})
+
+    assert response.status_code == 200
+    assert len(calls) == 1
+    assert calls[0] == [item["id"] for item in response.get_json()["items"]]
 
 
 def test_search_rejects_short_query():
@@ -148,10 +257,10 @@ def test_sms_requires_consent():
     assert response.status_code == 400
 
 
-def test_sms_blocks_unverified_contact():
+def test_sms_blocks_task_without_primary_contact():
     response = client().post(
         "/api/sms",
-        json={"task_id": "R003", "recipient": "01000000000", "consent": True},
+        json={"task_id": "H004", "recipient": "01000000000", "consent": True},
     )
     assert response.status_code == 400
     assert "공식 담당 연락처" in response.get_json()["error"]
@@ -165,8 +274,12 @@ def test_sms_mock_preview_uses_dongtan_gu_branding(monkeypatch):
         "team": "감염병관리팀",
         "contact_name": "홍길동",
         "contact_role": "주무관",
-        "phone": "031-000-0000",
-        "contact_verified_at": "2026-08-27",
+        "phone": "031-999-9999",
+        "primary_contact": {
+            "phone": "031-000-0000",
+            "display_phone": "031-000-0000",
+            "verified_date": "2026-08-28",
+        },
     }
 
     result = send_contact_sms(task, "010-1234-5678")
@@ -174,28 +287,32 @@ def test_sms_mock_preview_uses_dongtan_gu_branding(monkeypatch):
     assert result["status"] == "mocked"
     assert result["provider"] == "mock"
     assert result["preview"].startswith("[동탄구보건소 민원안내]\n")
+    assert "전화: 031-000-0000" in result["preview"]
+    assert "031-999-9999" not in result["preview"]
     assert "[동탄보건소 민원안내]" not in result["preview"]
 
 
-def test_sms_mock_endpoint_accepts_verified_task(monkeypatch):
-    task = {
-        "id": "T-MOCK",
-        "name": "예방접종 문의",
-        "department": "보건행정과",
-        "team": "감염병관리팀",
-        "contact_name": "홍길동",
-        "contact_role": "주무관",
-        "phone": "031-000-0000",
-        "contact_verified_at": "2026-08-27",
-    }
-    monkeypatch.setattr("app.get_task", lambda task_id: task if task_id == task["id"] else None)
+def test_sms_mock_endpoint_uses_primary_contact(monkeypatch):
     monkeypatch.setenv("SMS_MODE", "mock")
 
     response = client().post(
         "/api/sms",
-        json={"task_id": task["id"], "recipient": "01012345678", "consent": True},
+        json={"task_id": "A011", "recipient": "01012345678", "consent": True},
     )
 
     assert response.status_code == 200
     assert response.get_json()["status"] == "mocked"
     assert response.get_json()["preview"].startswith("[동탄구보건소 민원안내]\n")
+    assert "전화: 031-5189-4364" in response.get_json()["preview"]
+
+
+def test_sms_does_not_fall_back_to_legacy_task_phone():
+    task = {
+        "name": "보류 업무",
+        "department": "건강증진과",
+        "phone": "031-999-9999",
+        "primary_contact": None,
+    }
+
+    with pytest.raises(ValueError, match="공식 담당 연락처"):
+        send_contact_sms(task, "01012345678")

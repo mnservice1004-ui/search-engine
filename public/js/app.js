@@ -242,6 +242,26 @@ function addDetailRow(container, label, value, className = '') {
   container.appendChild(row);
 }
 
+function appendPublicContacts(container, contacts) {
+  contacts.forEach((contact, index) => {
+    if (index > 0) container.appendChild(document.createElement('br'));
+    const displayPhone = contact.display_phone || contact.phone || '';
+    const telDigits = String(contact.phone || displayPhone).replace(/\D/g, '');
+    if (telDigits) {
+      const link = createText('a', 'contact-link', displayPhone);
+      link.href = `tel:${telDigits}`;
+      container.appendChild(link);
+    } else {
+      container.appendChild(createText('span', '', displayPhone));
+    }
+    if (contact.is_primary) container.appendChild(createText('span', '', ' · 대표'));
+    if (contact.purpose) container.appendChild(createText('span', '', ` · ${contact.purpose}`));
+    if (contact.condition) {
+      container.appendChild(createText('span', '', ` · 조건: ${contact.condition}`));
+    }
+  });
+}
+
 function showDetail(task) {
   state.selectedTask = task;
   clearChildren(detailEl);
@@ -266,26 +286,30 @@ function showDetail(task) {
 
   const phoneRow = createText('div', 'detail-row', '');
   phoneRow.appendChild(createText('strong', '', '공식 업무전화'));
-  if (task.phone) {
-    const link = createText('a', 'contact-link', task.phone);
-    link.href = `tel:${String(task.phone).replace(/[^0-9+]/g, '')}`;
-    phoneRow.appendChild(link);
+  const contacts = Array.isArray(task.contacts) ? task.contacts : [];
+  const verifiedContact = task.primary_contact || contacts.find((contact) => contact.is_primary);
+  if (contacts.length) {
+    const contactValue = createText('span', '', '');
+    appendPublicContacts(contactValue, contacts);
+    phoneRow.appendChild(contactValue);
   } else {
     phoneRow.appendChild(createText('span', '', '[공식 확인 필요]'));
   }
   detailEl.appendChild(phoneRow);
-  addDetailRow(detailEl, '연락처 최종 확인일', task.contact_verified_at || '[공식 확인 필요]');
+  addDetailRow(detailEl, '연락처 최종 확인일', verifiedContact?.verified_date || '[공식 확인 필요]');
   addDetailRow(detailEl, '자료 출처', task.source || '[공식 확인 필요]');
   if (task.note) addDetailRow(detailEl, '검수 메모', task.note, 'warning-box');
 
   const smsButton = createText('button', 'contact-button', '이 연락처를 문자로 받기');
   smsButton.type = 'button';
-  smsButton.disabled = !task.phone;
-  if (!task.phone) smsButton.title = '공식 업무전화가 등록된 뒤 사용할 수 있습니다.';
+  smsButton.disabled = !task.primary_contact?.phone;
+  if (!task.primary_contact?.phone) {
+    smsButton.title = '대표 공식 업무전화가 등록된 뒤 사용할 수 있습니다.';
+  }
   smsButton.addEventListener('click', openSmsDialog);
   detailEl.appendChild(smsButton);
-  if (!task.phone) {
-    detailEl.appendChild(createText('p', 'help', '공식 업무전화 미등록으로 문자 기능이 비활성화되어 있습니다.'));
+  if (!task.primary_contact?.phone) {
+    detailEl.appendChild(createText('p', 'help', '대표 공식 업무전화 미등록으로 문자 기능이 비활성화되어 있습니다.'));
   }
   showMap(task);
 }

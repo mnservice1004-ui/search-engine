@@ -14,7 +14,10 @@ def normalize_mobile(value):
 def build_message(task):
     department = " / ".join(filter(None, [task.get("department"), task.get("team")]))
     contact = " / ".join(filter(None, [task.get("contact_name"), task.get("contact_role")]))
-    phone = str(task.get("phone") or "").strip()
+    primary_contact = task.get("primary_contact") or {}
+    phone = str(
+        primary_contact.get("display_phone") or primary_contact.get("phone") or ""
+    ).strip()
     if not phone:
         raise ValueError("공식 담당 연락처가 아직 등록되지 않았습니다.")
     return (
@@ -22,7 +25,7 @@ def build_message(task):
         f'담당: {department}\n'
         f'담당자/직위: {contact or "공식 확인 필요"}\n'
         f'전화: {phone}\n'
-        f'확인일: {task.get("contact_verified_at") or "공식 확인 필요"}\n'
+        f'확인일: {primary_contact.get("verified_date") or "공식 확인 필요"}\n'
         "전화번호 연결 여부는 휴대전화 문자 앱에 따라 다를 수 있습니다."
     )
 

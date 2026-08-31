@@ -3,6 +3,15 @@ import sqlite3
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
+SUPPORTED_DATA_BACKEND = "sqlite"
+
+
+class UnsupportedDataBackendError(RuntimeError):
+    """Raised when this SQLite-only release is configured for another backend."""
+
+
+class TaskContactsMigrationRequiredError(RuntimeError):
+    """Raised when the approved task_contacts migration has not been applied."""
 
 
 def _sqlite_path():
@@ -27,7 +36,13 @@ def _supabase():
 
 
 def _backend():
-    return os.getenv("DATA_BACKEND", "sqlite").lower()
+    backend = os.getenv("DATA_BACKEND", SUPPORTED_DATA_BACKEND).strip().lower()
+    if backend != SUPPORTED_DATA_BACKEND:
+        raise UnsupportedDataBackendError(
+            f"DATA_BACKEND={backend!r} is unsupported in this release; "
+            f"use {SUPPORTED_DATA_BACKEND!r}."
+        )
+    return backend
 
 
 def get_all_tasks():
@@ -64,6 +79,78 @@ def get_task(task_id):
         if task.get("id") == task_id:
             return task
     return None
+
+
+def _public_contact(row):
+    return {
+        "phone": row.get("phone"),
+        "display_phone": row.get("display_phone"),
+        "purpose": row.get("label"),
+        "role": row.get("contact_role"),
+        "condition": row.get("condition_text"),
+        "status": row.get("match_status"),
+        "verified_date": row.get("verified_at"),
+        "is_primary": bool(row.get("is_primary")),
+    }
+
+
+def get_contacts_by_task_ids(task_ids):
+    """Return active public contacts grouped by task with one backend query."""
+
+    backend = _backend()
+    ordered_ids = list(dict.fromkeys(str(task_id) for task_id in task_ids if task_id))
+    contacts_by_task = {task_id: [] for task_id in ordered_ids}
+    if not ordered_ids:
+        return contacts_by_task
+
+    selected_columns = (
+        "task_id,phone,display_phone,label,contact_role,condition_text,"
+        "match_status,verified_at,is_primary"
+    )
+    if backend == "supabase":
+        response = (
+            _supabase().table("task_contacts")
+            .select(selected_columns)
+            .in_("task_id", ordered_ids)
+            .eq("active", True)
+            .execute()
+        )
+        contact_rows = response.data or []
+    else:
+        placeholders = ",".join("?" for _ in ordered_ids)
+        with _sqlite_connection() as connection:
+            try:
+                rows = connection.execute(
+                    f"""
+                    SELECT {selected_columns}
+                    FROM task_contacts
+                    WHERE active = 1 AND task_id IN ({placeholders})
+                    ORDER BY task_id, is_primary DESC, label, phone
+                    """,
+                    ordered_ids,
+                ).fetchall()
+            except sqlite3.OperationalError as error:
+                if "no such table: task_contacts" not in str(error).casefold():
+                    raise
+                raise TaskContactsMigrationRequiredError(
+                    "SQLite task_contacts schema is missing; run the approved "
+                    "task_contacts migration before starting this release."
+                ) from error
+        contact_rows = [dict(row) for row in rows]
+
+    contact_rows.sort(
+        key=lambda row: (
+            str(row.get("task_id") or ""),
+            0 if row.get("is_primary") else 1,
+            str(row.get("label") or "").casefold(),
+            str(row.get("phone") or ""),
+        )
+    )
+    for row in contact_rows:
+        task_id = str(row.get("task_id") or "")
+        if task_id in contacts_by_task:
+            contacts_by_task[task_id].append(_public_contact(row))
+    return contacts_by_task
 
 
 def log_event(event_type, task_id=None, result_count=None):

@@ -7,7 +7,7 @@ from flask import Flask, jsonify, request, send_from_directory
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
-from db import get_all_tasks, get_task, log_event
+from db import get_all_tasks, get_contacts_by_task_ids, get_task, log_event
 from llm_helper import expand_query
 from search_engine import search_tasks, suggest_terms
 from sms_service import send_contact_sms
@@ -26,6 +26,21 @@ def best_effort_log(event_type, task_id=None, result_count=None):
     except Exception:
         # 이용 통계 실패가 검색이나 이미 접수된 문자 발송 결과를 뒤집지 않게 한다.
         app.logger.warning("비식별 이벤트 로그 기록 실패: %s", event_type)
+
+
+def attach_public_contacts(tasks):
+    contacts_by_task = get_contacts_by_task_ids(task.get("id") for task in tasks)
+    enriched = []
+    for task in tasks:
+        item = dict(task)
+        contacts = contacts_by_task.get(str(item.get("id") or ""), [])
+        item["primary_contact"] = next(
+            (contact for contact in contacts if contact["is_primary"]),
+            None,
+        )
+        item["contacts"] = contacts
+        enriched.append(item)
+    return enriched
 
 
 @app.after_request
@@ -95,7 +110,7 @@ def search():
                     merged[item["id"]] = item
         all_results = sorted(merged.values(), key=lambda item: (-item["score"], item["name"]))
 
-    items = all_results[:10]
+    items = attach_public_contacts(all_results[:10])
     best_effort_log("search", result_count=len(all_results))
     return jsonify({
         "query": query,
@@ -126,6 +141,7 @@ def send_sms():
     task = get_task(str(payload.get("task_id", "")))
     if task is None:
         return jsonify({"error": "업무를 찾을 수 없습니다."}), 404
+    task = attach_public_contacts([task])[0]
     try:
         result = send_contact_sms(task, payload.get("recipient"))
     except ValueError as exc:
