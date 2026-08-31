@@ -11,3 +11,16 @@ reports/private/
 .pytest_cache/
 .DS_Store
 .tools/
+
+# Local-only official contact verification sources
+data/source/동탄구보건소_검색업무별_공식연락처_확정대조_2026-08-28.xlsx
+/동탄구보건소_검색업무별_공식연락처_매칭검토_2026-08-27.xlsx
+
+# Superseded local contact-matching runs (keep tracked 20260827_172043)
+/reports/contact_matching/20260827_162717/
+/reports/contact_matching/20260827_162751/
+/reports/contact_matching/20260827_163041/
+/reports/contact_matching/20260827_163353/
+/reports/contact_matching/20260827_164852/
+/reports/contact_matching/20260827_165647/
+/reports/contact_matching/20260827_165922/
