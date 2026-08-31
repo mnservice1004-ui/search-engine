@@ -112,6 +112,7 @@ def _aliases_for(task_id: str, *, add_sixth: bool) -> list[dict[str, Any]]:
         "A011": "결핵",
         "A012": "결핵 검사",
         "F101": "결핵 안내",
+        "R002": "어르신 오늘 건강",
         "R003": "연명치료",
         "H004": "금연아파트 지정",
     }.get(task_id, f"검색어 {task_id}")

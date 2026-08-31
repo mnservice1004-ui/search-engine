@@ -188,6 +188,20 @@ function startRunnerJourney(startPoint, point, task, selectionToken) {
 
 function showMap(task) {
   const selectionToken = ++state.mapSelectionToken;
+  if (task?.show_map === false) {
+    hideMapLocation();
+    routeLineEl.removeAttribute('d');
+    markerEl.style.left = '';
+    markerEl.style.top = '';
+    mapLabelEl.style.left = '';
+    mapLabelEl.style.top = '';
+    mapLabelEl.textContent = '';
+    setActiveFloor('', true);
+    floorImageEl.alt = '';
+    el('floor-label').textContent = '방문 장소 확인';
+    el('route-text').textContent = task.route || '방문 장소는 전화로 확인해 주세요.';
+    return;
+  }
   if (!task?.floor || !task?.place) {
     hideMapLocation();
     setActiveFloor(task?.floor || '', true);
@@ -242,6 +256,10 @@ function addDetailRow(container, label, value, className = '') {
   container.appendChild(row);
 }
 
+function joinPublicText(values) {
+  return [...new Set(values.filter((value) => typeof value === 'string' && value.trim()))].join(' ');
+}
+
 function appendPublicContacts(container, contacts) {
   contacts.forEach((contact, index) => {
     if (index > 0) container.appendChild(document.createElement('br'));
@@ -266,23 +284,32 @@ function showDetail(task) {
   state.selectedTask = task;
   clearChildren(detailEl);
   detailEl.className = 'detail-grid';
-  detailEl.appendChild(createText('h3', '', task.name));
-  addDetailRow(detailEl, '담당', [task.department, task.team].filter(Boolean).join(' / '));
+  detailEl.appendChild(createText('h3', '', task.public_title || task.name));
+  addDetailRow(detailEl, '문의하는 곳', [task.department, task.team].filter(Boolean).join(' / '));
   addDetailRow(
     detailEl,
-    '담당자/직위',
-    [task.contact_name, task.contact_role].filter(Boolean).join(' / ') || '[공식 확인 필요]'
+    '문의 안내',
+    task.public_summary || '전화로 문의해 주세요.'
   );
-  addDetailRow(detailEl, '위치', [task.floor, task.place].filter(Boolean).join(' '));
-  if (task.status && task.status !== '정상') {
-    addDetailRow(detailEl, '운영 상태', task.status, 'warning-box');
-  }
-  if (task.location_condition || task.locationCondition) {
-    addDetailRow(detailEl, '위치 적용 조건', task.location_condition || task.locationCondition, 'warning-box');
-  }
-  addDetailRow(detailEl, '확인 질문', task.question);
-  addDetailRow(detailEl, '주의사항', task.caution || '특이사항 없음');
-  addDetailRow(detailEl, '안내 멘트', task.script, 'script-box');
+  const publicLocation = task.show_map === false
+    ? task.route
+    : [task.floor, task.room || task.place].filter(Boolean).join(' ');
+  addDetailRow(detailEl, '어디로 가나요?', publicLocation || '방문 장소는 전화로 확인해 주세요.');
+  addDetailRow(detailEl, '이런 경우 이용하세요', task.eligibility || task.question || '전화로 확인해 주세요.');
+  addDetailRow(
+    detailEl,
+    '방문 전 확인사항',
+    joinPublicText([task.public_caution, task.caution, task.documents, task.fee, task.operating_hours])
+      || '방문 전에 전화로 확인해 주세요.'
+  );
+  addDetailRow(
+    detailEl,
+    '이렇게 이용하세요',
+    task.primary_action || task.visit_steps
+      ? joinPublicText([task.primary_action, task.visit_steps])
+      : task.script,
+    'script-box'
+  );
 
   const phoneRow = createText('div', 'detail-row', '');
   phoneRow.appendChild(createText('strong', '', '공식 업무전화'));
@@ -293,12 +320,10 @@ function showDetail(task) {
     appendPublicContacts(contactValue, contacts);
     phoneRow.appendChild(contactValue);
   } else {
-    phoneRow.appendChild(createText('span', '', '[공식 확인 필요]'));
+    phoneRow.appendChild(createText('span', '', '전화로 확인해 주세요.'));
   }
   detailEl.appendChild(phoneRow);
-  addDetailRow(detailEl, '연락처 최종 확인일', verifiedContact?.verified_date || '[공식 확인 필요]');
-  addDetailRow(detailEl, '자료 출처', task.source || '[공식 확인 필요]');
-  if (task.note) addDetailRow(detailEl, '검수 메모', task.note, 'warning-box');
+  addDetailRow(detailEl, '최근 공식 확인일', task.verified_date || verifiedContact?.verified_date || '전화로 확인해 주세요.');
 
   const smsButton = createText('button', 'contact-button', '이 연락처를 문자로 받기');
   smsButton.type = 'button';
@@ -334,16 +359,18 @@ function renderResults(items) {
     main.appendChild(createText(
       'span',
       'result-department',
-      [task.department || '담당부서 확인 필요', task.team].filter(Boolean).join(' · ')
+      [task.department || '문의 부서 확인 필요', task.team].filter(Boolean).join(' · ')
     ));
-    main.appendChild(createText('span', 'result-name', task.name));
+    main.appendChild(createText('span', 'result-name', task.public_title || task.name));
 
     const facts = createText('span', 'result-facts', '');
     const addFact = (className, value) => {
       if (value) facts.appendChild(createText('span', `result-fact ${className}`, value));
     };
-    addFact('fact-floor', task.floor);
-    addFact('fact-place', task.place);
+    if (task.show_map !== false) {
+      addFact('fact-floor', task.floor);
+      addFact('fact-place', task.room || task.place);
+    }
     addFact('fact-route', task.route);
     addFact('fact-hours', '방문 전 업무시간 확인');
     main.appendChild(facts);
@@ -390,12 +417,15 @@ async function runSearch(value = queryInput.value) {
     const aiNotice = data.expanded_terms?.length
       ? ' · AI 보조 검색어를 사용했습니다.'
       : '';
-    const shown = data.displayed_count < data.total_count
-      ? `관련 업무 ${data.total_count}건 · 상위 ${data.displayed_count}건 표시`
-      : `관련 업무 ${data.total_count}건`;
+    const items = data.results || data.items || [];
+    const total = data.total ?? data.total_count ?? items.length;
+    const returnedCount = data.returned_count ?? data.displayed_count ?? items.length;
+    const shown = returnedCount < total
+      ? `관련 업무 ${total}건 · 상위 ${returnedCount}건 표시`
+      : `관련 업무 ${total}건`;
     resultsHeadingEl.textContent = `“${query}” 검색 결과`;
     statusEl.textContent = `${shown}${aiNotice}`;
-    renderResults(data.items);
+    renderResults(items);
   } catch (error) {
     if (error.name === 'AbortError') return;
     resetSearchView('검색 중 오류가 발생했습니다. 잠시 후 다시 시도하십시오.');
@@ -434,7 +464,7 @@ async function loadSuggestions() {
 }
 
 function openSmsDialog() {
-  el('sms-task-name').textContent = state.selectedTask?.name || '';
+  el('sms-task-name').textContent = state.selectedTask?.public_title || state.selectedTask?.name || '';
   el('sms-status').textContent = '';
   el('recipient').value = '';
   el('consent').checked = false;
@@ -492,6 +522,10 @@ queryInput.addEventListener('input', () => {
 });
 document.querySelectorAll('.floor-tabs button').forEach((button) =>
   button.addEventListener('click', () => {
+    if (state.selectedTask?.show_map === false) {
+      showMap(state.selectedTask);
+      return;
+    }
     if (state.selectedTask?.floor === button.dataset.floor) {
       showMap(state.selectedTask);
       return;

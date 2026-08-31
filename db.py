@@ -88,7 +88,6 @@ def _public_contact(row):
         "purpose": row.get("label"),
         "role": row.get("contact_role"),
         "condition": row.get("condition_text"),
-        "status": row.get("match_status"),
         "verified_date": row.get("verified_at"),
         "is_primary": bool(row.get("is_primary")),
     }
@@ -105,7 +104,7 @@ def get_contacts_by_task_ids(task_ids):
 
     selected_columns = (
         "task_id,phone,display_phone,label,contact_role,condition_text,"
-        "match_status,verified_at,is_primary"
+        "verified_at,is_primary"
     )
     if backend == "supabase":
         response = (

@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "tasks": [
+    {
+      "task_id": "A011",
+      "public_title": "결핵 상담이나 관리가 필요하신가요?",
+      "public_summary": "결핵 상담과 관리를 안내해 드립니다.",
+      "eligibility": "결핵 치료 중 관리가 필요하거나 결핵환자와 함께 지낸 뒤 상담이 필요한 분",
+      "documents": null,
+      "fee": null,
+      "operating_hours": null,
+      "visit_steps": "대표전화로 먼저 문의한 뒤 1층 결핵실로 가세요.",
+      "public_caution": "검사를 받으려는 경우에는 대표전화로 검사 종류를 먼저 확인해 주세요.",
+      "primary_action": "결핵 상담과 관리가 필요하면 대표전화로 먼저 문의해 주세요.",
+      "verified_date": "2026-08-28",
+      "organization": {
+        "department": "보건행정과",
+        "team": null
+      },
+      "location": {
+        "floor": "1층",
+        "room": "결핵실",
+        "route_text": "1층 결핵실로 가세요.",
+        "show_map": true
+      }
+    },
+    {
+      "task_id": "A012",
+      "public_title": "결핵 검사를 받고 싶으신가요?",
+      "public_summary": "결핵 검사를 원하시면 검사 종류를 먼저 안내받으세요.",
+      "eligibility": "결핵 검사를 원하거나 어떤 검사를 받아야 할지 문의하는 분",
+      "documents": null,
+      "fee": null,
+      "operating_hours": null,
+      "visit_steps": "검사 종류를 대표전화로 먼저 확인한 뒤 1층 민원실에서 접수하세요.",
+      "public_caution": "비용, 준비물과 검사 가능 시간은 방문 전에 전화로 확인해 주세요.",
+      "primary_action": "검사 종류를 모르시면 대표전화로 먼저 확인해 주세요.",
+      "verified_date": "2026-08-28",
+      "organization": {
+        "department": "보건행정과",
+        "team": null
+      },
+      "location": {
+        "floor": "1층",
+        "room": "민원실",
+        "route_text": "먼저 1층 민원실로 가세요.",
+        "show_map": true
+      }
+    },
+    {
+      "task_id": "R002",
+      "public_title": "65세 이상 건강관리 서비스를 찾으시나요?",
+      "public_summary": "65세 이상 어르신이 스마트폰과 건강기기를 이용해 6개월 동안 건강관리를 받을 수 있는 사업입니다.",
+      "eligibility": "만성질환 관리 또는 건강생활 실천이 필요한 65세 이상 어르신",
+      "documents": null,
+      "fee": null,
+      "operating_hours": null,
+      "visit_steps": "대표전화로 참여 가능 여부와 방문 장소를 먼저 확인해 주세요.",
+      "public_caution": "비용, 준비물, 상담 시간과 현재 모집 여부는 전화로 확인해 주세요.",
+      "primary_action": "대표전화로 참여 가능 여부와 방문 장소를 먼저 확인해 주세요.",
+      "verified_date": "2026-08-28",
+      "organization": {
+        "department": "건강증진과",
+        "team": "지역보건팀"
+      },
+      "location": {
+        "floor": null,
+        "room": null,
+        "route_text": "방문 장소는 전화로 확인해 주세요.",
+        "show_map": false
+      }
+    }
+  ]
+}

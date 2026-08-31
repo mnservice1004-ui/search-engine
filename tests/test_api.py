@@ -16,6 +16,36 @@ from app import app  # noqa: E402
 from sms_service import send_contact_sms  # noqa: E402
 
 
+FORBIDDEN_PUBLIC_KEYS = {
+    "note",
+    "source",
+    "status",
+    "source_row",
+    "source_hash",
+    "local_path",
+}
+FORBIDDEN_PUBLIC_KEY_FRAGMENTS = (
+    "review",
+    "raw",
+    "admin",
+    "validator",
+    "관리자",
+    "검수자",
+)
+
+
+def assert_no_internal_public_keys(value):
+    if isinstance(value, dict):
+        for key, item in value.items():
+            normalized = key.casefold()
+            assert key not in FORBIDDEN_PUBLIC_KEYS
+            assert not any(fragment in normalized for fragment in FORBIDDEN_PUBLIC_KEY_FRAGMENTS)
+            assert_no_internal_public_keys(item)
+    elif isinstance(value, list):
+        for item in value:
+            assert_no_internal_public_keys(item)
+
+
 @pytest.fixture(scope="module")
 def temporary_api_db(tmp_path_factory, synthetic_contact_dataset):
     destination_path = tmp_path_factory.mktemp("api-database") / "health_search.db"
@@ -132,6 +162,12 @@ def test_frontend_contact_renderer_uses_safe_text_and_digit_only_tel_links():
     assert "verifiedContact?.verified_date" in script
     assert "task.contact_verified_at" not in script
     assert "showMap(task);" in script
+    assert "task?.show_map === false" in script
+    assert "task.source" not in script
+    assert "task.note" not in script
+    assert "task.status" not in script
+    assert "task.contact_name" not in script
+    assert "task.contact_role" not in script
 
 
 @pytest.mark.parametrize(
@@ -161,6 +197,11 @@ def test_search_post_returns_expected_first_item():
     assert body["items"][0]["id"] == "R003"
     assert "primary_contact" in body["items"][0]
     assert "contacts" in body["items"][0]
+    assert body["results"] == body["items"]
+    assert body["total"] == body["total_count"]
+    assert body["returned_count"] == body["displayed_count"] == len(body["items"])
+    assert len(body["results"]) <= 10
+    assert body["total"] >= body["returned_count"]
 
 
 def test_search_api_returns_only_public_contact_fields_for_core_tasks():
@@ -172,7 +213,6 @@ def test_search_api_returns_only_public_contact_fields_for_core_tasks():
         "purpose",
         "role",
         "condition",
-        "status",
         "verified_date",
         "is_primary",
     }
@@ -211,6 +251,133 @@ def test_search_api_returns_only_public_contact_fields_for_core_tasks():
     assert items["A012"]["primary_contact"] == items["A012"]["contacts"][0]
 
 
+def test_search_and_task_detail_never_expose_internal_task_fields():
+    search_response = client().post("/api/search", json={"query": "연명치료"})
+    detail_response = client().get("/api/tasks/R003")
+
+    assert search_response.status_code == 200
+    assert detail_response.status_code == 200
+    assert_no_internal_public_keys(search_response.get_json())
+    assert_no_internal_public_keys(detail_response.get_json())
+
+
+def test_representative_public_guidance_and_map_contracts():
+    a011 = client().get("/api/tasks/A011").get_json()
+    a012 = client().get("/api/tasks/A012").get_json()
+    r002_response = client().post("/api/search", json={"query": "어르신 오늘 건강"})
+    r002 = r002_response.get_json()["items"][0]
+
+    assert r002_response.status_code == 200
+    assert r002["id"] == "R002"
+    assert (a011["floor"], a011["room"], a011["show_map"]) == (
+        "1층",
+        "결핵실",
+        True,
+    )
+    assert a011["place"] == a011["room"]
+    assert (a012["floor"], a012["room"], a012["show_map"]) == (
+        "1층",
+        "민원실",
+        True,
+    )
+    assert a012["place"] == a012["room"]
+    assert a011["primary_contact"]["phone"] == "031-5189-4364"
+    assert len(a012["contacts"]) == 5
+    assert all(contact["phone"] != "031-5189-4354" for contact in a012["contacts"])
+
+    assert r002["department"] == "건강증진과"
+    assert r002["team"] == "지역보건팀"
+    assert r002["floor"] is None
+    assert r002["place"] is None
+    assert r002["room"] is None
+    assert r002["show_map"] is False
+    assert r002["route"] == "방문 장소는 전화로 확인해 주세요."
+    assert "65세 이상" in r002["public_summary"]
+    assert "6개월" in r002["public_summary"]
+    assert r002["documents"] is None
+    assert r002["fee"] is None
+    assert r002["operating_hours"] is None
+    serialized = str(r002)
+    for forbidden in ("보건행정과", "3층", "원문기준", "검수 메모", "자료 출처", "무료", "현재 모집 중"):
+        assert forbidden not in serialized
+    assert_no_internal_public_keys(r002)
+
+
+def test_r002_detail_preserves_five_contacts_without_public_metadata(monkeypatch):
+    phones = (
+        "031-5189-5032",
+        "031-5189-4778",
+        "031-5189-4779",
+        "031-5189-6933",
+        "031-5189-6946",
+    )
+
+    def contact_loader(task_ids):
+        task_ids = list(task_ids)
+        return {
+            task_id: [
+                {
+                    "phone": phone,
+                    "display_phone": phone,
+                    "purpose": "원문 행 46 내부 검수",
+                    "role": "동탄3·5·6동 방문건강관리",
+                    "condition": "internal-review-file.xlsx",
+                    "verified_date": "2026-08-28",
+                    "is_primary": index == 0,
+                    "status": "must-not-leak",
+                    "source_row": 999,
+                }
+                for index, phone in enumerate(phones)
+            ]
+            if task_id == "R002"
+            else [
+                {
+                    "phone": "031-5189-4364",
+                    "display_phone": "031-5189-4364",
+                    "purpose": "internal-review-file.xlsx",
+                    "role": "C:/private/review.xlsx",
+                    "condition": "a" * 64,
+                    "verified_date": "2026-08-28",
+                    "is_primary": True,
+                }
+            ]
+            if task_id == "A011"
+            else []
+            for task_id in task_ids
+        }
+
+    monkeypatch.setattr("app.get_contacts_by_task_ids", contact_loader)
+    response = client().get("/api/tasks/R002")
+    item = response.get_json()
+
+    assert response.status_code == 200
+    assert [contact["phone"] for contact in item["contacts"]] == list(phones)
+    assert sum(contact["is_primary"] for contact in item["contacts"]) == 1
+    assert item["primary_contact"] == item["contacts"][0]
+    assert item["primary_contact"]["phone"] == "031-5189-5032"
+    assert item["primary_contact"]["purpose"] == "대표전화"
+    assert item["primary_contact"]["role"] == "어르신 건강관리 문의"
+    assert item["primary_contact"]["condition"] is None
+    assert all(
+        contact["purpose"] == "권역별 방문건강 문의"
+        and contact["role"] is None
+        and contact["condition"] == "담당 지역은 대표전화로 확인해 주세요."
+        for contact in item["contacts"][1:]
+    )
+    serialized = str(item)
+    for forbidden in ("원문 행", "내부 검수", "동탄3·5·6동", "internal-review-file.xlsx"):
+        assert forbidden not in serialized
+    assert_no_internal_public_keys(item)
+
+    a011 = client().get("/api/tasks/A011").get_json()
+    assert a011["primary_contact"]["purpose"] == "연락처"
+    assert a011["primary_contact"]["role"] is None
+    assert a011["primary_contact"]["condition"] is None
+    assert "C:/private" not in str(a011)
+    assert "a" * 64 not in str(a011)
+    assert_no_internal_public_keys(a011)
+
+
 def test_held_task_has_no_public_contacts():
     response = client().post("/api/search", json={"query": "금연아파트 지정"})
     item = next(item for item in response.get_json()["items"] if item["id"] == "H004")
@@ -236,6 +403,7 @@ def test_search_uses_one_bulk_contact_lookup(monkeypatch):
     assert response.status_code == 200
     assert len(calls) == 1
     assert calls[0] == [item["id"] for item in response.get_json()["items"]]
+    assert len(calls[0]) <= 10
 
 
 def test_search_rejects_short_query():
@@ -316,3 +484,50 @@ def test_sms_does_not_fall_back_to_legacy_task_phone():
 
     with pytest.raises(ValueError, match="공식 담당 연락처"):
         send_contact_sms(task, "01012345678")
+
+
+def test_sms_uses_only_public_guidance_and_primary_contact(monkeypatch):
+    monkeypatch.setenv("SMS_MODE", "mock")
+    task = {
+        "name": "내부 업무명",
+        "public_title": "65세 이상 건강관리 서비스를 찾으시나요?",
+        "public_summary": "65세 이상 어르신이 스마트폰과 건강기기를 이용해 6개월 동안 건강관리를 받을 수 있는 사업입니다.",
+        "department": "건강증진과",
+        "team": "지역보건팀",
+        "route": "방문 장소는 전화로 확인해 주세요.",
+        "verified_date": "2026-08-28",
+        "primary_contact": {
+            "phone": "031-5189-5032",
+            "display_phone": "031-5189-5032",
+            "verified_date": "2026-08-28",
+        },
+        "note": "검수 메모",
+        "source": "자료 출처",
+        "status": "원문기준",
+        "contact_name": "내부 담당자",
+        "contact_role": "내부 직위",
+        "floor": "3층",
+        "place": "보건행정과",
+        "phone": "031-999-9999",
+    }
+
+    preview = send_contact_sms(task, "01012345678")["preview"]
+
+    assert "031-5189-5032" in preview
+    assert "65세 이상" in preview
+    assert "6개월" in preview
+    assert "건강증진과 / 지역보건팀" in preview
+    assert "방문 장소는 전화로 확인해 주세요." in preview
+    for forbidden in (
+        "검수 메모",
+        "자료 출처",
+        "원문기준",
+        "내부 담당자",
+        "내부 직위",
+        "보건행정과",
+        "3층",
+        "031-999-9999",
+        "무료",
+        "현재 모집 중",
+    ):
+        assert forbidden not in preview

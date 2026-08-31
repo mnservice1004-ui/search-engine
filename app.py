@@ -9,12 +9,14 @@ from flask_limiter.util import get_remote_address
 
 from db import get_all_tasks, get_contacts_by_task_ids, get_task, log_event
 from llm_helper import expand_query
+from public_guidance import load_public_guidance, serialize_public_task
 from search_engine import search_tasks, suggest_terms
 from sms_service import send_contact_sms
 
 
 ROOT = Path(__file__).resolve().parent
 load_dotenv(ROOT / ".env")
+PUBLIC_GUIDANCE = load_public_guidance()
 
 app = Flask(__name__, static_folder="public", static_url_path="")
 limiter = Limiter(get_remote_address, app=app, default_limits=["120 per minute"], storage_uri="memory://")
@@ -30,17 +32,17 @@ def best_effort_log(event_type, task_id=None, result_count=None):
 
 def attach_public_contacts(tasks):
     contacts_by_task = get_contacts_by_task_ids(task.get("id") for task in tasks)
-    enriched = []
+    public_tasks = []
     for task in tasks:
-        item = dict(task)
-        contacts = contacts_by_task.get(str(item.get("id") or ""), [])
-        item["primary_contact"] = next(
-            (contact for contact in contacts if contact["is_primary"]),
-            None,
+        task_id = str(task.get("id") or "")
+        public_tasks.append(
+            serialize_public_task(
+                task,
+                contacts_by_task.get(task_id, []),
+                PUBLIC_GUIDANCE,
+            )
         )
-        item["contacts"] = contacts
-        enriched.append(item)
-    return enriched
+    return public_tasks
 
 
 @app.after_request
@@ -114,6 +116,9 @@ def search():
     best_effort_log("search", result_count=len(all_results))
     return jsonify({
         "query": query,
+        "total": len(all_results),
+        "returned_count": len(items),
+        "results": items,
         "total_count": len(all_results),
         "displayed_count": len(items),
         "items": items,
@@ -126,7 +131,7 @@ def task_detail(task_id):
     task = get_task(task_id)
     if task is None:
         return jsonify({"error": "업무를 찾을 수 없습니다."}), 404
-    return jsonify(task)
+    return jsonify(attach_public_contacts([task])[0])
 
 
 @app.post("/api/sms")

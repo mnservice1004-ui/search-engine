@@ -11,7 +11,6 @@ PUBLIC_FIELDS = {
     "purpose",
     "role",
     "condition",
-    "status",
     "verified_date",
     "is_primary",
 }
@@ -60,6 +59,7 @@ def test_bulk_contact_loader_uses_one_query_and_stable_public_shape(
     ]
 
     assert len(contact_selects) == 1
+    assert "match_status" not in contact_selects[0]
     assert list(grouped) == ["A011", "A012", "F101", "H004"]
     assert grouped["H004"] == []
     assert all(set(contact) == PUBLIC_FIELDS for rows in grouped.values() for contact in rows)

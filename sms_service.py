@@ -13,21 +13,31 @@ def normalize_mobile(value):
 
 def build_message(task):
     department = " / ".join(filter(None, [task.get("department"), task.get("team")]))
-    contact = " / ".join(filter(None, [task.get("contact_name"), task.get("contact_role")]))
     primary_contact = task.get("primary_contact") or {}
     phone = str(
         primary_contact.get("display_phone") or primary_contact.get("phone") or ""
     ).strip()
     if not phone:
         raise ValueError("공식 담당 연락처가 아직 등록되지 않았습니다.")
-    return (
-        f'[동탄구보건소 민원안내]\n업무: {task.get("name")}\n'
-        f'담당: {department}\n'
-        f'담당자/직위: {contact or "공식 확인 필요"}\n'
-        f'전화: {phone}\n'
-        f'확인일: {primary_contact.get("verified_date") or "공식 확인 필요"}\n'
-        "전화번호 연결 여부는 휴대전화 문자 앱에 따라 다를 수 있습니다."
+    title = task.get("public_title") or task.get("name") or "보건민원 안내"
+    summary = task.get("public_summary") or task.get("script")
+    route = task.get("route")
+    verified_date = task.get("verified_date") or primary_contact.get("verified_date")
+    lines = [f"[동탄구보건소 민원안내]", f"업무: {title}"]
+    if summary:
+        lines.append(f"안내: {summary}")
+    if department:
+        lines.append(f"문의하는 곳: {department}")
+    if route:
+        lines.append(f"방문 안내: {route}")
+    lines.extend(
+        (
+            f"전화: {phone}",
+            f"확인일: {verified_date or '전화로 확인해 주세요'}",
+            "전화번호 연결 여부는 휴대전화 문자 앱에 따라 다를 수 있습니다.",
+        )
     )
+    return "\n".join(lines)
 
 
 def send_contact_sms(task, recipient):
