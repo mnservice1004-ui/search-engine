@@ -1,5 +1,6 @@
 import json
 import re
+import unicodedata
 from datetime import date
 from pathlib import Path
 
@@ -34,8 +35,15 @@ TASK_KEYS = {"task_id", *PUBLIC_TEXT_FIELDS, "organization", "location"}
 ORGANIZATION_KEYS = {"department", "team"}
 LOCATION_KEYS = {"floor", "room", "route_text", "show_map"}
 NULLABLE_PUBLIC_TEXT_FIELDS = {"documents", "fee", "operating_hours"}
-PHONE_NUMBER_RE = re.compile(
-    r"(?<!\d)(?:\+?\s*82|0)\s*\(?\d{1,2}\)?[\s.\-]*\d{3,4}[\s.\-]*\d{4}(?!\d)"
+PHONE_RUN_RE = re.compile(
+    r"(?<![A-Za-z0-9])(?:tel\s*:\s*)?(?:\+|\()?\d"
+    r"(?:[\d\s().:+/\-]{1,32}\d)?(?![A-Za-z0-9])",
+    re.IGNORECASE,
+)
+CONTEXT_PHONE_RE = re.compile(
+    r"(?:전화|문의|연락처|대표번호|내선|콜센터|phone|tel)\s*:?[\s]*"
+    r"((?:\+|\()?\d(?:[\d\s().+/\-]{1,32}\d)?)",
+    re.IGNORECASE,
 )
 UNSAFE_CONTACT_VALUE_RE = re.compile(
     r"(?:[A-Za-z]:[\\/]|\\\\|/(?:home|users|private|tmp)/|"
@@ -60,6 +68,64 @@ def _reject_duplicate_json_keys(pairs):
     return value
 
 
+def _normalize_phone_scan_text(value):
+    normalized = unicodedata.normalize("NFKC", value)
+    characters = []
+    for character in normalized:
+        category = unicodedata.category(character)
+        if category == "Cf":
+            continue
+        if character.isspace() or category.startswith("Z"):
+            characters.append(" ")
+            continue
+        if category == "Pd" or character == "−":
+            characters.append("-")
+            continue
+        try:
+            characters.append(str(unicodedata.decimal(character)))
+        except (TypeError, ValueError):
+            characters.append(character)
+    return re.sub(r" +", " ", "".join(characters))
+
+
+def _phone_digits(value):
+    return "".join(
+        character
+        for character in value
+        if character.isascii() and character.isdigit()
+    )
+
+
+def _is_phone_like_run(run):
+    value = run.strip()
+    digits = _phone_digits(value)
+    if not digits:
+        return False
+    if value.casefold().startswith("tel"):
+        return 4 <= len(digits) <= 15
+    if value.startswith("+"):
+        return 8 <= len(digits) <= 15
+    if digits.startswith("0082"):
+        return 10 <= len(digits) <= 15
+    if re.match(r"^82[\s.(/\-]", value) and 10 <= len(digits) <= 13:
+        return True
+    if digits.startswith("0") and 9 <= len(digits) <= 12:
+        return True
+    return len(digits) == 8 and re.fullmatch(r"1(?:5|6|8)\d{6}", digits) is not None
+
+
+def _contains_phone_like(value):
+    normalized = _normalize_phone_scan_text(value)
+    for match in CONTEXT_PHONE_RE.finditer(normalized):
+        digit_count = len(_phone_digits(match.group(1)))
+        if 4 <= digit_count <= 15:
+            return True
+    return any(
+        _is_phone_like_run(match.group(0))
+        for match in PHONE_RUN_RE.finditer(normalized)
+    )
+
+
 def _reject_embedded_phone_numbers(value, label="root"):
     if isinstance(value, dict):
         for key, item in value.items():
@@ -67,9 +133,9 @@ def _reject_embedded_phone_numbers(value, label="root"):
     elif isinstance(value, list):
         for index, item in enumerate(value):
             _reject_embedded_phone_numbers(item, f"{label}[{index}]")
-    elif isinstance(value, str) and PHONE_NUMBER_RE.search(value):
+    elif isinstance(value, str) and _contains_phone_like(value):
         raise PublicGuidanceConfigurationError(
-            f"{label} cannot store a phone number"
+            f"phone-like value is not allowed at {label}"
         )
 
 
@@ -102,9 +168,9 @@ def _validate_guidance_item(item, index):
             f"{label}.{field}",
             nullable=field in NULLABLE_PUBLIC_TEXT_FIELDS,
         )
-        if isinstance(item[field], str) and PHONE_NUMBER_RE.search(item[field]):
+        if isinstance(item[field], str) and _contains_phone_like(item[field]):
             raise PublicGuidanceConfigurationError(
-                f"{label}.{field} cannot store a phone number"
+                f"phone-like value is not allowed at {label}.{field}"
             )
     try:
         date.fromisoformat(item["verified_date"])
@@ -192,8 +258,7 @@ def _safe_contact_text(value, *, fallback=None):
     if not text:
         return fallback
     if (
-        PHONE_NUMBER_RE.search(text)
-        or HEX_DIGEST_RE.search(text)
+        HEX_DIGEST_RE.search(text)
         or UNSAFE_CONTACT_VALUE_RE.search(text)
     ):
         return fallback

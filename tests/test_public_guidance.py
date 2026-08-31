@@ -30,6 +30,73 @@ def base_payload():
     return json.loads(GUIDANCE_PATH.read_text(encoding="utf-8"))
 
 
+PHONE_TEST_PATHS = (
+    ("tasks", 0, "public_summary"),
+    ("tasks", 0, "eligibility"),
+    ("tasks", 1, "visit_steps"),
+    ("tasks", 1, "public_caution"),
+    ("tasks", 2, "primary_action"),
+    ("tasks", 2, "organization", "department"),
+    ("tasks", 2, "location", "route_text"),
+)
+
+
+BLOCKED_PHONE_LIKE_VALUES = (
+    "031-5189-5032",
+    "031 5189 5032",
+    "031.5189.5032",
+    "(031) 5189-5032",
+    "03151895032",
+    "tel:031-5189-5032",
+    "+82-31-5189-5032",
+    "+82 31 5189 5032",
+    "+82 (0)31 5189 5032",
+    "0082-31-5189-5032",
+    "+823151895032",
+    "82-31-5189-5032",
+    "＋８２－３１－５１８９－５０３２",
+    "+82–31–5189–5032",
+    "+82-31-5189-5032",
+    "문의는 +82-31-5189-5032로 해 주세요.",
+    "010-1234-5678",
+    "+82-10-1234-5678",
+    "1588-1234",
+    "내선 5032",
+    "문의: 5032",
+    "031\u200b5189\u20605032",
+    "031\u00a05189\u00a05032",
+)
+
+
+ALLOWED_NON_PHONE_VALUES = (
+    "2026-08-28",
+    "2026.08.28",
+    "2026년 8월 28일",
+    "20260828",
+    "65세 이상 어르신",
+    "6개월 동안 건강관리를 받습니다.",
+    "1층",
+    "3층",
+    "A011",
+    "A012",
+    "R002",
+    "A011·A012·R002",
+    "A011 — 2026-08-28",
+    "업무 63건",
+    "검색 결과는 최대 10개입니다.",
+    "오전 9시부터 오후 6시까지",
+    "1:1 건강관리",
+    "방문 장소는 전화로 확인해 주세요.",
+)
+
+
+def set_nested(payload, path, value):
+    target = payload
+    for part in path[:-1]:
+        target = target[part]
+    target[path[-1]] = value
+
+
 def test_checked_in_public_guidance_has_exact_three_task_contract(monkeypatch, tmp_path):
     guidance = load_public_guidance(GUIDANCE_PATH)
 
@@ -66,19 +133,43 @@ def test_guidance_missing_or_invalid_json_fails_closed(tmp_path):
     with pytest.raises(PublicGuidanceConfigurationError, match="cannot be read"):
         load_public_guidance(invalid)
 
-    for name, mutate in (
-        ("float-schema", lambda payload: payload.update({"schema_version": 1.0})),
-        (
-            "obfuscated-phone",
-            lambda payload: payload["tasks"][0].update(
-                {"primary_action": "(031) 5189.4364로 전화하세요."}
-            ),
-        ),
-    ):
-        payload = base_payload()
-        mutate(payload)
-        with pytest.raises(PublicGuidanceConfigurationError):
-            load_public_guidance(write_payload(tmp_path / f"{name}.json", payload))
+    payload = base_payload()
+    payload.update({"schema_version": 1.0})
+    with pytest.raises(PublicGuidanceConfigurationError):
+        load_public_guidance(write_payload(tmp_path / "float-schema.json", payload))
+
+
+@pytest.mark.parametrize(
+    ("case_index", "phone_like"),
+    tuple(enumerate(BLOCKED_PHONE_LIKE_VALUES)),
+)
+def test_phone_like_values_are_rejected_recursively(tmp_path, case_index, phone_like):
+    payload = base_payload()
+    path = PHONE_TEST_PATHS[case_index % len(PHONE_TEST_PATHS)]
+    set_nested(payload, path, phone_like)
+
+    with pytest.raises(PublicGuidanceConfigurationError) as caught:
+        load_public_guidance(write_payload(tmp_path / f"blocked-{case_index}.json", payload))
+
+    message = str(caught.value)
+    assert message.startswith("phone-like value is not allowed at root.tasks[")
+    assert phone_like not in message
+    assert not any(number in message for number in ("5032", "5678", "1234"))
+
+
+@pytest.mark.parametrize(
+    ("case_index", "allowed_value"),
+    tuple(enumerate(ALLOWED_NON_PHONE_VALUES)),
+)
+def test_non_phone_values_are_allowed_recursively(tmp_path, case_index, allowed_value):
+    payload = base_payload()
+    path = PHONE_TEST_PATHS[case_index % len(PHONE_TEST_PATHS)]
+    set_nested(payload, path, allowed_value)
+
+    guidance = load_public_guidance(
+        write_payload(tmp_path / f"allowed-{case_index}.json", payload)
+    )
+    assert set(guidance) == EXPECTED_TASK_IDS
 
 
 @pytest.mark.parametrize(
@@ -93,9 +184,6 @@ def test_guidance_missing_or_invalid_json_fails_closed(tmp_path):
         lambda payload: payload["tasks"][0]["location"].update({"floor": None}),
         lambda payload: payload["tasks"][2]["location"].update({"x": 42}),
         lambda payload: payload["tasks"][0].update({"verified_date": "2026/08/28"}),
-        lambda payload: payload["tasks"][0].update(
-            {"primary_action": "031-5189-4364로 전화하세요."}
-        ),
     ),
 )
 def test_guidance_schema_errors_are_rejected(tmp_path, mutate):
