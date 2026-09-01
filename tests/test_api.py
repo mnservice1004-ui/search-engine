@@ -1,4 +1,6 @@
+import json
 import os
+import re
 import shutil
 from hashlib import sha256
 from pathlib import Path
@@ -13,6 +15,7 @@ os.environ["SMS_MODE"] = "mock"
 os.environ["PYTHON_DOTENV_DISABLED"] = "1"
 
 from app import app  # noqa: E402
+from public_guidance import EXPECTED_TASK_IDS  # noqa: E402
 from sms_service import send_contact_sms  # noqa: E402
 
 
@@ -32,6 +35,75 @@ FORBIDDEN_PUBLIC_KEY_FRAGMENTS = (
     "관리자",
     "검수자",
 )
+FORBIDDEN_PUBLIC_VALUE_FRAGMENTS = (
+    "c:/users/",
+    "c:\\users\\",
+    "source_row",
+    "source_sheet",
+    "source_url",
+    "raw_payload",
+    "review_state",
+    "sha256",
+    "원문기준",
+    "검수 메모",
+    "자료 출처",
+    "내부 메모",
+    "[공식 확인 필요]",
+)
+FIRST_BATCH_CONTACTS = {
+    "A001": ("031-5189-4378",),
+    "A019": ("031-5189-4344",),
+    "H001": ("031-5189-4371",),
+    "H002": ("031-5189-4374",),
+    "M002": ("031-5189-6944",),
+    "M003": ("031-5189-6943", "031-5189-4370", "031-5189-5085"),
+    "M004": ("031-5189-4370", "031-5189-5085", "031-5189-6944"),
+    "M005": ("031-5189-6944", "031-5189-4370", "031-5189-5085"),
+    "M006": (
+        "031-5189-6944",
+        "031-5189-4370",
+        "031-5189-5085",
+        "031-5189-5023",
+    ),
+    "M008": ("031-5189-6944",),
+}
+FIRST_BATCH_LOCATIONS = {
+    "A001": ("1층", "진료실", True),
+    "A019": ("1층", "영상의학실", True),
+    "H001": ("2층", "금연상담실", True),
+    "H002": ("2층", "만성질환관리센터", True),
+    "M002": (None, None, False),
+    "M003": (None, None, False),
+    "M004": (None, None, False),
+    "M005": (None, None, False),
+    "M006": (None, None, False),
+    "M008": (None, None, False),
+}
+SEARCH_REGRESSION_CASES = {
+    "A019": ("골다공증 검사를 받고 싶으신가요?", "골다공증 검사", "골밀도 검사"),
+    "H001": ("담배를 끊는 상담을 받고 싶으신가요?", "금연 상담", "금연클리닉"),
+    "H002": (
+        "만성질환 위험군 건강관리",
+        "만성질환 건강관리",
+        "운동 영양 상담",
+        "만성질환 건강상담",
+    ),
+    "A001": ("보건소 진료를 받고 싶으신가요?", "보건소 진료", "진료 접수"),
+    "M002": ("아기의 선천성대사이상 지원이 필요하신가요?", "선천성대사이상 의료비 지원"),
+    "M003": ("난임 시술비 지원을 신청하고 싶으신가요?", "체외수정 지원", "인공수정 지원"),
+    "M004": ("산모·신생아 건강관리 지원을 신청하고 싶으신가요?", "산후도우미 지원"),
+    "M005": ("고위험 임산부 의료비 지원이 필요하신가요?", "고위험 임신질환 지원"),
+    "M006": ("아기 기저귀·조제분유 지원을 신청하고 싶으신가요?", "기저귀 바우처"),
+    "M008": ("미숙아·선천성이상아 의료비 지원이 필요하신가요?", "미숙아 의료비 지원"),
+}
+H002_FORBIDDEN_PUBLIC_FRAGMENTS = (
+    "인바디",
+    "13주",
+    "근로자",
+    "무료",
+    "09:00",
+    "18:00",
+)
 
 
 def assert_no_internal_public_keys(value):
@@ -46,10 +118,23 @@ def assert_no_internal_public_keys(value):
             assert_no_internal_public_keys(item)
 
 
+def assert_no_internal_public_values(value):
+    if isinstance(value, dict):
+        for item in value.values():
+            assert_no_internal_public_values(item)
+    elif isinstance(value, list):
+        for item in value:
+            assert_no_internal_public_values(item)
+    elif isinstance(value, str):
+        normalized = value.casefold().replace("\\", "/")
+        assert not any(fragment in normalized for fragment in FORBIDDEN_PUBLIC_VALUE_FRAGMENTS)
+        assert re.search(r"(?<![0-9a-f])[0-9a-f]{64}(?![0-9a-f])", normalized) is None
+
+
 @pytest.fixture(scope="module")
-def temporary_api_db(tmp_path_factory, synthetic_contact_dataset):
+def temporary_api_db(tmp_path_factory, public_guidance_contact_db):
     destination_path = tmp_path_factory.mktemp("api-database") / "health_search.db"
-    shutil.copy2(synthetic_contact_dataset.populated_db, destination_path)
+    shutil.copy2(public_guidance_contact_db, destination_path)
     return destination_path
 
 
@@ -303,6 +388,82 @@ def test_representative_public_guidance_and_map_contracts():
     assert_no_internal_public_keys(r002)
 
 
+@pytest.mark.parametrize("task_id", tuple(FIRST_BATCH_CONTACTS))
+def test_first_batch_api_guidance_contacts_and_location_contract(task_id):
+    response = client().get(f"/api/tasks/{task_id}")
+    item = response.get_json()
+    expected_phones = FIRST_BATCH_CONTACTS[task_id]
+    floor, room, show_map = FIRST_BATCH_LOCATIONS[task_id]
+
+    assert response.status_code == 200
+    assert item["id"] == task_id
+    assert item["public_title"] == item["name"]
+    assert item["public_summary"]
+    assert item["eligibility"]
+    assert item["primary_action"]
+    assert item["verified_date"] == "2026-08-26"
+    assert (item["floor"], item["room"], item["show_map"]) == (
+        floor,
+        room,
+        show_map,
+    )
+    assert item["place"] == room
+    if show_map:
+        assert floor in item["route"]
+        assert room in item["route"]
+    else:
+        assert item["route"] == "방문 장소는 전화로 확인해 주세요."
+
+    assert item["primary_contact"] == item["contacts"][0]
+    assert item["primary_contact"]["phone"] == expected_phones[0]
+    assert item["primary_contact"]["is_primary"] is True
+    assert {contact["phone"] for contact in item["contacts"]} == set(expected_phones)
+    assert sum(contact["is_primary"] for contact in item["contacts"]) == 1
+    assert all(contact["verified_date"] == "2026-08-28" for contact in item["contacts"])
+    assert all(
+        set(contact)
+        == {
+            "phone",
+            "display_phone",
+            "purpose",
+            "role",
+            "condition",
+            "verified_date",
+            "is_primary",
+        }
+        for contact in item["contacts"]
+    )
+    assert_no_internal_public_keys(item)
+    assert_no_internal_public_values(item)
+
+
+def test_remaining_fifty_task_details_stay_available_without_internal_projection():
+    tasks = json.loads(Path("data/tasks.json").read_text(encoding="utf-8"))
+    remaining_ids = [task["id"] for task in tasks if task["id"] not in EXPECTED_TASK_IDS]
+
+    assert len(remaining_ids) == 50
+    for task_id in remaining_ids:
+        response = client().get(f"/api/tasks/{task_id}")
+        item = response.get_json()
+        assert response.status_code == 200
+        assert item["id"] == task_id
+        assert item["aliases"] == []
+        assert all(item[field] is None for field in (
+            "public_title",
+            "public_summary",
+            "eligibility",
+            "documents",
+            "fee",
+            "operating_hours",
+            "visit_steps",
+            "public_caution",
+            "primary_action",
+            "verified_date",
+        ))
+        assert_no_internal_public_keys(item)
+        assert_no_internal_public_values(item)
+
+
 def test_r002_detail_preserves_five_contacts_without_public_metadata(monkeypatch):
     phones = (
         "031-5189-5032",
@@ -404,6 +565,45 @@ def test_search_uses_one_bulk_contact_lookup(monkeypatch):
     assert len(calls) == 1
     assert calls[0] == [item["id"] for item in response.get_json()["items"]]
     assert len(calls[0]) <= 10
+
+
+def test_first_batch_search_regression_and_single_contact_batch(monkeypatch):
+    from app import (
+        PUBLIC_GUIDANCE,
+        get_contacts_by_task_ids as original_loader,
+        search_public_tasks,
+    )
+    from db import get_all_tasks
+    from public_guidance import build_public_search_tasks
+
+    calls = []
+
+    def counted_loader(task_ids):
+        task_ids = list(task_ids)
+        calls.append(task_ids)
+        return original_loader(task_ids)
+
+    monkeypatch.setattr("app.get_contacts_by_task_ids", counted_loader)
+    raw_tasks = get_all_tasks()
+    searchable_tasks = build_public_search_tasks(raw_tasks, PUBLIC_GUIDANCE)
+    for expected_id, queries in SEARCH_REGRESSION_CASES.items():
+        for query in queries:
+            call_count = len(calls)
+            expected_ranked = search_public_tasks(searchable_tasks, query, 10)
+            response = client().post("/api/search", json={"query": query})
+            body = response.get_json()
+
+            assert response.status_code == 200
+            assert expected_ranked[0]["id"] == expected_id
+            assert body["items"][0]["id"] == expected_id
+            assert [item["id"] for item in body["items"]] == [
+                item["id"] for item in expected_ranked
+            ]
+            assert len(body["results"]) <= 10
+            assert body["returned_count"] == len(body["results"])
+            assert body["total"] >= body["returned_count"]
+            assert len(calls) == call_count + 1
+            assert calls[-1] == [item["id"] for item in body["items"]]
 
 
 def test_search_rejects_short_query():
@@ -531,3 +731,99 @@ def test_sms_uses_only_public_guidance_and_primary_contact(monkeypatch):
         "현재 모집 중",
     ):
         assert forbidden not in preview
+
+
+@pytest.mark.parametrize("task_id", ("M003", "M008"))
+def test_no_map_public_guidance_sms_uses_phone_confirmation_route(task_id, monkeypatch):
+    monkeypatch.setenv("SMS_MODE", "mock")
+    detail = client().get(f"/api/tasks/{task_id}").get_json()
+
+    preview = send_contact_sms(detail, "01012345678")["preview"]
+
+    assert "방문 장소는 전화로 확인해 주세요." in preview
+    assert detail["primary_contact"]["phone"] in preview
+    assert "모자보건실·예방접종실" not in preview
+    assert "건강증진과 사무실" not in preview
+    assert "3층" not in preview
+    assert_no_internal_public_values(preview)
+
+
+def test_h002_public_api_detail_and_sms_omit_unverified_claims(monkeypatch):
+    monkeypatch.setenv("SMS_MODE", "mock")
+    search_response = client().post(
+        "/api/search", json={"query": "만성질환 건강관리"}
+    )
+    search_item = next(
+        item for item in search_response.get_json()["items"] if item["id"] == "H002"
+    )
+    detail_response = client().get("/api/tasks/H002")
+    detail = detail_response.get_json()
+    preview = send_contact_sms(detail, "01012345678")["preview"]
+
+    assert search_response.status_code == 200
+    assert detail_response.status_code == 200
+    for value in (search_item, detail, preview):
+        serialized = json.dumps(value, ensure_ascii=False) if not isinstance(value, str) else value
+        assert not any(
+            fragment in serialized for fragment in H002_FORBIDDEN_PUBLIC_FRAGMENTS
+        )
+
+
+def test_public_aliases_are_safe_terms_and_unregistered_aliases_are_empty():
+    from app import PUBLIC_GUIDANCE
+
+    for task_id, guidance in PUBLIC_GUIDANCE.items():
+        item = client().get(f"/api/tasks/{task_id}").get_json()
+        assert item["aliases"] == guidance["public_search_terms"]
+        assert all(isinstance(alias, str) for alias in item["aliases"])
+
+    unregistered = client().get("/api/tasks/R003").get_json()
+    assert unregistered["aliases"] == []
+
+
+@pytest.mark.parametrize("query", ("인바디", "13주", "13주 프로그램"))
+def test_h002_internal_aliases_cannot_return_h002_or_trigger_llm_expansion(
+    query, monkeypatch
+):
+    monkeypatch.setattr(
+        "app.expand_query", lambda _query: ["만성질환 건강관리"]
+    )
+
+    response = client().post("/api/search", json={"query": query})
+    body = response.get_json()
+
+    assert response.status_code == 200
+    assert "H002" not in {item["id"] for item in body["items"]}
+    assert body["expanded_terms"] == []
+
+
+def test_suggestions_use_public_terms_without_internal_aliases():
+    public_response = client().post(
+        "/api/suggestions", json={"query": "만성질환"}
+    )
+    forbidden_response = client().post(
+        "/api/suggestions", json={"query": "인바디"}
+    )
+
+    assert public_response.status_code == 200
+    assert "만성질환 건강관리" in public_response.get_json()["items"]
+    assert forbidden_response.status_code == 200
+    assert "인바디" not in " ".join(forbidden_response.get_json()["items"])
+
+
+def test_corrected_public_guidance_claims_reach_task_detail_api():
+    a019 = client().get("/api/tasks/A019").get_json()
+    m002 = client().get("/api/tasks/M002").get_json()
+    m008 = client().get("/api/tasks/M008").get_json()
+
+    assert "6,000원" in a019["fee"]
+    assert "검사비는 변동될 수" in a019["public_caution"]
+    assert "대상 영아의 부모가" in m002["eligibility"]
+    assert "영아가 신청" not in m002["eligibility"]
+    assert "출생일로부터 1년 이내" in m002["eligibility"]
+    assert "출생 후 24시간 이내" in m008["eligibility"]
+    assert "긴급한 수술이나 치료가 필요" in m008["eligibility"]
+    assert "신생아 중환자실(NICU)에 입원" in m008["eligibility"]
+    assert m008["fee"] is None
+    assert (m002["floor"], m002["room"], m002["show_map"]) == (None, None, False)
+    assert (m008["floor"], m008["room"], m008["show_map"]) == (None, None, False)

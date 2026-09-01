@@ -308,7 +308,9 @@ def _create_baseline_db(path: Path, tasks: list[dict[str, Any]]) -> None:
                     task["status"],
                     task["source"],
                     task["note"],
-                    task["locationCondition"],
+                    task.get("locationCondition")
+                    or task.get("location_condition")
+                    or "",
                 ),
             )
             connection.executemany(
@@ -475,3 +477,94 @@ def build_synthetic_contact_dataset(root: Path) -> SyntheticContactDataset:
 @pytest.fixture(scope="session")
 def synthetic_contact_dataset(tmp_path_factory) -> SyntheticContactDataset:
     return build_synthetic_contact_dataset(tmp_path_factory.mktemp("synthetic-contact-data"))
+
+
+PUBLIC_GUIDANCE_CONTACTS = {
+    "A001": (("031-5189-4378", "대표전화", "진료실", True),),
+    "A011": (("031-5189-4364", "대표전화", "결핵 상담·관리", True),),
+    "A012": (
+        ("031-5189-4364", "대표전화", "결핵 검사 안내", True),
+        ("031-5189-4344", "흉부 X선", "흉부 X선", False),
+        ("031-5189-4369", "검체검사", "검체검사", False),
+        ("031-5189-4368", "진단검사실", "진단검사실", False),
+        ("031-5189-4377", "민원접수", "민원접수", False),
+    ),
+    "A019": (("031-5189-4344", "대표전화", "영상의학실 골다공증 검사", True),),
+    "F101": (("031-5189-4364", "대표전화", "결핵 안내", True),),
+    "H001": (("031-5189-4371", "대표전화", "금연클리닉", True),),
+    "H002": (("031-5189-4374", "대표전화", "동탄 만성질환관리센터", True),),
+    "M002": (("031-5189-6944", "대표전화", "선천성대사이상 지원", True),),
+    "M003": (
+        ("031-5189-6943", "대표전화", "난임 지원 사업 담당", True),
+        ("031-5189-4370", "모자보건 지원 사업 상담·신청 접수", "모자보건 상담·신청", False),
+        ("031-5189-5085", "모자보건 지원 사업 상담·신청 접수", "모자보건 상담·신청", False),
+    ),
+    "M004": (
+        ("031-5189-4370", "대표전화", "산모·신생아 지원 신청", True),
+        ("031-5189-5085", "모자보건 지원 사업 상담·신청 접수", "모자보건 상담·신청", False),
+        ("031-5189-6944", "영유아·임산부 지원", "영유아·임산부 지원", False),
+    ),
+    "M005": (
+        ("031-5189-6944", "대표전화", "고위험 임산부 의료비", True),
+        ("031-5189-4370", "모자보건 지원 사업 상담·신청 접수", "모자보건 상담·신청", False),
+        ("031-5189-5085", "모자보건 지원 사업 상담·신청 접수", "모자보건 상담·신청", False),
+    ),
+    "M006": (
+        ("031-5189-6944", "대표전화", "기저귀·조제분유 지원", True),
+        ("031-5189-4370", "모자보건 지원 사업 상담·신청 접수", "모자보건 상담·신청", False),
+        ("031-5189-5085", "모자보건 지원 사업 상담·신청 접수", "모자보건 상담·신청", False),
+        ("031-5189-5023", "추가 연락처", "기저귀 지원", False),
+    ),
+    "M008": (("031-5189-6944", "대표전화", "미숙아·선천성이상아 의료비", True),),
+    "R002": (
+        ("031-5189-5032", "대표전화", "어르신 건강관리 문의", True),
+        ("031-5189-4778", "권역별 방문건강 문의", "방문건강 문의", False),
+        ("031-5189-4779", "권역별 방문건강 문의", "방문건강 문의", False),
+        ("031-5189-6933", "권역별 방문건강 문의", "방문건강 문의", False),
+        ("031-5189-6946", "권역별 방문건강 문의", "방문건강 문의", False),
+    ),
+}
+
+
+@pytest.fixture(scope="session")
+def public_guidance_contact_db(tmp_path_factory) -> Path:
+    """Build the public API fixture without the operating DB or source workbook."""
+
+    root = tmp_path_factory.mktemp("public-guidance-api-data")
+    database = root / "health_search.db"
+    tasks = json.loads((ROOT / "data" / "tasks.json").read_text(encoding="utf-8"))
+    _create_baseline_db(database, tasks)
+
+    with sqlite3.connect(database) as connection:
+        connection.execute("PRAGMA foreign_keys = ON")
+        connection.executescript(SCHEMA_PATH.read_text(encoding="utf-8"))
+        source_row = 2
+        for task_id, contacts in PUBLIC_GUIDANCE_CONTACTS.items():
+            status = "confirmed_multiple" if len(contacts) > 1 else "confirmed"
+            for phone, label, role, is_primary in contacts:
+                connection.execute(
+                    """
+                    INSERT INTO task_contacts(
+                        task_id, phone, display_phone, label, note, contact_role,
+                        condition_text, is_primary, source_url, source_urls_json,
+                        source_sheet, source_row, verified_at, match_status, active
+                    ) VALUES (?, ?, ?, ?, NULL, ?, NULL, ?, ?, '[]', ?, ?, ?, ?, 1)
+                    """,
+                    (
+                        task_id,
+                        phone,
+                        phone,
+                        label,
+                        role,
+                        int(is_primary),
+                        "https://www.hscity.go.kr/health/",
+                        "synthetic-public-guidance",
+                        source_row,
+                        "2026-08-28",
+                        status,
+                    ),
+                )
+                source_row += 1
+        assert connection.execute("PRAGMA foreign_key_check").fetchall() == []
+        assert connection.execute("PRAGMA integrity_check").fetchone() == ("ok",)
+    return database

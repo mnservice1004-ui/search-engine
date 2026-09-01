@@ -16,6 +16,127 @@ from public_guidance import (
 
 ROOT = Path(__file__).resolve().parents[1]
 GUIDANCE_PATH = ROOT / "data" / "public_guidance.json"
+TASKS_PATH = ROOT / "data" / "tasks.json"
+NEW_TASK_IDS = {
+    "A001",
+    "A019",
+    "H001",
+    "H002",
+    "M002",
+    "M003",
+    "M004",
+    "M005",
+    "M006",
+    "M008",
+}
+MAP_LOCATIONS = {
+    "A001": ("1층", "진료실"),
+    "A019": ("1층", "영상의학실"),
+    "H001": ("2층", "금연상담실"),
+    "H002": ("2층", "만성질환관리센터"),
+}
+NO_MAP_IDS = {"M002", "M003", "M004", "M005", "M006", "M008", "R002"}
+H002_FORBIDDEN_PUBLIC_FRAGMENTS = (
+    "인바디",
+    "13주",
+    "근로자",
+    "무료",
+    "09:00",
+    "18:00",
+)
+EXPECTED_PUBLIC_SEARCH_TERMS = {
+    "A001": (
+        "보건소 진료를 받고 싶으신가요?",
+        "보건소 진료",
+        "일반진료",
+        "진료 접수",
+        "진료를 받으러 왔어요",
+    ),
+    "A011": (
+        "결핵 상담이나 관리가 필요하신가요?",
+        "결핵 상담",
+        "결핵 관리",
+        "결핵 관련 상담",
+    ),
+    "A012": (
+        "결핵 검사를 받고 싶으신가요?",
+        "결핵 검사",
+        "결핵 검사 문의",
+        "결핵 검사를 받으러 왔어요",
+    ),
+    "A019": (
+        "골다공증 검사를 받고 싶으신가요?",
+        "골다공증 검사",
+        "골밀도 검사",
+        "골밀도 검사 예약",
+        "예약한 골다공증 검사",
+    ),
+    "H001": (
+        "담배를 끊는 상담을 받고 싶으신가요?",
+        "금연 상담",
+        "금연클리닉",
+        "금연상담 예약",
+        "담배 끊기 상담",
+    ),
+    "H002": (
+        "만성질환 위험군 건강관리를 받고 싶으신가요?",
+        "만성질환 위험군 건강관리",
+        "만성질환 건강관리",
+        "운동 영양 상담",
+        "만성질환 건강상담",
+    ),
+    "M002": (
+        "아기의 선천성대사이상 지원이 필요하신가요?",
+        "선천성대사이상 의료비 지원",
+        "선천성대사이상 검사비 지원",
+        "선천성대사이상 환아 지원",
+        "신생아 선천성대사이상 지원",
+    ),
+    "M003": (
+        "난임 시술비 지원을 신청하고 싶으신가요?",
+        "난임 시술비 지원",
+        "난임부부 시술비 지원",
+        "체외수정 지원",
+        "인공수정 지원",
+        "난임 시술비 사전신청",
+    ),
+    "M004": (
+        "산모·신생아 건강관리 지원을 신청하고 싶으신가요?",
+        "산모 신생아 건강관리",
+        "산모 신생아 건강관리 지원",
+        "출산가정 방문 건강관리",
+        "산후도우미 지원",
+    ),
+    "M005": (
+        "고위험 임산부 의료비 지원이 필요하신가요?",
+        "고위험 임산부 의료비 지원",
+        "고위험 임신질환 지원",
+        "고위험 임산부 의료비",
+        "고위험 임신 의료비 지원",
+    ),
+    "M006": (
+        "아기 기저귀·조제분유 지원을 신청하고 싶으신가요?",
+        "기저귀 조제분유 지원",
+        "기저귀 바우처",
+        "조제분유 바우처",
+        "아기 기저귀 지원",
+        "아기 분유 지원",
+    ),
+    "M008": (
+        "미숙아·선천성이상아 의료비 지원이 필요하신가요?",
+        "미숙아 의료비 지원",
+        "선천성이상아 의료비 지원",
+        "미숙아 선천성이상아 지원",
+    ),
+    "R002": (
+        "65세 이상 건강관리 서비스를 찾으시나요?",
+        "65세 이상 건강관리",
+        "어르신 건강관리",
+        "어르신 오늘 건강",
+        "AI·IoT 어르신 건강관리",
+        "스마트워치 건강관리",
+    ),
+}
 
 
 def write_payload(path, payload):
@@ -75,11 +196,17 @@ ALLOWED_NON_PHONE_VALUES = (
     "20260828",
     "65세 이상 어르신",
     "6개월 동안 건강관리를 받습니다.",
+    "13주 건강관리",
+    "1,100원",
+    "신청기한은 출산일로부터 60일입니다.",
+    "평일 09:00~18:00",
     "1층",
+    "2층",
     "3층",
     "A011",
     "A012",
     "R002",
+    "A001·A019·M002",
     "A011·A012·R002",
     "A011 — 2026-08-28",
     "업무 63건",
@@ -97,17 +224,27 @@ def set_nested(payload, path, value):
     target[path[-1]] = value
 
 
-def test_checked_in_public_guidance_has_exact_three_task_contract(monkeypatch, tmp_path):
+def test_checked_in_public_guidance_has_exact_thirteen_task_contract(monkeypatch, tmp_path):
+    payload = base_payload()
     guidance = load_public_guidance(GUIDANCE_PATH)
 
+    assert payload["schema_version"] == 2
     assert set(guidance) == EXPECTED_TASK_IDS
+    assert len(guidance) == 13
+    assert NEW_TASK_IDS <= set(guidance)
     for task_id, item in guidance.items():
         assert item["task_id"] == task_id
         assert set(PUBLIC_TEXT_FIELDS) <= set(item)
+        assert tuple(item["public_search_terms"]) == EXPECTED_PUBLIC_SEARCH_TERMS[task_id]
+        assert item["public_title"] in item["public_search_terms"]
+        assert 2 <= len(item["public_search_terms"]) <= 6
         serialized = json.dumps(item, ensure_ascii=False)
         assert "031-" not in serialized
         for forbidden in ("note", "source", "status", "source_row", "hash", "local_path"):
             assert forbidden not in serialized
+
+    assert guidance["A011"]["public_title"] == "결핵 상담이나 관리가 필요하신가요?"
+    assert guidance["A012"]["public_title"] == "결핵 검사를 받고 싶으신가요?"
 
     r002 = guidance["R002"]
     assert r002["organization"] == {
@@ -124,6 +261,88 @@ def test_checked_in_public_guidance_has_exact_three_task_contract(monkeypatch, t
     assert set(load_public_guidance()) == EXPECTED_TASK_IDS
 
 
+def test_first_batch_location_policy_uses_only_verified_service_places():
+    guidance = load_public_guidance(GUIDANCE_PATH)
+
+    for task_id, (floor, room) in MAP_LOCATIONS.items():
+        assert guidance[task_id]["location"] == {
+            "floor": floor,
+            "room": room,
+            "route_text": guidance[task_id]["location"]["route_text"],
+            "show_map": True,
+        }
+        assert floor in guidance[task_id]["location"]["route_text"]
+        assert room in guidance[task_id]["location"]["route_text"]
+
+    for task_id in NO_MAP_IDS:
+        assert guidance[task_id]["location"] == {
+            "floor": None,
+            "room": None,
+            "route_text": "방문 장소는 전화로 확인해 주세요.",
+            "show_map": False,
+        }
+
+
+def test_first_batch_preserves_confirmed_service_boundaries():
+    guidance = load_public_guidance(GUIDANCE_PATH)
+
+    assert "예약" in guidance["A019"]["primary_action"]
+    assert "6,000원" in guidance["A019"]["fee"]
+    assert "검사비는 변동될 수" in guidance["A019"]["public_caution"]
+    assert "평일 예약제" in guidance["H001"]["public_caution"]
+    assert "30세부터 69세까지" in guidance["H002"]["eligibility"]
+    assert "운동·영양 상담" in guidance["H002"]["public_summary"]
+    assert guidance["H002"]["fee"] is None
+    assert guidance["H002"]["operating_hours"] is None
+    assert "만 65세 이상" in guidance["A001"]["fee"]
+    assert "검사비와 환아 지원" in guidance["M002"]["public_caution"]
+    assert "대상 영아의 부모가" in guidance["M002"]["eligibility"]
+    assert "출생일로부터 1년 이내" in guidance["M002"]["eligibility"]
+    assert "영아가 신청" not in guidance["M002"]["eligibility"]
+    assert "시술 전에" in guidance["M003"]["visit_steps"]
+    assert "출산가정을 방문" in guidance["M004"]["public_summary"]
+    assert "19개 고위험 임신질환" in guidance["M005"]["eligibility"]
+    assert "조제분유" in guidance["M006"]["eligibility"]
+    assert "추가 조건" in guidance["M006"]["eligibility"]
+    assert guidance["M008"]["fee"] is None
+    assert "출생 후 24시간 이내" in guidance["M008"]["eligibility"]
+    assert "긴급한 수술이나 치료가 필요" in guidance["M008"]["eligibility"]
+    assert "신생아 중환자실(NICU)에 입원" in guidance["M008"]["eligibility"]
+    assert "선천성이상아는" in guidance["M008"]["eligibility"]
+    assert "2,000백만원" not in json.dumps(guidance["M008"], ensure_ascii=False)
+    assert "원문" not in json.dumps(guidance["M008"], ensure_ascii=False)
+    assert all(guidance[task_id]["verified_date"] == "2026-08-26" for task_id in NEW_TASK_IDS)
+
+
+def test_h002_public_guidance_omits_unverified_claims():
+    guidance = load_public_guidance(GUIDANCE_PATH)
+    serialized = json.dumps(guidance["H002"], ensure_ascii=False)
+
+    assert not any(fragment in serialized for fragment in H002_FORBIDDEN_PUBLIC_FRAGMENTS)
+
+
+def test_public_search_terms_use_only_the_safe_schema_v2_layer():
+    guidance = load_public_guidance(GUIDANCE_PATH)
+
+    for task_id, item in guidance.items():
+        normalized = {
+            " ".join(term.split()).casefold()
+            for term in item["public_search_terms"]
+        }
+        assert len(normalized) == len(item["public_search_terms"])
+        assert task_id not in item["public_search_terms"]
+
+    h002_terms = " ".join(guidance["H002"]["public_search_terms"])
+    for expected in (
+        "만성질환 위험군 건강관리",
+        "만성질환 건강관리",
+        "운동 영양 상담",
+        "만성질환 건강상담",
+    ):
+        assert expected in h002_terms
+    assert not any(fragment in h002_terms for fragment in H002_FORBIDDEN_PUBLIC_FRAGMENTS)
+
+
 def test_guidance_missing_or_invalid_json_fails_closed(tmp_path):
     with pytest.raises(PublicGuidanceConfigurationError, match="missing"):
         load_public_guidance(tmp_path / "missing.json")
@@ -134,9 +353,150 @@ def test_guidance_missing_or_invalid_json_fails_closed(tmp_path):
         load_public_guidance(invalid)
 
     payload = base_payload()
-    payload.update({"schema_version": 1.0})
+    payload.update({"schema_version": 2.0})
     with pytest.raises(PublicGuidanceConfigurationError):
         load_public_guidance(write_payload(tmp_path / "float-schema.json", payload))
+
+
+@pytest.mark.parametrize("unsupported_version", (1, 3, True))
+def test_unsupported_schema_versions_are_rejected(tmp_path, unsupported_version):
+    payload = base_payload()
+    payload["schema_version"] = unsupported_version
+
+    with pytest.raises(PublicGuidanceConfigurationError, match="schema_version"):
+        load_public_guidance(write_payload(tmp_path / "unsupported-schema.json", payload))
+
+
+@pytest.mark.parametrize(
+    ("mutation", "error_fragment"),
+    (
+        (lambda item: item.pop("public_search_terms"), "invalid keys"),
+        (lambda item: item.update(public_search_terms="결핵 상담"), "must be an array"),
+        (lambda item: item.update(public_search_terms=[item["public_title"]]), "must contain"),
+        (
+            lambda item: item.update(
+                public_search_terms=[item["public_title"], *[f"검색어 {index}" for index in range(6)]]
+            ),
+            "must contain",
+        ),
+        (
+            lambda item: item.update(
+                public_search_terms=[item["public_title"], "", "결핵 상담"]
+            ),
+            "non-empty text",
+        ),
+        (
+            lambda item: item.update(
+                public_search_terms=[
+                    item["public_title"],
+                    "결핵 상담",
+                    "  결핵   상담  ",
+                ]
+            ),
+            "duplicates",
+        ),
+        (
+            lambda item: item.update(
+                public_search_terms=[
+                    item["public_title"],
+                    "결핵 상담",
+                    "결핵-상담",
+                ]
+            ),
+            "duplicates",
+        ),
+        (
+            lambda item: item.update(
+                public_search_terms=[
+                    item["public_title"],
+                    "ＡＢＣ 건강상담",
+                    "ABC 건강상담",
+                ]
+            ),
+            "duplicates",
+        ),
+        (
+            lambda item: item.update(
+                public_search_terms=[item["public_title"], "문의: 5032"]
+            ),
+            "phone-like value",
+        ),
+        (
+            lambda item: item.update(
+                public_search_terms=[item["public_title"], "A011"]
+            ),
+            "unsafe public search term",
+        ),
+        (
+            lambda item: item.update(
+                public_search_terms=[item["public_title"], "홍길동 주무관"]
+            ),
+            "unsafe public search term",
+        ),
+        (
+            lambda item: item.update(
+                public_search_terms=[item["public_title"], "source review 상태"]
+            ),
+            "unsafe public search term",
+        ),
+        (
+            lambda item: item.update(
+                public_search_terms=[item["public_title"], "가" * 81]
+            ),
+            "maximum length",
+        ),
+        (
+            lambda item: item.update(
+                public_search_terms=["결핵 상담", "결핵 관리"]
+            ),
+            "must include public_title",
+        ),
+    ),
+)
+def test_invalid_public_search_terms_are_rejected(
+    tmp_path, mutation, error_fragment
+):
+    payload = base_payload()
+    mutation(payload["tasks"][0])
+
+    with pytest.raises(PublicGuidanceConfigurationError, match=error_fragment):
+        load_public_guidance(write_payload(tmp_path / "invalid-search-terms.json", payload))
+
+
+@pytest.mark.parametrize("forbidden", ("인바디", "13주", "13주 프로그램", "근로자", "무료"))
+def test_h002_rejects_unverified_public_search_terms(tmp_path, forbidden):
+    payload = base_payload()
+    h002 = next(item for item in payload["tasks"] if item["task_id"] == "H002")
+    h002["public_search_terms"][-1] = forbidden
+
+    with pytest.raises(PublicGuidanceConfigurationError, match="unverified") as exc_info:
+        load_public_guidance(write_payload(tmp_path / "unsafe-h002-term.json", payload))
+    assert forbidden not in str(exc_info.value)
+
+
+def test_public_search_terms_allow_normal_numbers_and_spacing_variants(tmp_path):
+    payload = base_payload()
+    r002 = next(item for item in payload["tasks"] if item["task_id"] == "R002")
+    r002["public_search_terms"][-1] = "65세 6개월 건강관리 2026-08-28"
+
+    guidance = load_public_guidance(
+        write_payload(tmp_path / "safe-number-search-term.json", payload)
+    )
+    assert guidance["R002"]["public_search_terms"][-1] == (
+        "65세 6개월 건강관리 2026-08-28"
+    )
+
+
+@pytest.mark.parametrize("mutation", ("missing", "unapproved"))
+def test_guidance_rejects_missing_or_unapproved_task_ids(tmp_path, mutation):
+    payload = base_payload()
+    if mutation == "missing":
+        payload["tasks"].pop()
+    else:
+        payload["tasks"][-1]["task_id"] = "X999"
+
+    with pytest.raises(PublicGuidanceConfigurationError, match="contain exactly"):
+        load_public_guidance(write_payload(tmp_path / f"{mutation}.json", payload))
 
 
 @pytest.mark.parametrize(
@@ -196,8 +556,8 @@ def test_guidance_schema_errors_are_rejected(tmp_path, mutate):
 
 def test_duplicate_json_object_key_is_rejected(tmp_path):
     duplicate = GUIDANCE_PATH.read_text(encoding="utf-8").replace(
-        '"schema_version": 1,',
-        '"schema_version": 1,\n  "schema_version": 1,',
+        '"schema_version": 2,',
+        '"schema_version": 2,\n  "schema_version": 2,',
         1,
     )
     path = tmp_path / "duplicate-key.json"
@@ -262,3 +622,28 @@ def test_unregistered_task_uses_allowlist_instead_of_raw_task_copy():
         '"phone": "031-999-9999"',
     ):
         assert forbidden not in serialized
+
+
+def test_remaining_fifty_tasks_serialize_without_internal_fallback_or_config_error():
+    guidance = load_public_guidance(GUIDANCE_PATH)
+    tasks = json.loads(TASKS_PATH.read_text(encoding="utf-8"))
+    remaining = [task for task in tasks if task["id"] not in guidance]
+
+    assert len(remaining) == 50
+    for raw in remaining:
+        item = serialize_public_task(raw, [], guidance)
+        serialized = json.dumps(item, ensure_ascii=False)
+        assert item["id"] == raw["id"]
+        assert item["primary_contact"] is None
+        assert item["contacts"] == []
+        assert all(item[field] is None for field in PUBLIC_TEXT_FIELDS)
+        for forbidden in (
+            '"status"',
+            '"source"',
+            '"note"',
+            '"source_hash"',
+            '"local_path"',
+            '"review_state"',
+            '"raw_payload"',
+        ):
+            assert forbidden not in serialized

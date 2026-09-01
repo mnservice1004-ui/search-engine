@@ -4,12 +4,28 @@ import unicodedata
 from datetime import date
 from pathlib import Path
 
+from search_engine import normalize as normalize_search_value
 
-SCHEMA_VERSION = 1
+
+SCHEMA_VERSION = 2
 DEFAULT_PUBLIC_GUIDANCE_PATH = (
     Path(__file__).resolve().parent / "data" / "public_guidance.json"
 )
-EXPECTED_TASK_IDS = {"A011", "A012", "R002"}
+EXPECTED_TASK_IDS = {
+    "A001",
+    "A011",
+    "A012",
+    "A019",
+    "H001",
+    "H002",
+    "M002",
+    "M003",
+    "M004",
+    "M005",
+    "M006",
+    "M008",
+    "R002",
+}
 PUBLIC_TEXT_FIELDS = (
     "public_title",
     "public_summary",
@@ -31,7 +47,17 @@ PUBLIC_CONTACT_FIELDS = (
     "verified_date",
     "is_primary",
 )
-TASK_KEYS = {"task_id", *PUBLIC_TEXT_FIELDS, "organization", "location"}
+PUBLIC_SEARCH_TERMS_FIELD = "public_search_terms"
+MIN_PUBLIC_SEARCH_TERMS = 2
+MAX_PUBLIC_SEARCH_TERMS = 6
+MAX_PUBLIC_SEARCH_TERM_LENGTH = 80
+TASK_KEYS = {
+    "task_id",
+    *PUBLIC_TEXT_FIELDS,
+    PUBLIC_SEARCH_TERMS_FIELD,
+    "organization",
+    "location",
+}
 ORGANIZATION_KEYS = {"department", "team"}
 LOCATION_KEYS = {"floor", "room", "route_text", "show_map"}
 NULLABLE_PUBLIC_TEXT_FIELDS = {"documents", "fee", "operating_hours"}
@@ -53,6 +79,16 @@ UNSAFE_CONTACT_VALUE_RE = re.compile(
     re.IGNORECASE,
 )
 HEX_DIGEST_RE = re.compile(r"(?<![0-9a-f])[0-9a-f]{64}(?![0-9a-f])", re.IGNORECASE)
+TASK_ID_SEARCH_TERM_RE = re.compile(r"(?<![A-Za-z0-9])[A-Z]\d{3}(?![A-Za-z0-9])")
+EMPLOYEE_SEARCH_TERM_RE = re.compile(
+    r"(?:(?:담당자|직원|주무관|팀장|과장)\s*(?:이름|성명|[가-힣]{2,4})|"
+    r"[가-힣]{2,4}\s*(?:담당자|직원|주무관|팀장|과장))",
+    re.IGNORECASE,
+)
+H002_FORBIDDEN_SEARCH_TERM_RE = re.compile(
+    r"(?:인바디|13\s*주|근로자|무료)",
+    re.IGNORECASE,
+)
 
 
 class PublicGuidanceConfigurationError(RuntimeError):
@@ -158,6 +194,62 @@ def _require_text(value, label, *, nullable=False):
         raise PublicGuidanceConfigurationError(f"{label} must be non-empty text")
 
 
+def _normalize_public_search_term(value):
+    return normalize_search_value(value)
+
+
+def _validate_public_search_terms(item, label):
+    terms = item[PUBLIC_SEARCH_TERMS_FIELD]
+    terms_label = f"{label}.{PUBLIC_SEARCH_TERMS_FIELD}"
+    if not isinstance(terms, list):
+        raise PublicGuidanceConfigurationError(f"{terms_label} must be an array")
+    if not MIN_PUBLIC_SEARCH_TERMS <= len(terms) <= MAX_PUBLIC_SEARCH_TERMS:
+        raise PublicGuidanceConfigurationError(
+            f"{terms_label} must contain {MIN_PUBLIC_SEARCH_TERMS} to "
+            f"{MAX_PUBLIC_SEARCH_TERMS} terms"
+        )
+
+    normalized_terms = set()
+    for term_index, term in enumerate(terms):
+        term_label = f"{terms_label}[{term_index}]"
+        if not isinstance(term, str) or not term.strip():
+            raise PublicGuidanceConfigurationError(
+                f"{term_label} must be non-empty text"
+            )
+        normalized = _normalize_public_search_term(term)
+        if len(normalized) > MAX_PUBLIC_SEARCH_TERM_LENGTH:
+            raise PublicGuidanceConfigurationError(
+                f"{term_label} exceeds the maximum length"
+            )
+        if normalized in normalized_terms:
+            raise PublicGuidanceConfigurationError(
+                f"{term_label} duplicates another search term"
+            )
+        if (
+            _contains_phone_like(term)
+            or HEX_DIGEST_RE.search(normalized)
+            or UNSAFE_CONTACT_VALUE_RE.search(normalized)
+            or TASK_ID_SEARCH_TERM_RE.search(normalized.upper())
+            or EMPLOYEE_SEARCH_TERM_RE.search(normalized)
+        ):
+            raise PublicGuidanceConfigurationError(
+                f"unsafe public search term at {term_label}"
+            )
+        if (
+            item["task_id"] == "H002"
+            and H002_FORBIDDEN_SEARCH_TERM_RE.search(normalized)
+        ):
+            raise PublicGuidanceConfigurationError(
+                f"unverified public search term at {term_label}"
+            )
+        normalized_terms.add(normalized)
+
+    if item["public_title"] not in terms:
+        raise PublicGuidanceConfigurationError(
+            f"{terms_label} must include public_title"
+        )
+
+
 def _validate_guidance_item(item, index):
     label = f"tasks[{index}]"
     _require_exact_keys(item, TASK_KEYS, label)
@@ -172,6 +264,7 @@ def _validate_guidance_item(item, index):
             raise PublicGuidanceConfigurationError(
                 f"phone-like value is not allowed at {label}.{field}"
             )
+    _validate_public_search_terms(item, label)
     try:
         date.fromisoformat(item["verified_date"])
     except ValueError as error:
@@ -243,8 +336,9 @@ def load_public_guidance(path=None):
             raise PublicGuidanceConfigurationError(f"duplicate task_id: {task_id}")
         guidance[task_id] = item
     if set(guidance) != EXPECTED_TASK_IDS:
+        expected = ", ".join(sorted(EXPECTED_TASK_IDS))
         raise PublicGuidanceConfigurationError(
-            "public guidance must contain exactly A011, A012, and R002"
+            f"public guidance must contain exactly: {expected}"
         )
     return guidance
 
@@ -291,19 +385,52 @@ def _public_contact(contact, task_id):
     return public_contact
 
 
-def _public_aliases(aliases):
-    public_aliases = []
-    for alias in aliases or []:
-        if not isinstance(alias, dict):
-            continue
-        public_aliases.append(
-            {
-                "text": alias.get("text"),
-                "weight": alias.get("weight"),
-                "type": alias.get("type"),
-            }
+def _guided_search_task(task, guidance):
+    """Return the only candidate fields allowed to rank a guided task."""
+
+    return {
+        "id": str(task.get("id") or ""),
+        "name": guidance["public_title"],
+        "priority": int(task.get("priority") or 0),
+        "aliases": [
+            {"text": term, "weight": 12, "type": "public"}
+            for term in guidance[PUBLIC_SEARCH_TERMS_FIELD]
+        ],
+    }
+
+
+def build_public_search_tasks(tasks, guidance_by_task):
+    """Separate guided public candidates from unregistered legacy candidates."""
+
+    projected = []
+    for task in tasks:
+        task_id = str(task.get("id") or "")
+        guidance = guidance_by_task.get(task_id)
+        projected.append(
+            _guided_search_task(task, guidance) if guidance else task
         )
-    return public_aliases
+    return projected
+
+
+def build_public_suggestion_tasks(tasks, guidance_by_task):
+    """Keep internal aliases out of suggestion responses."""
+
+    projected = []
+    for task in tasks:
+        task_id = str(task.get("id") or "")
+        guidance = guidance_by_task.get(task_id)
+        if guidance:
+            projected.append(_guided_search_task(task, guidance))
+        else:
+            projected.append(
+                {
+                    "id": task_id,
+                    "name": task.get("name"),
+                    "priority": int(task.get("priority") or 0),
+                    "aliases": [],
+                }
+            )
+    return projected
 
 
 def serialize_public_task(task, contacts, guidance_by_task):
@@ -365,7 +492,9 @@ def serialize_public_task(task, contacts, guidance_by_task):
         "script": script,
         "location_condition": location_condition,
         "locationCondition": location_condition,
-        "aliases": _public_aliases(task.get("aliases")),
+        "aliases": (
+            list(guidance[PUBLIC_SEARCH_TERMS_FIELD]) if guidance else []
+        ),
         "primary_contact": primary_contact,
         "contacts": public_contacts,
         **public_text,

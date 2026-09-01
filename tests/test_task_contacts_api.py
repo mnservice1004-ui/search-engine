@@ -31,9 +31,9 @@ HELD_TASK_IDS = (
 
 
 @pytest.fixture
-def temporary_api_db(tmp_path, synthetic_contact_dataset):
+def temporary_api_db(tmp_path, public_guidance_contact_db):
     destination_path = tmp_path / "health_search.db"
-    shutil.copy2(synthetic_contact_dataset.populated_db, destination_path)
+    shutil.copy2(public_guidance_contact_db, destination_path)
     return destination_path
 
 
@@ -51,7 +51,21 @@ def test_bulk_contact_loader_uses_one_query_and_stable_public_shape(
         return connection
 
     monkeypatch.setattr(db.sqlite3, "connect", traced_connect)
-    grouped = db.get_contacts_by_task_ids(["A011", "A012", "F101", "H004", "A012"])
+    first_batch_ids = [
+        "A001",
+        "A019",
+        "H001",
+        "H002",
+        "M002",
+        "M003",
+        "M004",
+        "M005",
+        "M006",
+        "M008",
+    ]
+    grouped = db.get_contacts_by_task_ids(
+        ["A011", "A012", "F101", "H004", *first_batch_ids, "A012"]
+    )
     contact_selects = [
         statement
         for statement in statements
@@ -60,7 +74,7 @@ def test_bulk_contact_loader_uses_one_query_and_stable_public_shape(
 
     assert len(contact_selects) == 1
     assert "match_status" not in contact_selects[0]
-    assert list(grouped) == ["A011", "A012", "F101", "H004"]
+    assert list(grouped) == ["A011", "A012", "F101", "H004", *first_batch_ids]
     assert grouped["H004"] == []
     assert all(set(contact) == PUBLIC_FIELDS for rows in grouped.values() for contact in rows)
     assert grouped["A011"][0]["phone"] == "031-5189-4364"
@@ -81,6 +95,32 @@ def test_bulk_contact_loader_uses_one_query_and_stable_public_shape(
     assert all(
         contact["phone"] != "031-5189-4354"
         for task_id in ("A011", "A012", "F101")
+        for contact in grouped[task_id]
+    )
+    assert {
+        task_id: tuple(contact["phone"] for contact in grouped[task_id])
+        for task_id in first_batch_ids
+    } == {
+        "A001": ("031-5189-4378",),
+        "A019": ("031-5189-4344",),
+        "H001": ("031-5189-4371",),
+        "H002": ("031-5189-4374",),
+        "M002": ("031-5189-6944",),
+        "M003": ("031-5189-6943", "031-5189-4370", "031-5189-5085"),
+        "M004": ("031-5189-4370", "031-5189-5085", "031-5189-6944"),
+        "M005": ("031-5189-6944", "031-5189-4370", "031-5189-5085"),
+        "M006": (
+            "031-5189-6944",
+            "031-5189-4370",
+            "031-5189-5085",
+            "031-5189-5023",
+        ),
+        "M008": ("031-5189-6944",),
+    }
+    assert all(grouped[task_id][0]["is_primary"] for task_id in first_batch_ids)
+    assert all(
+        contact["verified_date"] == "2026-08-28"
+        for task_id in first_batch_ids
         for contact in grouped[task_id]
     )
 

@@ -9,8 +9,13 @@ from flask_limiter.util import get_remote_address
 
 from db import get_all_tasks, get_contacts_by_task_ids, get_task, log_event
 from llm_helper import expand_query
-from public_guidance import load_public_guidance, serialize_public_task
-from search_engine import search_tasks, suggest_terms
+from public_guidance import (
+    build_public_search_tasks,
+    build_public_suggestion_tasks,
+    load_public_guidance,
+    serialize_public_task,
+)
+from search_engine import normalize, search_tasks, suggest_terms
 from sms_service import send_contact_sms
 
 
@@ -43,6 +48,47 @@ def attach_public_contacts(tasks):
             )
         )
     return public_tasks
+
+
+def _public_match_tier(task, query):
+    guidance = PUBLIC_GUIDANCE.get(str(task.get("id") or ""))
+    if not guidance:
+        return 0
+    normalized_query = normalize(query)
+    if normalized_query == normalize(guidance["public_title"]):
+        return 2
+    if any(
+        normalized_query == normalize(term)
+        for term in guidance["public_search_terms"]
+    ):
+        return 1
+    return 0
+
+
+def _public_rank_key(task):
+    return (
+        -int(task.get("_public_match_tier") or 0),
+        -int(task.get("score") or 0),
+        -int(task.get("priority") or 0),
+        str(task.get("name") or ""),
+        str(task.get("id") or ""),
+    )
+
+
+def search_public_tasks(searchable_tasks, query, limit=100):
+    ranked = search_tasks(searchable_tasks, query, 100)
+    for task in ranked:
+        task["_public_match_tier"] = _public_match_tier(task, query)
+    ranked.sort(key=_public_rank_key)
+    return ranked[: max(1, min(int(limit), 100))]
+
+
+def _allow_query_expansion(query):
+    normalized_query = normalize(query)
+    return (
+        "인바디" not in normalized_query
+        and "13주" not in normalized_query
+    )
 
 
 @app.after_request
@@ -88,7 +134,8 @@ def suggestions():
     query = str(payload.get("query", "")).strip()
     if len(query) > 80:
         return jsonify({"error": "검색어는 80자 이하여야 합니다."}), 400
-    return jsonify({"items": suggest_terms(get_all_tasks(), query)})
+    tasks = build_public_suggestion_tasks(get_all_tasks(), PUBLIC_GUIDANCE)
+    return jsonify({"items": suggest_terms(tasks, query)})
 
 
 @app.post("/api/search")
@@ -100,17 +147,18 @@ def search():
         return jsonify({"error": "검색어를 2~80자로 입력하십시오."}), 400
 
     tasks = get_all_tasks()
-    all_results = search_tasks(tasks, query, 100)
+    searchable_tasks = build_public_search_tasks(tasks, PUBLIC_GUIDANCE)
+    all_results = search_public_tasks(searchable_tasks, query, 100)
     expansions = []
-    if not all_results:
+    if not all_results and _allow_query_expansion(query):
         expansions = expand_query(query)
         merged = {}
         for expanded in expansions:
-            for item in search_tasks(tasks, expanded, 100):
+            for item in search_public_tasks(searchable_tasks, expanded, 100):
                 previous = merged.get(item["id"])
-                if previous is None or item["score"] > previous["score"]:
+                if previous is None or _public_rank_key(item) < _public_rank_key(previous):
                     merged[item["id"]] = item
-        all_results = sorted(merged.values(), key=lambda item: (-item["score"], item["name"]))
+        all_results = sorted(merged.values(), key=_public_rank_key)
 
     items = attach_public_contacts(all_results[:10])
     best_effort_log("search", result_count=len(all_results))
