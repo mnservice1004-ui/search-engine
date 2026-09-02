@@ -31,9 +31,15 @@ NEW_TASK_IDS = {
     "M006",
     "M008",
 }
+SECOND_READY_TASK_IDS = {"A003", "F103", "F108", "F201"}
+DISALLOWED_TASK_IDS = {"A002", "A004", "A008", "F101", "F106", "F204", "R006"}
 MAP_LOCATIONS = {
     "A001": ("1층", "진료실"),
+    "A003": ("1층", "민원실"),
     "A019": ("1층", "영상의학실"),
+    "F103": ("1층", "진료실"),
+    "F108": ("1층", "민원실"),
+    "F201": ("2층", "만성질환관리센터"),
     "H001": ("2층", "금연상담실"),
     "H002": ("2층", "만성질환관리센터"),
 }
@@ -53,6 +59,13 @@ EXPECTED_PUBLIC_SEARCH_TERMS = {
         "일반진료",
         "진료 접수",
         "진료를 받으러 왔어요",
+    ),
+    "A003": (
+        "보건증·건강진단서 발급이 필요하신가요?",
+        "보건증 발급 방법 문의",
+        "건강진단결과서 받는 방법",
+        "건강진단서 발급 준비",
+        "외국인 결핵검진 확인서 발급",
     ),
     "A007": (
         "방역·소독 업무를 문의하시나요?",
@@ -78,6 +91,21 @@ EXPECTED_PUBLIC_SEARCH_TERMS = {
         "골밀도 검사",
         "골밀도 검사 예약",
         "예약한 골다공증 검사",
+    ),
+    "F103": (
+        "진료실을 찾으시나요?",
+        "보건소 진료실 찾아가는 길",
+        "일반진료 받는 곳 안내",
+    ),
+    "F108": (
+        "민원실을 찾으시나요?",
+        "보건소 민원 접수 장소 안내",
+        "민원 창구 찾아가는 길",
+    ),
+    "F201": (
+        "만성질환관리센터를 찾으시나요?",
+        "보건소 만성질환 상담 장소 안내",
+        "건강관리센터 찾아가는 길",
     ),
     "H001": (
         "담배를 끊는 상담을 받고 싶으신가요?",
@@ -232,16 +260,17 @@ def set_nested(payload, path, value):
     target[path[-1]] = value
 
 
-def test_checked_in_public_guidance_has_exact_fourteen_task_contract(monkeypatch, tmp_path):
+def test_checked_in_public_guidance_has_exact_eighteen_task_contract(monkeypatch, tmp_path):
     payload = base_payload()
     guidance = load_public_guidance(GUIDANCE_PATH)
 
     assert payload["schema_version"] == 2
     assert set(guidance) == EXPECTED_TASK_IDS
-    assert len(guidance) == 14
-    assert sum(len(item["public_search_terms"]) for item in guidance.values()) == 69
-    assert not {"R006", "A004", "A008", "F101"} & set(guidance)
+    assert len(guidance) == 18
+    assert sum(len(item["public_search_terms"]) for item in guidance.values()) == 83
+    assert not DISALLOWED_TASK_IDS & set(guidance)
     assert NEW_TASK_IDS <= set(guidance)
+    assert SECOND_READY_TASK_IDS <= set(guidance)
     for task_id, item in guidance.items():
         assert item["task_id"] == task_id
         assert set(PUBLIC_TEXT_FIELDS) <= set(item)
@@ -282,9 +311,11 @@ def test_checked_in_public_guidance_has_exact_fourteen_task_contract(monkeypatch
     assert set(load_public_guidance()) == EXPECTED_TASK_IDS
 
 
-def test_existing_thirteen_guidance_objects_are_unchanged():
+def test_existing_fourteen_guidance_objects_are_unchanged():
     payload = base_payload()
-    existing = [item for item in payload["tasks"] if item["task_id"] != "A007"]
+    existing = [
+        item for item in payload["tasks"] if item["task_id"] not in SECOND_READY_TASK_IDS
+    ]
     canonical = json.dumps(
         existing,
         ensure_ascii=False,
@@ -292,9 +323,9 @@ def test_existing_thirteen_guidance_objects_are_unchanged():
         sort_keys=True,
     ).encode("utf-8")
 
-    assert len(existing) == 13
+    assert len(existing) == 14
     assert sha256(canonical).hexdigest() == (
-        "418125452764d34edfadc5465da2472437d05381dd2f2cad43108e921df14338"
+        "5e3a102c6c575b37f9f93a2e250474880ab538e33cbcf37fc8d2f42c5d4fc2a8"
     )
 
 
@@ -326,6 +357,60 @@ def test_a007_guidance_preserves_verified_scope_and_forbids_unverified_claims():
         "031-",
     ):
         assert forbidden not in serialized
+
+
+def test_second_ready_guidance_preserves_verified_location_only_boundaries():
+    guidance = load_public_guidance(GUIDANCE_PATH)
+
+    a003 = guidance["A003"]
+    assert a003["verified_date"] == "2026-08-27"
+    assert a003["operating_hours"] is None
+    assert "3,000원" in a003["fee"]
+    assert "5,000원" in a003["fee"]
+    assert "2,000원" in a003["fee"]
+    assert "수수료와 준비물은 방문 전에 확인" in a003["public_caution"]
+
+    f103 = guidance["F103"]
+    f103_serialized = json.dumps(f103, ensure_ascii=False)
+    assert f103["verified_date"] == "2026-08-27"
+    assert f103["documents"] is None
+    assert f103["fee"] is None
+    assert f103["operating_hours"] is None
+    assert "현재 이용 가능 여부와 시간을 대표전화로" in f103["primary_action"]
+    for forbidden in (
+        "화성시민",
+        "실물 신분증",
+        "평일 오전 9시",
+        "접수는 오전",
+        "점심시간",
+        "토요일",
+        "공휴일",
+        "본인부담",
+    ):
+        assert forbidden not in f103_serialized
+
+    f108 = guidance["F108"]
+    assert f108["verified_date"] == "2026-08-27"
+    assert "준비물과 처리 장소가 다를 수" in f108["public_caution"]
+    assert "대표전화로 먼저 확인" in f108["public_caution"]
+
+    f201 = guidance["F201"]
+    f201_serialized = json.dumps(f201, ensure_ascii=False)
+    assert f201["verified_date"] == "2026-08-27"
+    assert f201["documents"] is None
+    assert f201["fee"] is None
+    assert f201["operating_hours"] is None
+    assert "현재 상담·접수 여부를 대표전화로" in f201["primary_action"]
+    for forbidden in (
+        "13주",
+        "인바디",
+        "30세",
+        "69세",
+        "운동처방",
+        "영양상담",
+        "모집",
+    ):
+        assert forbidden not in f201_serialized
 
 
 def test_first_batch_location_policy_uses_only_verified_service_places():
@@ -401,8 +486,8 @@ def test_public_search_terms_use_only_the_safe_schema_v2_layer():
         assert task_id not in item["public_search_terms"]
         all_normalized_terms.extend(normalized)
 
-    assert len(all_normalized_terms) == 69
-    assert len(set(all_normalized_terms)) == 69
+    assert len(all_normalized_terms) == 83
+    assert len(set(all_normalized_terms)) == 83
 
     h002_terms = " ".join(guidance["H002"]["public_search_terms"])
     for expected in (
@@ -696,12 +781,12 @@ def test_unregistered_task_uses_allowlist_instead_of_raw_task_copy():
         assert forbidden not in serialized
 
 
-def test_remaining_forty_nine_tasks_serialize_without_internal_fallback_or_config_error():
+def test_remaining_forty_five_tasks_serialize_without_internal_fallback_or_config_error():
     guidance = load_public_guidance(GUIDANCE_PATH)
     tasks = json.loads(TASKS_PATH.read_text(encoding="utf-8"))
     remaining = [task for task in tasks if task["id"] not in guidance]
 
-    assert len(remaining) == 49
+    assert len(remaining) == 45
     for raw in remaining:
         item = serialize_public_task(raw, [], guidance)
         serialized = json.dumps(item, ensure_ascii=False)

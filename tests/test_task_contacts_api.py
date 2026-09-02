@@ -51,10 +51,14 @@ def test_bulk_contact_loader_uses_one_query_and_stable_public_shape(
         return connection
 
     monkeypatch.setattr(db.sqlite3, "connect", traced_connect)
-    first_batch_ids = [
+    public_guidance_ids = [
         "A001",
+        "A003",
         "A007",
         "A019",
+        "F103",
+        "F108",
+        "F201",
         "H001",
         "H002",
         "M002",
@@ -65,7 +69,7 @@ def test_bulk_contact_loader_uses_one_query_and_stable_public_shape(
         "M008",
     ]
     grouped = db.get_contacts_by_task_ids(
-        ["A011", "A012", "F101", "H004", *first_batch_ids, "A012"]
+        ["A011", "A012", "F101", "H004", *public_guidance_ids, "A012"]
     )
     contact_selects = [
         statement
@@ -75,7 +79,7 @@ def test_bulk_contact_loader_uses_one_query_and_stable_public_shape(
 
     assert len(contact_selects) == 1
     assert "match_status" not in contact_selects[0]
-    assert list(grouped) == ["A011", "A012", "F101", "H004", *first_batch_ids]
+    assert list(grouped) == ["A011", "A012", "F101", "H004", *public_guidance_ids]
     assert grouped["H004"] == []
     assert all(set(contact) == PUBLIC_FIELDS for rows in grouped.values() for contact in rows)
     assert grouped["A011"][0]["phone"] == "031-5189-4364"
@@ -100,11 +104,15 @@ def test_bulk_contact_loader_uses_one_query_and_stable_public_shape(
     )
     assert {
         task_id: tuple(contact["phone"] for contact in grouped[task_id])
-        for task_id in first_batch_ids
+        for task_id in public_guidance_ids
     } == {
         "A001": ("031-5189-4378",),
+        "A003": ("031-5189-4377",),
         "A007": ("031-5189-5093",),
         "A019": ("031-5189-4344",),
+        "F103": ("031-5189-4378",),
+        "F108": ("031-5189-4377",),
+        "F201": ("031-5189-4374",),
         "H001": ("031-5189-4371",),
         "H002": ("031-5189-4374",),
         "M002": ("031-5189-6944",),
@@ -119,10 +127,10 @@ def test_bulk_contact_loader_uses_one_query_and_stable_public_shape(
         ),
         "M008": ("031-5189-6944",),
     }
-    assert all(grouped[task_id][0]["is_primary"] for task_id in first_batch_ids)
+    assert all(grouped[task_id][0]["is_primary"] for task_id in public_guidance_ids)
     assert all(
         contact["verified_date"] == "2026-08-28"
-        for task_id in first_batch_ids
+        for task_id in public_guidance_ids
         for contact in grouped[task_id]
     )
 

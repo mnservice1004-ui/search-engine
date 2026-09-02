@@ -79,7 +79,26 @@ FIRST_BATCH_LOCATIONS = {
     "M006": (None, None, False),
     "M008": (None, None, False),
 }
+SECOND_READY_CONTACTS = {
+    "A003": ("031-5189-4377",),
+    "F103": ("031-5189-4378",),
+    "F108": ("031-5189-4377",),
+    "F201": ("031-5189-4374",),
+}
+SECOND_READY_LOCATIONS = {
+    "A003": ("1층", "민원실", True),
+    "F103": ("1층", "진료실", True),
+    "F108": ("1층", "민원실", True),
+    "F201": ("2층", "만성질환관리센터", True),
+}
 SEARCH_REGRESSION_CASES = {
+    "A003": (
+        "보건증·건강진단서 발급이 필요하신가요?",
+        "보건증 발급 방법 문의",
+        "건강진단결과서 받는 방법",
+        "건강진단서 발급 준비",
+        "외국인 결핵검진 확인서 발급",
+    ),
     "A007": (
         "방역·소독 문의",
         "위생해충 방제",
@@ -87,6 +106,21 @@ SEARCH_REGRESSION_CASES = {
         "소독업 신고",
     ),
     "A019": ("골다공증 검사를 받고 싶으신가요?", "골다공증 검사", "골밀도 검사"),
+    "F103": (
+        "진료실을 찾으시나요?",
+        "보건소 진료실 찾아가는 길",
+        "일반진료 받는 곳 안내",
+    ),
+    "F108": (
+        "민원실을 찾으시나요?",
+        "보건소 민원 접수 장소 안내",
+        "민원 창구 찾아가는 길",
+    ),
+    "F201": (
+        "만성질환관리센터를 찾으시나요?",
+        "보건소 만성질환 상담 장소 안내",
+        "건강관리센터 찾아가는 길",
+    ),
     "H001": ("담배를 끊는 상담을 받고 싶으신가요?", "금연 상담", "금연클리닉"),
     "H002": (
         "만성질환 위험군 건강관리",
@@ -443,11 +477,71 @@ def test_first_batch_api_guidance_contacts_and_location_contract(task_id):
     assert_no_internal_public_values(item)
 
 
-def test_remaining_forty_nine_task_details_stay_available_without_internal_projection():
+@pytest.mark.parametrize("task_id", tuple(SECOND_READY_CONTACTS))
+def test_second_ready_api_guidance_contacts_and_location_contract(task_id):
+    response = client().get(f"/api/tasks/{task_id}")
+    item = response.get_json()
+    floor, room, show_map = SECOND_READY_LOCATIONS[task_id]
+
+    assert response.status_code == 200
+    assert item["id"] == task_id
+    assert item["public_title"] == item["name"]
+    assert item["verified_date"] == "2026-08-27"
+    assert (item["floor"], item["room"], item["show_map"]) == (
+        floor,
+        room,
+        show_map,
+    )
+    assert item["place"] == room
+    assert floor in item["route"]
+    assert room in item["route"]
+    assert item["primary_contact"] == item["contacts"][0]
+    assert item["primary_contact"]["phone"] == SECOND_READY_CONTACTS[task_id][0]
+    assert item["primary_contact"]["is_primary"] is True
+    assert len(item["contacts"]) == 1
+    assert item["contacts"][0]["verified_date"] == "2026-08-28"
+    assert_no_internal_public_keys(item)
+    assert_no_internal_public_values(item)
+
+
+def test_second_ready_location_only_api_boundaries_and_fee_caution():
+    a003 = client().get("/api/tasks/A003").get_json()
+    f103 = client().get("/api/tasks/F103").get_json()
+    f108 = client().get("/api/tasks/F108").get_json()
+    f201 = client().get("/api/tasks/F201").get_json()
+
+    assert "수수료와 준비물은 방문 전에 확인" in a003["public_caution"]
+    assert f103["operating_hours"] is None
+    assert "현재 이용 가능 여부와 시간을 대표전화로" in f103["primary_action"]
+    assert "준비물과 처리 장소가 다를 수" in f108["public_caution"]
+    assert f201["operating_hours"] is None
+    assert "현재 상담·접수 여부를 대표전화로" in f201["primary_action"]
+
+    for item, forbidden_fragments in (
+        (
+            f103,
+            (
+                "화성시민",
+                "실물 신분증",
+                "평일 오전 9시",
+                "점심시간",
+                "본인부담",
+            ),
+        ),
+        (
+            f201,
+            ("13주", "인바디", "30세", "69세", "운동처방", "영양상담", "모집"),
+        ),
+    ):
+        serialized = json.dumps(item, ensure_ascii=False)
+        assert not any(fragment in serialized for fragment in forbidden_fragments)
+
+
+def test_remaining_forty_five_task_details_stay_available_without_internal_projection():
     tasks = json.loads(Path("data/tasks.json").read_text(encoding="utf-8"))
     remaining_ids = [task["id"] for task in tasks if task["id"] not in EXPECTED_TASK_IDS]
 
-    assert len(remaining_ids) == 49
+    assert len(remaining_ids) == 45
     for task_id in remaining_ids:
         response = client().get(f"/api/tasks/{task_id}")
         item = response.get_json()

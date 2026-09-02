@@ -392,6 +392,120 @@
       }
     },
     {
+      "task_id": "A003",
+      "public_title": "보건증·건강진단서 발급이 필요하신가요?",
+      "public_search_terms": [
+        "보건증·건강진단서 발급이 필요하신가요?",
+        "보건증 발급 방법 문의",
+        "건강진단결과서 받는 방법",
+        "건강진단서 발급 준비",
+        "외국인 결핵검진 확인서 발급"
+      ],
+      "public_summary": "건강진단결과서(보건증), 건강진단서와 외국인 결핵검진 확인서의 검사·발급을 안내합니다.",
+      "eligibility": "건강진단결과서, 건강진단서 또는 체류자격 변경·연장 등을 위한 외국인 결핵검진 확인서가 필요한 분",
+      "documents": "건강진단결과서와 건강진단서는 사진이 있는 국가기관 발급 신분증이 필요합니다. 미성년자와 외국인은 필요한 서류가 다르므로 방문 전에 확인해 주세요.",
+      "fee": "건강진단결과서 3,000원, 건강진단서 5,000원, 외국인 결핵검진 확인서 2,000원입니다.",
+      "operating_hours": null,
+      "visit_steps": "발급받을 제증명과 준비물을 확인한 뒤 1층 민원실로 가세요. 온라인 발급 대상인지도 먼저 확인해 주세요.",
+      "public_caution": "보건소마다 제증명 발급 운영이 다를 수 있습니다. 수수료와 준비물은 방문 전에 확인해 주세요.",
+      "primary_action": "발급받을 제증명 이름을 확인하고 대표전화로 준비물을 문의해 주세요.",
+      "verified_date": "2026-08-27",
+      "organization": {
+        "department": "보건행정과",
+        "team": null
+      },
+      "location": {
+        "floor": "1층",
+        "room": "민원실",
+        "route_text": "1층 민원실로 가세요.",
+        "show_map": true
+      }
+    },
+    {
+      "task_id": "F103",
+      "public_title": "진료실을 찾으시나요?",
+      "public_search_terms": [
+        "진료실을 찾으시나요?",
+        "보건소 진료실 찾아가는 길",
+        "일반진료 받는 곳 안내"
+      ],
+      "public_summary": "보건소 1층 진료실 위치를 안내합니다.",
+      "eligibility": "보건소 진료실 위치를 찾는 분",
+      "documents": null,
+      "fee": null,
+      "operating_hours": null,
+      "visit_steps": "현재 이용 가능한 시간을 대표전화로 확인한 뒤 1층 진료실로 가세요.",
+      "public_caution": "진료 가능 여부와 이용 시간은 바뀔 수 있으므로 방문 전에 확인해 주세요.",
+      "primary_action": "현재 이용 가능 여부와 시간을 대표전화로 먼저 확인해 주세요.",
+      "verified_date": "2026-08-27",
+      "organization": {
+        "department": "보건행정과",
+        "team": null
+      },
+      "location": {
+        "floor": "1층",
+        "room": "진료실",
+        "route_text": "1층 진료실로 가세요.",
+        "show_map": true
+      }
+    },
+    {
+      "task_id": "F108",
+      "public_title": "민원실을 찾으시나요?",
+      "public_search_terms": [
+        "민원실을 찾으시나요?",
+        "보건소 민원 접수 장소 안내",
+        "민원 창구 찾아가는 길"
+      ],
+      "public_summary": "민원 접수와 수납을 처리하는 1층 민원실 위치를 안내합니다.",
+      "eligibility": "민원접수·수납 등 민원 업무로 민원실 위치를 찾는 분",
+      "documents": null,
+      "fee": null,
+      "operating_hours": null,
+      "visit_steps": "처리할 민원과 필요한 서류를 대표전화로 확인한 뒤 1층 민원실로 가세요.",
+      "public_caution": "민원 종류에 따라 준비물과 처리 장소가 다를 수 있습니다. 구체 업무는 대표전화로 먼저 확인해 주세요.",
+      "primary_action": "처리할 민원 이름을 확인하고 대표전화로 준비물을 문의해 주세요.",
+      "verified_date": "2026-08-27",
+      "organization": {
+        "department": "보건행정과",
+        "team": null
+      },
+      "location": {
+        "floor": "1층",
+        "room": "민원실",
+        "route_text": "1층 민원실로 가세요.",
+        "show_map": true
+      }
+    },
+    {
+      "task_id": "F201",
+      "public_title": "만성질환관리센터를 찾으시나요?",
+      "public_search_terms": [
+        "만성질환관리센터를 찾으시나요?",
+        "보건소 만성질환 상담 장소 안내",
+        "건강관리센터 찾아가는 길"
+      ],
+      "public_summary": "보건소 2층 만성질환관리센터 위치를 안내합니다.",
+      "eligibility": "만성질환관리센터 위치를 찾는 분",
+      "documents": null,
+      "fee": null,
+      "operating_hours": null,
+      "visit_steps": "현재 상담·접수 여부를 대표전화로 확인한 뒤 2층 만성질환관리센터로 가세요.",
+      "public_caution": "프로그램 운영과 접수 여부는 바뀔 수 있으므로 방문 전에 확인해 주세요.",
+      "primary_action": "현재 상담·접수 여부를 대표전화로 먼저 확인해 주세요.",
+      "verified_date": "2026-08-27",
+      "organization": {
+        "department": "건강증진과",
+        "team": "건강증진팀"
+      },
+      "location": {
+        "floor": "2층",
+        "room": "만성질환관리센터",
+        "route_text": "2층 만성질환관리센터로 가세요.",
+        "show_map": true
+      }
+    },
+    {
       "task_id": "A007",
       "public_title": "방역·소독 업무를 문의하시나요?",
       "public_search_terms": [

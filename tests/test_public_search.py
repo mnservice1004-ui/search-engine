@@ -27,6 +27,30 @@ A007_PUBLIC_QUERIES = (
     "소독 의무시설 서류",
     "소독업 신고",
 )
+SECOND_READY_PUBLIC_TERMS = {
+    "A003": (
+        "보건증·건강진단서 발급이 필요하신가요?",
+        "보건증 발급 방법 문의",
+        "건강진단결과서 받는 방법",
+        "건강진단서 발급 준비",
+        "외국인 결핵검진 확인서 발급",
+    ),
+    "F103": (
+        "진료실을 찾으시나요?",
+        "보건소 진료실 찾아가는 길",
+        "일반진료 받는 곳 안내",
+    ),
+    "F108": (
+        "민원실을 찾으시나요?",
+        "보건소 민원 접수 장소 안내",
+        "민원 창구 찾아가는 길",
+    ),
+    "F201": (
+        "만성질환관리센터를 찾으시나요?",
+        "보건소 만성질환 상담 장소 안내",
+        "건강관리센터 찾아가는 길",
+    ),
+}
 
 
 def _raw_tasks():
@@ -82,6 +106,22 @@ def test_a007_public_queries_rank_a007_first_without_internal_aliases():
         assert ranked[0]["id"] == "A007"
 
 
+def test_second_ready_fourteen_public_terms_rank_the_expected_task_first():
+    guidance = _guidance()
+    searchable = build_public_search_tasks(_raw_tasks(), guidance)
+
+    assert sum(len(terms) for terms in SECOND_READY_PUBLIC_TERMS.values()) == 14
+    assert not {"A002", "A004", "A008", "F101", "F106", "F204", "R006"} & set(
+        guidance
+    )
+    for task_id, terms in SECOND_READY_PUBLIC_TERMS.items():
+        assert tuple(guidance[task_id]["public_search_terms"]) == terms
+        for query in terms:
+            ranked = search_public_tasks(searchable, query, 10)
+            assert ranked, (task_id, query)
+            assert ranked[0]["id"] == task_id, (task_id, query, ranked[0]["id"])
+
+
 def test_h002_approved_terms_rank_first_and_internal_only_terms_do_not_match():
     searchable = build_public_search_tasks(_raw_tasks(), _guidance())
 
@@ -116,7 +156,7 @@ def test_unregistered_task_name_and_alias_rankings_are_unchanged():
     ]
     searchable = build_public_search_tasks(raw_tasks, guidance)
 
-    assert len(unregistered) == 49
+    assert len(unregistered) == 45
     for task in unregistered:
         queries = [task["name"], *[alias["text"] for alias in task["aliases"]]]
         for query in queries:
