@@ -295,6 +295,20 @@ def test_frontend_contact_renderer_uses_safe_text_and_digit_only_tel_links():
     assert "task.contact_role" not in script
 
 
+def test_frontend_accessibility_contract_keeps_phone_targets_and_hides_no_map_controls():
+    css = Path("public/css/style.css").read_text(encoding="utf-8")
+    script = Path("public/js/app.js").read_text(encoding="utf-8")
+
+    assert ".contact-link{display:inline-flex;align-items:center;box-sizing:border-box;min-width:44px;min-height:44px;" in css
+    assert ".map-panel .section-head[hidden],.map-panel .floor-tabs[hidden],.map-panel .map-stage[hidden]{display:none!important}" in css
+    assert "function setMapControlsHidden(hidden)" in script
+    assert "[mapSectionHeadEl, floorTabsEl, mapStageEl]" in script
+    assert "element.hidden = hidden;" in script
+    assert "if (task?.show_map === false) {\n    setMapControlsHidden(true);" in script
+    assert "setMapControlsHidden(false);\n  if (!task?.floor || !task?.place)" in script
+    assert "task.route || '방문 장소는 전화로 확인해 주세요.'" in script
+
+
 @pytest.mark.parametrize(
     ("path", "content_type"),
     (

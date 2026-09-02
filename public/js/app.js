@@ -23,6 +23,10 @@ const routeEl = el('map-route');
 const routeLineEl = el('map-route-line');
 const floorImageEl = el('floor-image');
 const detailDialogEl = el('detail-dialog');
+const mapPanelEl = document.querySelector('.map-panel');
+const mapSectionHeadEl = mapPanelEl.querySelector('.section-head');
+const floorTabsEl = mapPanelEl.querySelector('.floor-tabs');
+const mapStageEl = mapPanelEl.querySelector('.map-stage');
 
 async function getJson(url, options) {
   const response = await fetch(url, options);
@@ -47,6 +51,12 @@ function hideMapLocation() {
   markerEl.classList.remove('arrived');
   mapLabelEl.classList.remove('show');
   routeEl.classList.remove('show');
+}
+
+function setMapControlsHidden(hidden) {
+  [mapSectionHeadEl, floorTabsEl, mapStageEl].forEach((element) => {
+    element.hidden = hidden;
+  });
 }
 
 function isValidMapPoint(point) {
@@ -80,6 +90,7 @@ function showMapRoute(startPoint, point, selectionToken) {
 
 function resetMap() {
   state.mapSelectionToken += 1;
+  setMapControlsHidden(false);
   hideMapLocation();
   floorImageEl.removeAttribute('src');
   floorImageEl.alt = '층별 배치도';
@@ -189,6 +200,7 @@ function startRunnerJourney(startPoint, point, task, selectionToken) {
 function showMap(task) {
   const selectionToken = ++state.mapSelectionToken;
   if (task?.show_map === false) {
+    setMapControlsHidden(true);
     hideMapLocation();
     routeLineEl.removeAttribute('d');
     markerEl.style.left = '';
@@ -202,6 +214,7 @@ function showMap(task) {
     el('route-text').textContent = task.route || '방문 장소는 전화로 확인해 주세요.';
     return;
   }
+  setMapControlsHidden(false);
   if (!task?.floor || !task?.place) {
     hideMapLocation();
     setActiveFloor(task?.floor || '', true);
