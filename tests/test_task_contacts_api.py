@@ -53,6 +53,7 @@ def test_bulk_contact_loader_uses_one_query_and_stable_public_shape(
     monkeypatch.setattr(db.sqlite3, "connect", traced_connect)
     first_batch_ids = [
         "A001",
+        "A007",
         "A019",
         "H001",
         "H002",
@@ -102,6 +103,7 @@ def test_bulk_contact_loader_uses_one_query_and_stable_public_shape(
         for task_id in first_batch_ids
     } == {
         "A001": ("031-5189-4378",),
+        "A007": ("031-5189-5093",),
         "A019": ("031-5189-4344",),
         "H001": ("031-5189-4371",),
         "H002": ("031-5189-4374",),

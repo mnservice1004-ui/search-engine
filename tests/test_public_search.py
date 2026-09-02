@@ -21,6 +21,12 @@ H002_APPROVED_QUERIES = (
     "만성질환 건강상담",
 )
 H002_INTERNAL_ONLY_QUERIES = ("인바디", "13주", "13주 프로그램")
+A007_PUBLIC_QUERIES = (
+    "방역·소독 문의",
+    "위생해충 방제",
+    "소독 의무시설 서류",
+    "소독업 신고",
+)
 
 
 def _raw_tasks():
@@ -65,6 +71,17 @@ def test_all_public_titles_and_terms_rank_the_expected_task_first():
             assert len({task["id"] for task in ranked}) == len(ranked)
 
 
+def test_a007_public_queries_rank_a007_first_without_internal_aliases():
+    guidance = _guidance()
+    searchable = build_public_search_tasks(_raw_tasks(), guidance)
+
+    assert len(guidance["A007"]["public_search_terms"]) == 4
+    for query in A007_PUBLIC_QUERIES:
+        ranked = search_public_tasks(searchable, query, 10)
+        assert ranked
+        assert ranked[0]["id"] == "A007"
+
+
 def test_h002_approved_terms_rank_first_and_internal_only_terms_do_not_match():
     searchable = build_public_search_tasks(_raw_tasks(), _guidance())
 
@@ -99,7 +116,7 @@ def test_unregistered_task_name_and_alias_rankings_are_unchanged():
     ]
     searchable = build_public_search_tasks(raw_tasks, guidance)
 
-    assert len(unregistered) == 50
+    assert len(unregistered) == 49
     for task in unregistered:
         queries = [task["name"], *[alias["text"] for alias in task["aliases"]]]
         for query in queries:

@@ -481,6 +481,7 @@ def synthetic_contact_dataset(tmp_path_factory) -> SyntheticContactDataset:
 
 PUBLIC_GUIDANCE_CONTACTS = {
     "A001": (("031-5189-4378", "대표전화", "진료실", True),),
+    "A007": (("031-5189-5093", "대표전화", "방역·소독 업무", True),),
     "A011": (("031-5189-4364", "대표전화", "결핵 상담·관리", True),),
     "A012": (
         ("031-5189-4364", "대표전화", "결핵 검사 안내", True),

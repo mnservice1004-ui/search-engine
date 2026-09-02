@@ -13,6 +13,7 @@ DEFAULT_PUBLIC_GUIDANCE_PATH = (
 )
 EXPECTED_TASK_IDS = {
     "A001",
+    "A007",
     "A011",
     "A012",
     "A019",

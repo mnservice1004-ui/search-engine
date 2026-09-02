@@ -80,6 +80,12 @@ FIRST_BATCH_LOCATIONS = {
     "M008": (None, None, False),
 }
 SEARCH_REGRESSION_CASES = {
+    "A007": (
+        "방역·소독 문의",
+        "위생해충 방제",
+        "소독 의무시설 서류",
+        "소독업 신고",
+    ),
     "A019": ("골다공증 검사를 받고 싶으신가요?", "골다공증 검사", "골밀도 검사"),
     "H001": ("담배를 끊는 상담을 받고 싶으신가요?", "금연 상담", "금연클리닉"),
     "H002": (
@@ -437,11 +443,11 @@ def test_first_batch_api_guidance_contacts_and_location_contract(task_id):
     assert_no_internal_public_values(item)
 
 
-def test_remaining_fifty_task_details_stay_available_without_internal_projection():
+def test_remaining_forty_nine_task_details_stay_available_without_internal_projection():
     tasks = json.loads(Path("data/tasks.json").read_text(encoding="utf-8"))
     remaining_ids = [task["id"] for task in tasks if task["id"] not in EXPECTED_TASK_IDS]
 
-    assert len(remaining_ids) == 50
+    assert len(remaining_ids) == 49
     for task_id in remaining_ids:
         response = client().get(f"/api/tasks/{task_id}")
         item = response.get_json()
@@ -672,6 +678,43 @@ def test_sms_mock_endpoint_uses_primary_contact(monkeypatch):
     assert response.get_json()["status"] == "mocked"
     assert response.get_json()["preview"].startswith("[동탄구보건소 민원안내]\n")
     assert "전화: 031-5189-4364" in response.get_json()["preview"]
+
+
+def test_a007_api_and_sms_use_runtime_primary_without_internal_location(monkeypatch):
+    monkeypatch.setenv("SMS_MODE", "mock")
+    response = client().get("/api/tasks/A007")
+    item = response.get_json()
+
+    assert response.status_code == 200
+    assert item["public_title"] == "방역·소독 업무를 문의하시나요?"
+    assert item["primary_contact"] == item["contacts"][0]
+    assert item["primary_contact"]["phone"] == "031-5189-5093"
+    assert item["primary_contact"]["is_primary"] is True
+    assert len(item["contacts"]) == 1
+    assert item["verified_date"] == "2026-08-26"
+    assert (item["floor"], item["room"], item["show_map"]) == (
+        None,
+        None,
+        False,
+    )
+    assert item["route"] == "방문 장소는 전화로 확인해 주세요."
+    assert item["aliases"] == [
+        "방역·소독 업무를 문의하시나요?",
+        "위생해충 방제 문의",
+        "소독 의무시설 서류 제출",
+        "소독업 신고 준비 안내",
+    ]
+    assert_no_internal_public_keys(item)
+    assert_no_internal_public_values(item)
+
+    preview = send_contact_sms(item, "01012345678")["preview"]
+    assert "전화: 031-5189-5093" in preview
+    assert "방문 장소는 전화로 확인해 주세요." in preview
+    assert "3층" not in preview
+    assert "031-5189-5093" not in json.dumps(
+        json.loads(Path("data/public_guidance.json").read_text(encoding="utf-8"))["tasks"],
+        ensure_ascii=False,
+    )
 
 
 def test_sms_does_not_fall_back_to_legacy_task_phone():

@@ -390,6 +390,35 @@
         "route_text": "방문 장소는 전화로 확인해 주세요.",
         "show_map": false
       }
+    },
+    {
+      "task_id": "A007",
+      "public_title": "방역·소독 업무를 문의하시나요?",
+      "public_search_terms": [
+        "방역·소독 업무를 문의하시나요?",
+        "위생해충 방제 문의",
+        "소독 의무시설 서류 제출",
+        "소독업 신고 준비 안내"
+      ],
+      "public_summary": "취약지역의 위생해충 방제와 소독 의무시설·소독업 관련 업무를 안내합니다.",
+      "eligibility": "취약지역 방역을 문의하거나 법정 소독 의무시설을 관리하거나 소독업 신고를 준비하는 분",
+      "documents": "소독 의무시설 관련 제출에는 소독증명서 또는 소독 자율점검표가 필요합니다. 그 밖의 서류는 전화로 확인해 주세요.",
+      "fee": null,
+      "operating_hours": null,
+      "visit_steps": "소독 의무시설은 소독 후 증명서 또는 자율점검표를 관할 보건소에 팩스로 제출합니다. 다른 방역·소독 업무는 전화로 먼저 확인해 주세요.",
+      "public_caution": "방역 대상과 처리 방법은 문의 종류에 따라 다릅니다. 먼저 전화로 확인해 주세요.",
+      "primary_action": "문의하려는 방역·소독 종류를 정한 뒤 대표전화로 문의해 주세요.",
+      "verified_date": "2026-08-26",
+      "organization": {
+        "department": "보건행정과",
+        "team": "감염병관리팀"
+      },
+      "location": {
+        "floor": null,
+        "room": null,
+        "route_text": "방문 장소는 전화로 확인해 주세요.",
+        "show_map": false
+      }
     }
   ]
 }

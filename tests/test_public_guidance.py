@@ -1,5 +1,6 @@
 import copy
 import json
+from hashlib import sha256
 from pathlib import Path
 
 import pytest
@@ -12,6 +13,7 @@ from public_guidance import (
     load_public_guidance,
     serialize_public_task,
 )
+from search_engine import normalize
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -35,7 +37,7 @@ MAP_LOCATIONS = {
     "H001": ("2층", "금연상담실"),
     "H002": ("2층", "만성질환관리센터"),
 }
-NO_MAP_IDS = {"M002", "M003", "M004", "M005", "M006", "M008", "R002"}
+NO_MAP_IDS = {"A007", "M002", "M003", "M004", "M005", "M006", "M008", "R002"}
 H002_FORBIDDEN_PUBLIC_FRAGMENTS = (
     "인바디",
     "13주",
@@ -51,6 +53,12 @@ EXPECTED_PUBLIC_SEARCH_TERMS = {
         "일반진료",
         "진료 접수",
         "진료를 받으러 왔어요",
+    ),
+    "A007": (
+        "방역·소독 업무를 문의하시나요?",
+        "위생해충 방제 문의",
+        "소독 의무시설 서류 제출",
+        "소독업 신고 준비 안내",
     ),
     "A011": (
         "결핵 상담이나 관리가 필요하신가요?",
@@ -224,13 +232,15 @@ def set_nested(payload, path, value):
     target[path[-1]] = value
 
 
-def test_checked_in_public_guidance_has_exact_thirteen_task_contract(monkeypatch, tmp_path):
+def test_checked_in_public_guidance_has_exact_fourteen_task_contract(monkeypatch, tmp_path):
     payload = base_payload()
     guidance = load_public_guidance(GUIDANCE_PATH)
 
     assert payload["schema_version"] == 2
     assert set(guidance) == EXPECTED_TASK_IDS
-    assert len(guidance) == 13
+    assert len(guidance) == 14
+    assert sum(len(item["public_search_terms"]) for item in guidance.values()) == 69
+    assert not {"R006", "A004", "A008", "F101"} & set(guidance)
     assert NEW_TASK_IDS <= set(guidance)
     for task_id, item in guidance.items():
         assert item["task_id"] == task_id
@@ -246,6 +256,17 @@ def test_checked_in_public_guidance_has_exact_thirteen_task_contract(monkeypatch
     assert guidance["A011"]["public_title"] == "결핵 상담이나 관리가 필요하신가요?"
     assert guidance["A012"]["public_title"] == "결핵 검사를 받고 싶으신가요?"
 
+    a007 = guidance["A007"]
+    assert a007["verified_date"] == "2026-08-26"
+    assert a007["fee"] is None
+    assert a007["operating_hours"] is None
+    assert a007["location"] == {
+        "floor": None,
+        "room": None,
+        "route_text": "방문 장소는 전화로 확인해 주세요.",
+        "show_map": False,
+    }
+
     r002 = guidance["R002"]
     assert r002["organization"] == {
         "department": "건강증진과",
@@ -259,6 +280,52 @@ def test_checked_in_public_guidance_has_exact_thirteen_task_contract(monkeypatch
     }
     monkeypatch.chdir(tmp_path)
     assert set(load_public_guidance()) == EXPECTED_TASK_IDS
+
+
+def test_existing_thirteen_guidance_objects_are_unchanged():
+    payload = base_payload()
+    existing = [item for item in payload["tasks"] if item["task_id"] != "A007"]
+    canonical = json.dumps(
+        existing,
+        ensure_ascii=False,
+        separators=(",", ":"),
+        sort_keys=True,
+    ).encode("utf-8")
+
+    assert len(existing) == 13
+    assert sha256(canonical).hexdigest() == (
+        "418125452764d34edfadc5465da2472437d05381dd2f2cad43108e921df14338"
+    )
+
+
+def test_a007_guidance_preserves_verified_scope_and_forbids_unverified_claims():
+    item = load_public_guidance(GUIDANCE_PATH)["A007"]
+    serialized = json.dumps(item, ensure_ascii=False)
+
+    for expected in (
+        "취약지역",
+        "위생해충",
+        "소독 의무시설",
+        "소독업",
+        "소독증명서",
+        "자율점검표",
+        "전화로",
+    ):
+        assert expected in serialized
+    for forbidden in (
+        "가정 방역을 해드립니다",
+        "직접 방문합니다",
+        "무료입니다",
+        "준비물이 없습니다",
+        "09:00",
+        "18:00",
+        "상시 접수",
+        "당일 처리",
+        "3층",
+        "보건행정과로 방문",
+        "031-",
+    ):
+        assert forbidden not in serialized
 
 
 def test_first_batch_location_policy_uses_only_verified_service_places():
@@ -323,14 +390,19 @@ def test_h002_public_guidance_omits_unverified_claims():
 
 def test_public_search_terms_use_only_the_safe_schema_v2_layer():
     guidance = load_public_guidance(GUIDANCE_PATH)
+    all_normalized_terms = []
 
     for task_id, item in guidance.items():
         normalized = {
-            " ".join(term.split()).casefold()
+            normalize(term)
             for term in item["public_search_terms"]
         }
         assert len(normalized) == len(item["public_search_terms"])
         assert task_id not in item["public_search_terms"]
+        all_normalized_terms.extend(normalized)
+
+    assert len(all_normalized_terms) == 69
+    assert len(set(all_normalized_terms)) == 69
 
     h002_terms = " ".join(guidance["H002"]["public_search_terms"])
     for expected in (
@@ -624,12 +696,12 @@ def test_unregistered_task_uses_allowlist_instead_of_raw_task_copy():
         assert forbidden not in serialized
 
 
-def test_remaining_fifty_tasks_serialize_without_internal_fallback_or_config_error():
+def test_remaining_forty_nine_tasks_serialize_without_internal_fallback_or_config_error():
     guidance = load_public_guidance(GUIDANCE_PATH)
     tasks = json.loads(TASKS_PATH.read_text(encoding="utf-8"))
     remaining = [task for task in tasks if task["id"] not in guidance]
 
-    assert len(remaining) == 50
+    assert len(remaining) == 49
     for raw in remaining:
         item = serialize_public_task(raw, [], guidance)
         serialized = json.dumps(item, ensure_ascii=False)
