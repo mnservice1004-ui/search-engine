@@ -251,36 +251,35 @@ button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(-
 .hero-title-line--bottom{font-weight:700}
 .hero-subtitle-viewport{
   position:relative;
-  width:min(980px,calc(100vw - 32px));
-  height:34px;
+  display:flex;
+  justify-content:center;
+  width:100%;
   margin:24px auto 0;
-  overflow:hidden;
   border:0;
   background:transparent;
+  cursor:pointer;
 }
-.site-header p.hero-subtitle-moving{
-  position:absolute;
-  top:0;
-  left:0;
-  width:max-content;
-  max-width:none;
-  margin:0;
-  white-space:nowrap;
+.hero-subtitle-viewport:focus-visible{outline:2px solid rgba(255,255,255,.8);outline-offset:5px;border-radius:4px}
+.site-header p.hero-subtitle{
+  position:static;
+  width:fit-content;
+  max-width:100%;
+  margin:0 auto;
+  white-space:normal;
+  text-align:center;
+  word-break:keep-all;
+  overflow-wrap:break-word;
   color:rgba(255,255,255,.72);
   font-size:16px;
   font-weight:550;
   letter-spacing:-.018em;
   line-height:34px;
-  animation:hero-subtitle-shuttle 9s ease-in-out infinite alternate;
-  will-change:left,transform;
 }
-@keyframes hero-subtitle-shuttle{
-  from{left:0;transform:translateX(0)}
-  to{left:100%;transform:translateX(-100%)}
+.hero-subtitle.is-blinking{animation:hero-subtitle-blink 1s step-end 3}
+@keyframes hero-subtitle-blink{
+  0%,49%{opacity:1}
+  50%,100%{opacity:0}
 }
-@media(hover:hover){.hero-subtitle-viewport:hover .hero-subtitle-moving{animation-play-state:paused}}
-.hero-subtitle-viewport:focus .hero-subtitle-moving,
-.hero-subtitle-viewport.is-paused .hero-subtitle-moving{animation-play-state:paused}
 
 main{max-width:none;margin:0;padding:0 0 4px}
 .search-panel{
@@ -393,7 +392,7 @@ main{max-width:none;margin:0;padding:0 0 4px}
   display:block;
 }
 .results-panel{
-  padding:26px 25px 24px;
+  padding:14px 25px 24px;
   color:var(--ink);
   border:0;
   border-radius:26px;
@@ -408,7 +407,6 @@ main{max-width:none;margin:0;padding:0 0 4px}
   justify-content:space-between;
   gap:24px;
 }
-.results-kicker{margin:0 0 5px;color:#64858d;font-size:12px;font-weight:850;letter-spacing:.01em}
 .results-head h2{margin:0;color:var(--ink);font-size:16px;font-weight:780;letter-spacing:-.025em}
 #status{margin:0;color:#779197;font-size:12px;font-weight:680;text-align:right}
 .results{display:grid;gap:12px}
@@ -558,15 +556,15 @@ dialog{color:var(--text)}
   .service-signature span{font-size:var(--header-name-font-size)}
   .hero-title{font-size:clamp(34px,10vw,44px);line-height:1.16;letter-spacing:-.06em}
   .hero-subtitle-viewport{margin-top:19px}
-  .site-header p.hero-subtitle-moving{font-size:15px;overflow-wrap:normal}
+  .site-header p.hero-subtitle{font-size:15px;line-height:1.7}
   .search-panel{width:calc(100% - 24px);padding:10px 11px 12px;border-radius:22px}
   .search-row{grid-template-columns:minmax(0,1fr) 88px;padding:6px;border-radius:16px}
   #query{height:54px;padding-left:42px;padding-right:46px;font-size:16px}.search-icon{left:9px;width:23px;height:23px}.clear-button{width:44px;height:44px}
   #search-button{height:54px;padding:0 12px;border-radius:13px;font-size:16px}#search-button svg{display:none}
   .recommendation-row{padding:10px 5px 0;gap:7px}.quick-suggestions,.suggestions{gap:6px}.quick-suggestion,.suggestions button{min-height:44px;padding:8px 11px;font-size:12px}
   .workspace{width:calc(100% - 24px);margin-top:25px}
-  .results-panel{padding:20px 17px 18px;border-radius:23px}
-  .results-head{margin:0 2px 14px;align-items:flex-start}.results-kicker{font-size:12px}.results-head h2{font-size:18px}#status{max-width:46%;font-size:12px}
+  .results-panel{padding:12px 17px 18px;border-radius:23px}
+  .results-head{margin:0 2px 14px;align-items:flex-start}.results-head h2{font-size:18px}#status{max-width:46%;font-size:12px}
   .result-card{min-height:0;padding:19px;grid-template-columns:minmax(0,1fr);gap:12px;border-radius:18px}
   .result-index{display:none}.result-name{font-size:20px}.result-department{margin-bottom:6px;font-size:13px}.result-facts{margin-top:12px;font-size:12px;gap:9px}
   .result-side{min-width:0;width:100%;grid-template-columns:auto minmax(0,1fr);align-items:center;justify-items:start;gap:10px}.result-action{width:100%;min-height:46px;justify-content:center;padding:0 12px;font-size:13px}
@@ -592,8 +590,8 @@ dialog{color:var(--text)}
 
 @media(prefers-reduced-motion:reduce){
   .result-card,.clear-button{transition:none!important}
-  .site-header p.hero-subtitle-moving{position:static;width:auto;white-space:normal;text-align:center;line-height:1.6;animation:none;will-change:auto}
-  .hero-subtitle-viewport{height:auto;overflow:visible}
+  .hero-subtitle.is-blinking{animation:none;opacity:1}
+  .hero-subtitle span{visibility:visible!important}
 }
 
 @media print{

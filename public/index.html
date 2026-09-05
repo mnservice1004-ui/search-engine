@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>동탄구보건소 보건민원 정보 검색</title>
-    <link rel="stylesheet" href="/css/style.css?revision=mental-door-route-7">
-  <script src="/js/app.js?revision=mental-door-route-7" defer></script>
+  <link rel="stylesheet" href="/css/style.css?revision=hero-typewriter-2">
+  <script src="/js/app.js?revision=hero-typewriter-2" defer></script>
 </head>
 <body>
   <div class="hero-stage">
@@ -29,9 +29,11 @@
           <span class="hero-title-line hero-title-line--bottom">말하듯 검색하세요</span>
         </h1>
         <div class="hero-subtitle-viewport" tabindex="0" role="button" aria-pressed="false"
-             aria-label="필요한 업무와 담당 부서, 찾아가는 위치까지 한 화면에서 안내해 드립니다.">
-          <p class="hero-subtitle-moving">필요한 업무와 담당 부서, 찾아가는 위치까지 한 화면에서 안내해 드립니다.</p>
+             aria-label="필요한 업무와 담당 부서, 찾아가는 위치까지 한 화면에서 안내해 드립니다."
+             aria-describedby="hero-subtitle-help">
+          <p class="hero-subtitle" aria-hidden="true">필요한 업무와 담당 부서, 찾아가는 위치까지 한 화면에서 안내해 드립니다.</p>
         </div>
+        <span id="hero-subtitle-help" class="sr-only">클릭하거나 Enter 또는 Space 키를 누르면 안내문 애니메이션을 일시정지하거나 다시 재생합니다.</span>
       </div>
     </header>
 
@@ -76,7 +78,6 @@
         <section class="results-panel" aria-labelledby="results-heading">
           <div class="results-head">
             <div>
-              <p class="results-kicker">가장 관련 있는 안내</p>
               <h2 id="results-heading">민원 검색 결과</h2>
             </div>
             <p id="status" class="sr-only" role="status" aria-live="polite">검색어를 입력해 주세요.</p>

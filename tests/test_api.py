@@ -272,6 +272,103 @@ def test_frontend_script_opens_details_only_after_result_selection():
     assert "aria-controls" in script
 
 
+def test_hero_typewriter_layout_and_removed_result_kicker():
+    html = Path('public/index.html').read_text(encoding='utf-8')
+    css = Path('public/css/style.css').read_text(encoding='utf-8')
+    assert '가장 관련 있는 안내' not in html
+    assert 'results-kicker' not in html and 'results-kicker' not in css
+    assert 'hero-subtitle-shuttle' not in css and 'hero-subtitle-moving' not in html
+    assert '<p class="hero-subtitle" aria-hidden="true">' in html
+    assert 'aria-describedby="hero-subtitle-help"' in html
+    assert html.index('말하듯 검색하세요') < html.index('class="hero-subtitle-viewport"')
+    subtitle_css = css.split('.site-header p.hero-subtitle{', 1)[1].split('}', 1)[0]
+    assert 'position:static' in subtitle_css
+    assert 'margin:0 auto' in subtitle_css and 'text-align:center' in subtitle_css
+    assert 'white-space:normal' in subtitle_css and 'max-width:100%' in subtitle_css
+    assert 'hero-subtitle-blink 1s step-end 3' in css
+    assert '.hero-subtitle span{visibility:visible!important}' in css
+    viewport_css = css.split('.hero-subtitle-viewport{', 1)[1].split('}', 1)[0]
+    assert 'display:flex' in viewport_css and 'justify-content:center' in viewport_css
+    assert 'padding:14px 25px 24px' in css
+    assert '.results-panel{padding:12px 17px 18px' in css
+
+
+def _run_hero_typewriter_contract(assertions, reduced=False):
+    import subprocess
+
+    script = Path('public/js/app.js').read_text(encoding='utf-8')
+    source = script[script.index('function initializeHeroSubtitle('):
+                    script.index("initializeHeroSubtitle(document.querySelector(")]
+    program = r'''
+const assert=require('node:assert/strict'),vm=require('node:vm');
+let now=0,serial=0;const timers=new Map();
+const classes=new Set(),events={},documentEvents={},motionEvents={};
+const subtitle={textContent:'필요한 업무와 담당 부서, 찾아가는 위치까지 한 화면에서 안내해 드립니다.',
+ children:[],classList:{add:n=>classes.add(n),remove:n=>classes.delete(n)},
+ replaceChildren(...children){this.children=children;}};
+const label=subtitle.textContent;
+const viewport={dataset:{},attrs:{'aria-label':label,'aria-pressed':'false'},
+ querySelector:s=>s==='.hero-subtitle'?subtitle:null,
+ setAttribute(k,v){this.attrs[k]=v;},addEventListener:(k,v)=>events[k]=v};
+const motion={matches:REDUCED,addEventListener:(k,v)=>motionEvents[k]=v};
+const document={hidden:false,createElement:()=>({textContent:'',style:{}}),
+ addEventListener:(k,v)=>documentEvents[k]=v};
+const window={matchMedia:()=>motion,
+ setTimeout(fn,delay){const id=++serial;timers.set(id,{fn,time:now+delay});return id;},
+ clearTimeout(id){timers.delete(id);}};
+const context={document,window};vm.createContext(context);vm.runInContext(SOURCE,context);
+context.initializeHeroSubtitle(viewport);
+function advance(ms){const end=now+ms;let turns=0;while(timers.size){
+ const [id,next]=[...timers].sort((a,b)=>a[1].time-b[1].time)[0];if(next.time>end)break;
+ timers.delete(id);now=next.time;next.fn();assert.ok(++turns<10000);
+}now=end;}
+const visible=()=>subtitle.children.filter(s=>s.style.visibility==='visible').map(s=>s.textContent).join('');
+const count=Array.from(label).length;
+ASSERTIONS
+assert.equal(subtitle.children.map(s=>s.textContent).join(''),label);
+assert.equal(viewport.attrs['aria-label'],label); // no repeated screen-reader character announcements
+'''
+    program = program.replace('REDUCED', json.dumps(reduced)).replace('SOURCE', json.dumps(source)).replace('ASSERTIONS', assertions)
+    result = subprocess.run(['node', '-e', program], capture_output=True, text=True)
+    assert result.returncode == 0, result.stderr
+
+
+def test_hero_typewriter_reveals_in_order_blinks_three_seconds_and_repeats():
+    _run_hero_typewriter_contract(r'''
+assert.equal(viewport.dataset.phase,'typing');assert.equal(visible(),'');
+for(let i=1;i<=count;i++){advance(89);assert.equal(visible(),Array.from(label).slice(0,i-1).join(''));
+ advance(1);assert.equal(visible(),Array.from(label).slice(0,i).join(''));}
+assert.equal(viewport.dataset.phase,'blinking');assert.ok(classes.has('is-blinking'));
+advance(2999);assert.equal(visible(),label);assert.ok(classes.has('is-blinking'));
+advance(1);assert.equal(visible(),'');assert.equal(viewport.dataset.phase,'typing');
+assert.ok(!classes.has('is-blinking'));advance(90);assert.equal(visible(),Array.from(label)[0]);
+assert.equal(timers.size,1);
+''')
+
+
+def test_hero_typewriter_pause_keyboard_and_background_do_not_leak_timers():
+    _run_hero_typewriter_contract(r'''
+advance(270);events.click();assert.equal(viewport.attrs['aria-pressed'],'true');
+assert.equal(visible(),label);assert.equal(timers.size,0);advance(10000);assert.equal(visible(),label);
+let prevented=0;events.keydown({key:'Enter',preventDefault(){prevented++;}});
+assert.equal(prevented,1);assert.equal(visible(),'');advance(90);assert.equal(visible(),Array.from(label)[0]);
+events.keydown({key:' ',preventDefault(){prevented++;}});assert.equal(prevented,2);assert.equal(timers.size,0);
+events.keydown({key:'Escape',preventDefault(){throw Error('unrelated key intercepted');}});
+events.click();document.hidden=true;documentEvents.visibilitychange();assert.equal(timers.size,0);
+assert.equal(visible(),label);document.hidden=false;documentEvents.visibilitychange();
+assert.equal(visible(),'');assert.equal(timers.size,1);
+''')
+
+
+def test_hero_typewriter_reduced_motion_is_static_and_can_change_live():
+    _run_hero_typewriter_contract(r'''
+assert.equal(visible(),label);assert.equal(timers.size,0);assert.ok(!classes.has('is-blinking'));
+motion.matches=false;motionEvents.change();assert.equal(visible(),'');assert.equal(timers.size,1);
+advance(90);motion.matches=true;motionEvents.change();assert.equal(visible(),label);
+assert.equal(timers.size,0);assert.equal(viewport.dataset.phase,'static');
+''', reduced=True)
+
+
 def test_frontend_contact_renderer_uses_safe_text_and_digit_only_tel_links():
     script = Path("public/js/app.js").read_text(encoding="utf-8")
     detail_renderer = script[

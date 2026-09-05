@@ -698,21 +698,63 @@ detailDialogEl.addEventListener('close', () => {
   state.detailTrigger = null;
 });
 
-const heroSubtitleViewport = document.querySelector('.hero-subtitle-viewport');
-if (heroSubtitleViewport) {
-  const toggleHeroSubtitle = () => {
-    const paused = !heroSubtitleViewport.classList.contains('is-paused');
-    heroSubtitleViewport.classList.toggle('is-paused', paused);
-    heroSubtitleViewport.setAttribute('aria-pressed', paused ? 'true' : 'false');
-    if (!paused) heroSubtitleViewport.blur();
+function initializeHeroSubtitle(viewport) {
+  const subtitle = viewport?.querySelector('.hero-subtitle');
+  if (!subtitle) return;
+  const characters = Array.from(subtitle.textContent, (character) => {
+    const span = document.createElement('span');
+    span.textContent = character;
+    return span;
+  });
+  if (!characters.length) return;
+  // Hidden characters retain the full sentence's centred, wrapping layout.
+  // The static accessible label is not rewritten for every character.
+  subtitle.replaceChildren(...characters);
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const characterInterval = 90;
+  const blinkDuration = 3000;
+  let timer = null;
+  let index = 0;
+  let paused = false;
+
+  const typeNext = () => {
+    characters[index].style.visibility = 'visible';
+    index += 1;
+    if (index === characters.length) {
+      viewport.dataset.phase = 'blinking';
+      subtitle.classList.add('is-blinking');
+      timer = window.setTimeout(restart, blinkDuration);
+    } else {
+      timer = window.setTimeout(typeNext, characterInterval);
+    }
   };
-  heroSubtitleViewport.addEventListener('click', toggleHeroSubtitle);
-  heroSubtitleViewport.addEventListener('keydown', (event) => {
+
+  const restart = () => {
+    window.clearTimeout(timer);
+    subtitle.classList.remove('is-blinking');
+    index = 0;
+    const staticText = paused || reducedMotion.matches || document.hidden;
+    characters.forEach((span) => { span.style.visibility = staticText ? 'visible' : 'hidden'; });
+    viewport.dataset.phase = staticText ? 'static' : 'typing';
+    if (!staticText) timer = window.setTimeout(typeNext, characterInterval);
+  };
+
+  const toggle = () => {
+    paused = !paused;
+    viewport.setAttribute('aria-pressed', String(paused));
+    restart();
+  };
+  viewport.addEventListener('click', toggle);
+  viewport.addEventListener('keydown', (event) => {
     if (event.key !== 'Enter' && event.key !== ' ') return;
     event.preventDefault();
-    toggleHeroSubtitle();
+    toggle();
   });
+  reducedMotion.addEventListener('change', restart);
+  document.addEventListener('visibilitychange', restart);
+  restart();
 }
+initializeHeroSubtitle(document.querySelector('.hero-subtitle-viewport'));
 
 getJson('/api/map-points').then((data) => {
   state.mapPoints = data;
