@@ -48,7 +48,7 @@ input{width:100%;border:2px solid var(--teal);border-radius:11px;padding:12px 14
 .result-name{display:block;font-size:17px}
 .result-meta{display:block;color:var(--muted);font-size:13px;margin-top:5px}
 .empty{border:1px dashed var(--line);border-radius:12px;padding:24px;text-align:center;color:var(--muted)}
-.map-panel{position:sticky;top:12px;overflow:hidden}
+.map-panel{position:sticky;top:12px;overflow:visible}
 .section-head{display:flex;justify-content:space-between;align-items:center;padding:14px 16px 0}
 .floor-tabs{display:flex;gap:5px;padding:0 16px 12px}
 .floor-tabs button{background:#eef2f6;color:var(--navy);padding:8px 13px}
@@ -57,20 +57,24 @@ input{width:100%;border:2px solid var(--teal);border-radius:11px;padding:12px 14
 .map-stage img{display:block;width:100%;height:auto}
 #map-route{display:none;position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;z-index:1}
 #map-route.show{display:block}
-#map-route-line{fill:none;stroke:#e53935;stroke-width:5px;stroke-linecap:round;vector-effect:non-scaling-stroke;stroke-dasharray:1;stroke-dashoffset:1;filter:drop-shadow(0 0 3px rgba(229,57,53,.55))}
-#map-route.show #map-route-line{animation:map-route-flow .8s ease-in-out infinite}
-#map-marker{display:none;position:absolute;width:42px;height:46px;margin:0;transform:translate(-50%,-50%);transform-origin:50% 85%;border:0;border-radius:0;background:url('/images/runner.png') center/contain no-repeat;box-shadow:none;pointer-events:none;z-index:2;transition:left 250ms cubic-bezier(.22,.8,.25,1),top 250ms cubic-bezier(.22,.8,.25,1)}
+#map-route-line{fill:none;stroke:#e53935;stroke-width:var(--route-stroke-width,7px);stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;stroke-dasharray:10px 10px;stroke-dashoffset:0;opacity:1;filter:drop-shadow(0 1px 1px rgba(102,0,0,.18))}
+#map-route.show #map-route-line{animation:map-route-flow .8s linear infinite}
+#map-marker{display:none;position:absolute;width:78px;height:84px;margin:0;transform:translate(-50%,-100%);transform-origin:50% 100%;border:0;border-radius:0;background:none;box-shadow:none;pointer-events:none;z-index:6;transition:none;--runner-body-axis:40.1634723788%}
+#map-marker .map-runner{display:block;position:absolute;left:50%;bottom:0;height:100%;width:auto;aspect-ratio:887/980;transform:translateX(calc(-1 * var(--runner-body-axis)));pointer-events:none}
+#map-marker .map-runner-sprite{display:block;width:100%;height:100%;background:url('/images/runner.png') center bottom/contain no-repeat;transform-origin:var(--runner-body-axis) 100%}
 #map-marker.is-resetting{transition:none!important}
 #map-marker.show{display:block;animation:none}
-#map-marker.arrived{animation:runner-dance 2s ease-in-out infinite}
-#map-label{display:none;position:absolute;transform:translate(-50%,-155%);padding:6px 9px;background:rgba(23,54,93,.95);color:#fff;border-radius:999px;font-size:12px;font-weight:800;white-space:nowrap;pointer-events:none;z-index:3;transition:left 250ms ease,top 250ms ease}
-#map-label.show{display:block}
+#map-marker.arrived{animation:none}
+#map-marker.arrived .map-runner-sprite{animation:runner-dance 2s ease-in-out infinite}
+/* The fixed parent owns the label anchor. Only the inner bitmap dances.
+   x=356.25/887 is the measured midpoint of the two soles, not the tail bbox. */
+@keyframes runner-dance{0%,32%,100%{transform:translateY(0) rotate(0)}8%{transform:translateY(-7%) rotate(-8deg)}16%{transform:translateY(3%) rotate(8deg)}24%{transform:translateY(-4%) rotate(-5deg)}}
 #route-text{padding:0 16px 12px}
-@keyframes map-route-flow{0%{stroke-dashoffset:1;opacity:.32}32%{stroke-dashoffset:0;opacity:1}45%{stroke-dashoffset:0;opacity:1}70%{stroke-dashoffset:1;opacity:.32}100%{stroke-dashoffset:1;opacity:.32}}
-@keyframes runner-dance{0%,32%,100%{transform:translate(-50%,-50%) rotate(0)}8%{transform:translate(-50%,-57%) rotate(-8deg)}16%{transform:translate(-50%,-47%) rotate(8deg)}24%{transform:translate(-50%,-54%) rotate(-5deg)}}
+@keyframes map-route-flow{from{stroke-dashoffset:28}to{stroke-dashoffset:0}}
 @keyframes pulse{70%{box-shadow:0 0 0 18px rgba(255,87,34,0)}}
-@media(max-width:760px){#map-marker{width:34px;height:38px}}
-@media(prefers-reduced-motion:reduce){#map-marker,#map-label{transition:none}#map-route.show #map-route-line{animation:none;stroke-dashoffset:0}}
+@media(max-width:760px){#map-marker{width:64px;height:69px}}
+@media(prefers-reduced-motion:reduce){#map-marker{transition:none}#map-route.show #map-route-line{animation:none;stroke-dashoffset:0}}
+@media(prefers-reduced-motion:reduce){#map-marker.arrived .map-runner-sprite{animation:none}}
 .detail-grid{display:grid;gap:12px}
 .detail-row{border-top:1px solid #eaecf0;padding-top:9px}
 .detail-row strong{display:block;color:var(--muted);font-size:12px}
@@ -478,7 +482,10 @@ main{max-width:none;margin:0;padding:0 0 4px}
   box-shadow:0 14px 38px rgba(3,25,33,.12);
 }
 .map-panel{position:static}
-.map-panel .section-head[hidden],.map-panel .floor-tabs[hidden],.map-panel .map-stage[hidden]{display:none!important}
+.map-panel[hidden],.map-panel .section-head[hidden],.map-panel .floor-tabs[hidden],.map-panel .map-stage[hidden]{display:none!important}
+.detail-dialog .guidance-grid.map-unavailable{grid-template-columns:minmax(0,1fr)}
+.map-stage.map-cropped{min-height:0;aspect-ratio:var(--map-crop-width)/var(--map-crop-height)}
+.map-stage.map-cropped #floor-image{position:absolute;top:0;left:0;width:100%;max-width:none;height:auto;transform:translateY(var(--map-crop-offset));transform-origin:top left}
 .section-head{padding:20px 22px 3px}.floor-tabs{padding:0 22px 14px}.map-stage{margin:0 22px}.detail-panel{padding:22px}
 .floor-tabs button{color:var(--primary);background:#e9f1f2}.floor-tabs button.active{color:#fff;background:var(--primary)}
 
@@ -598,3 +605,21 @@ dialog{color:var(--text)}
   .results-panel,.detail-panel{color:#000;background:#fff;box-shadow:none}
   .guidance-grid{display:block}.detail-panel{margin-top:12px}
 }
+
+
+/* Temporary v2.6: exact attached-screen geometry, not a production style. */
+.map-stage.map-cropped{--v26-left:19px;--v26-right:19px;--v26-top:16px;--v26-bottom:96px;position:relative;margin:0 26px;min-height:0;aspect-ratio:auto;padding:var(--v26-top) var(--v26-right) var(--v26-bottom) var(--v26-left);overflow:visible;background:#fff}
+.map-stage.map-cropped #floor-image{position:relative;z-index:0;display:block;width:100%;height:auto;max-width:none;transform:none!important;transform-origin:top left}
+@media(min-width:1000px){.detail-dialog{width:calc(100% - 48px);max-width:none;max-height:calc(100dvh - 32px);border-radius:26px}.detail-dialog-shell{padding:24px}.detail-dialog .guidance-grid{grid-template-columns:minmax(0,1fr) 424px;gap:28px}.map-panel{border-radius:24px}.detail-panel{padding:34px}.map-stage.map-cropped{margin:0 26px 0}.guidance-note{margin-top:16px}}
+@media(max-width:760px){.detail-dialog .guidance-grid{grid-template-columns:minmax(0,1fr)}.map-stage.map-cropped{margin:0 16px;padding:14px 16px 34px}}
+
+
+/* Temporary v2.7: sampled Korean floor badge inside the map stage. */
+.map-stage.map-cropped{container-type:inline-size}
+.map-stage .map-floor-badge{position:absolute;z-index:5;left:1%;top:1%;width:min(12%,199px);min-width:72px;aspect-ratio:199/158;display:grid;place-items:center;padding:0;border:0;border-radius:20px;background:rgb(211 77 76);color:#fff;font:900 clamp(34px,4.5cqw,84px)/1 Pretendard,"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;letter-spacing:-.11em;white-space:nowrap;box-shadow:0 11px 14px rgba(105,36,35,.34);pointer-events:none;user-select:none}
+.map-stage .map-floor-badge[hidden]{display:none!important}
+@media(max-width:760px){.map-stage .map-floor-badge{left:1%;top:1%;width:clamp(72px,20%,118px);min-width:72px;font-size:clamp(34px,9.2cqw,52px);border-radius:12px;box-shadow:0 7px 10px rgba(105,36,35,.32)}}
+
+/* Temporary final route candidate: icon remains bottom-center anchored at the verified point. */
+#map-route-line{stroke-linejoin:round}
+.guidance-grid{padding-top:var(--marker-overhang,0px)}

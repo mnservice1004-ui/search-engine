@@ -1,0 +1,2996 @@
+{
+  "schema_version": 1,
+  "coordinate_space": "normalised percent in the current high-resolution floor map",
+  "render_contract": {
+    "path_commands": [
+      "M",
+      "L"
+    ],
+    "bezier_commands_forbidden": [
+      "C",
+      "S",
+      "Q"
+    ],
+    "room_or_wall_crossing_forbidden": true,
+    "route_start_waypoint": "entrance_door_threshold",
+    "route_start_rule": "Every verified first-floor route begins at the independently measured inside threshold of the printed 정문 door shape; responsive rendering projects this natural-map anchor with the same image transform as every route waypoint."
+  },
+  "floors": {
+    "1층": {
+      "waypoints": {
+        "entrance_door_threshold": {
+          "x": 68.59375,
+          "y": 89.81860737,
+          "point_type": "entrance",
+          "evidence": "배치도에 인쇄된 정문 문모양의 바로 안쪽 문턱과 파란 타일 복도가 만나는 독립 기준점; 화면 하단 경계·카드 여백·viewport 좌표가 아님",
+          "status": "VERIFIED",
+          "highres_pixel": {
+            "x": 1756,
+            "y": 1535
+          },
+          "transform": "natural_map_anchor_projected_with_floor_image"
+        },
+        "north_spine": {
+          "x": 68.59375,
+          "y": 27.61849035,
+          "point_type": "corridor",
+          "evidence": "정문 안쪽 출발점에서 이어지는 중앙 세로 파란 타일 복도 중심. 중정·방 내부를 가로지르지 않음",
+          "status": "VERIFIED",
+          "highres_pixel": {
+            "x": 1756,
+            "y": 472
+          },
+          "transform": "direct_highres_corridor_measurement"
+        },
+        "top_치매센터": {
+          "x": 50.234375,
+          "y": 27.61849035,
+          "point_type": "corridor",
+          "evidence": "치매안심센터 하단 이중문 앞 상단 파란 타일 복도 중심",
+          "status": "VERIFIED",
+          "highres_pixel": {
+            "x": 1286,
+            "y": 472
+          },
+          "transform": "direct_highres_corridor_measurement"
+        },
+        "door_치매센터": {
+          "x": 50.234375,
+          "y": 24.2246928,
+          "point_type": "destination_approach",
+          "evidence": "고해상도 1층 배치도에 표시된 치매안심센터 하단 이중 출입문 중앙. 방 내부로 진입하지 않음",
+          "status": "VERIFIED",
+          "highres_pixel": {
+            "x": 1286,
+            "y": 414
+          },
+          "transform": "direct_highres_corridor_measurement"
+        },
+        "top_재활": {
+          "x": 64.0625,
+          "y": 27.61849035,
+          "point_type": "corridor",
+          "evidence": "재활보건실 하단 이중문 앞 상단 파란 타일 복도 중심",
+          "status": "VERIFIED",
+          "highres_pixel": {
+            "x": 1640,
+            "y": 472
+          },
+          "transform": "direct_highres_corridor_measurement"
+        },
+        "민원_세로복도": {
+          "x": 68.59375,
+          "y": 50.02925746,
+          "point_type": "corridor",
+          "evidence": "사용자 제공 민원실 녹색 기준선의 수직 구간 끝. 정문에서 이어지는 중앙 파란 타일 복도 안",
+          "status": "VERIFIED",
+          "highres_pixel": {
+            "x": 1756,
+            "y": 855
+          },
+          "transform": "user_reference_citizen_service_green_route"
+        },
+        "door_민원실": {
+          "x": 66.796875,
+          "y": 50.02925746,
+          "point_type": "destination_approach",
+          "evidence": "사용자 제공 민원실 녹색 기준선의 끝. 민원실 표기 오른쪽 복도 쪽 문턱에서 멈추며 방 내부로 들어가지 않음",
+          "status": "VERIFIED",
+          "highres_pixel": {
+            "x": 1710,
+            "y": 855
+          },
+          "transform": "user_reference_citizen_service_green_route"
+        },
+        "south_main": {
+          "x": 58.58792432,
+          "y": 86.25055337,
+          "point_type": "corridor",
+          "evidence": "중정 남쪽 파란 타일 복도 중앙",
+          "status": "VERIFIED",
+          "source_old_pixel": {
+            "x": 536.484,
+            "y": 540.672
+          },
+          "highres_pixel": {
+            "x": 1499.851,
+            "y": 1474.022
+          },
+          "transform": "homography_selected_H_once"
+        },
+        "west_junction": {
+          "x": 39.29475761,
+          "y": 76.40309103,
+          "point_type": "junction",
+          "evidence": "좌측 진료·검사 구역과 남쪽 복도가 만나는 파란 타일 교차점",
+          "status": "VERIFIED",
+          "source_old_pixel": {
+            "x": 408.044,
+            "y": 485.376
+          },
+          "highres_pixel": {
+            "x": 1005.946,
+            "y": 1305.729
+          },
+          "transform": "homography_selected_H_once"
+        },
+        "west_spine": {
+          "x": 33.32591946,
+          "y": 53.48283806,
+          "point_type": "corridor",
+          "evidence": "좌측 방 앞 세로 파란 타일 복도 중앙",
+          "status": "VERIFIED",
+          "source_old_pixel": {
+            "x": 373.464,
+            "y": 380.928
+          },
+          "highres_pixel": {
+            "x": 853.144,
+            "y": 914.022
+          },
+          "transform": "homography_selected_H_once"
+        },
+        "west_upper": {
+          "x": 34.3583416,
+          "y": 30.70326654,
+          "point_type": "junction",
+          "evidence": "방사선실·결핵실 앞 파란 타일 복도 교차점",
+          "status": "VERIFIED",
+          "source_old_pixel": {
+            "x": 385.32,
+            "y": 281.088
+          },
+          "highres_pixel": {
+            "x": 879.574,
+            "y": 524.719
+          },
+          "transform": "homography_selected_H_once"
+        },
+        "top_left": {
+          "x": 48.34739819,
+          "y": 29.06085809,
+          "point_type": "corridor",
+          "evidence": "치매안심센터·재활보건실 앞 상단 파란 타일 복도 중앙",
+          "status": "VERIFIED",
+          "source_old_pixel": {
+            "x": 479.18,
+            "y": 279.552
+          },
+          "highres_pixel": {
+            "x": 1237.693,
+            "y": 496.65
+          },
+          "transform": "homography_selected_H_once"
+        },
+        "top_main": {
+          "x": 63.78148013,
+          "y": 27.63400357,
+          "point_type": "junction",
+          "evidence": "상단 복도와 중앙 세로 복도의 교차점",
+          "status": "VERIFIED",
+          "source_old_pixel": {
+            "x": 584.896,
+            "y": 279.552
+          },
+          "highres_pixel": {
+            "x": 1632.806,
+            "y": 472.265
+          },
+          "transform": "homography_selected_H_once"
+        },
+        "central_spine": {
+          "x": 68.26205424,
+          "y": 52.73012744,
+          "point_type": "corridor",
+          "evidence": "민원실 앞 중앙 세로 파란 타일 복도 중앙",
+          "status": "VERIFIED",
+          "source_old_pixel": {
+            "x": 610.584,
+            "y": 394.752
+          },
+          "highres_pixel": {
+            "x": 1747.509,
+            "y": 901.158
+          },
+          "transform": "homography_selected_H_once"
+        },
+        "right_junction": {
+          "x": 78.08560179,
+          "y": 56.01909754,
+          "point_type": "junction",
+          "evidence": "모자보건실 앞 우측 복도 교차점",
+          "status": "VERIFIED",
+          "source_old_pixel": {
+            "x": 678.756,
+            "y": 414.72
+          },
+          "highres_pixel": {
+            "x": 1998.991,
+            "y": 957.366
+          },
+          "transform": "homography_selected_H_once"
+        },
+        "right_spine": {
+          "x": 80.77427448,
+          "y": 80.56848784,
+          "point_type": "corridor",
+          "evidence": "우측 방 앞 세로 파란 타일 복도 중앙",
+          "status": "VERIFIED",
+          "source_old_pixel": {
+            "x": 692.588,
+            "y": 528.384
+          },
+          "highres_pixel": {
+            "x": 2067.821,
+            "y": 1376.915
+          },
+          "transform": "homography_selected_H_once"
+        },
+        "approach_민원실": {
+          "x": 64.57340674,
+          "y": 53.14077018,
+          "point_type": "destination_approach",
+          "evidence": "민원실 문 앞 파란 타일 복도; 방 내부 진입선 미사용",
+          "status": "VERIFIED",
+          "source_old_pixel": {
+            "x": 584.896,
+            "y": 394.752
+          },
+          "highres_pixel": {
+            "x": 1653.079,
+            "y": 908.176
+          },
+          "transform": "homography_selected_H_once"
+        },
+        "approach_모자보건실": {
+          "x": 80.03439685,
+          "y": 55.79577929,
+          "point_type": "destination_approach",
+          "evidence": "모자보건실 예방접종실 문 앞 파란 타일 복도; 방 내부 진입선 미사용",
+          "status": "VERIFIED",
+          "source_old_pixel": {
+            "x": 692.588,
+            "y": 414.72
+          },
+          "highres_pixel": {
+            "x": 2048.881,
+            "y": 953.55
+          },
+          "transform": "homography_selected_H_once"
+        },
+        "approach_모자보건교육실": {
+          "x": 91.3360259,
+          "y": 54.50069181,
+          "point_type": "destination_approach",
+          "evidence": "모자보건교육실(수유실) 문 앞 파란 타일 복도; 방 내부 진입선 미사용",
+          "status": "VERIFIED",
+          "source_old_pixel": {
+            "x": 773.604,
+            "y": 414.72
+          },
+          "highres_pixel": {
+            "x": 2338.202,
+            "y": 931.417
+          },
+          "transform": "homography_selected_H_once"
+        },
+        "approach_통합건강": {
+          "x": 92.26148113,
+          "y": 81.6991077,
+          "point_type": "destination_approach",
+          "evidence": "통합건강증진실 문 앞 파란 타일 복도; 방 내부 진입선 미사용",
+          "status": "VERIFIED",
+          "source_old_pixel": {
+            "x": 774.592,
+            "y": 540.672
+          },
+          "highres_pixel": {
+            "x": 2361.894,
+            "y": 1396.238
+          },
+          "transform": "homography_selected_H_once"
+        },
+        "mental_corridor_turn": {
+          "floor": "1층",
+          "x": 86.6796875,
+          "y": 66.99824459,
+          "point_type": "junction",
+          "evidence": "고해상도 배치도에서 작은 방들 위쪽 파란 타일 복도와 우측 좁은 세로 복도의 교차점. x=2219, y=1145 원본 픽셀 직접 대조",
+          "status": "VERIFIED",
+          "highres_pixel": {
+            "x": 2219,
+            "y": 1145
+          },
+          "transform": "direct_highres_corridor_measurement"
+        },
+        "door_정신건강복지센터": {
+          "floor": "1층",
+          "x": 86.6796875,
+          "y": 80.98303101,
+          "point_type": "destination_approach",
+          "evidence": "정신건강 복지센터 상단 이중문 중앙의 복도 쪽 접근점. 문 중심 x=2219, 문양 상단 y=1385 부근 바로 앞 y=1384. 작은 방과 센터 내부로 진입하지 않음",
+          "status": "VERIFIED",
+          "highres_pixel": {
+            "x": 2219,
+            "y": 1384
+          },
+          "transform": "direct_highres_corridor_measurement"
+        },
+        "approach_정신건강": {
+          "x": 80.85409265,
+          "y": 83.2409736,
+          "point_type": "destination_approach",
+          "evidence": "구형 homography 접근점은 고해상도 배치도에서 방 내부로 확인됨. 경로에서 사용 금지. 새 door_정신건강복지센터 접근점으로 대체",
+          "status": "REVIEW_REQUIRED",
+          "source_old_pixel": {
+            "x": 692.588,
+            "y": 540.672
+          },
+          "highres_pixel": {
+            "x": 2069.865,
+            "y": 1422.588
+          },
+          "transform": "homography_selected_H_once"
+        },
+        "approach_치매센터": {
+          "x": 50.24129378,
+          "y": 28.88577067,
+          "point_type": "destination_approach",
+          "evidence": "치매안심센터 문 앞 상단 파란 타일 복도; 방 내부 진입선 미사용",
+          "status": "VERIFIED",
+          "source_old_pixel": {
+            "x": 492.024,
+            "y": 279.552
+          },
+          "highres_pixel": {
+            "x": 1286.177,
+            "y": 493.658
+          },
+          "transform": "homography_selected_H_once"
+        },
+        "approach_재활": {
+          "x": 61.20944601,
+          "y": 27.87178373,
+          "point_type": "destination_approach",
+          "evidence": "재활보건실 문 앞 상단 파란 타일 복도; 방 내부 진입선 미사용",
+          "status": "VERIFIED",
+          "source_old_pixel": {
+            "x": 567.112,
+            "y": 279.552
+          },
+          "highres_pixel": {
+            "x": 1566.962,
+            "y": 476.329
+          },
+          "transform": "homography_selected_H_once"
+        },
+        "approach_치매쉼터": {
+          "x": 86.49883197,
+          "y": 25.53382319,
+          "point_type": "destination_approach",
+          "evidence": "치매안심쉼터 문 앞 상단 파란 타일 복도; 방 내부 진입선 미사용",
+          "status": "VERIFIED",
+          "source_old_pixel": {
+            "x": 744.952,
+            "y": 279.552
+          },
+          "highres_pixel": {
+            "x": 2214.37,
+            "y": 436.373
+          },
+          "transform": "homography_selected_H_once"
+        },
+        "approach_결핵": {
+          "x": 34.16115254,
+          "y": 24.78351234,
+          "point_type": "destination_approach",
+          "evidence": "결핵실 출입문 앞 파란 타일 복도; 방 내부 진입선 미사용",
+          "status": "VERIFIED",
+          "source_old_pixel": {
+            "x": 385.32,
+            "y": 254.976
+          },
+          "highres_pixel": {
+            "x": 874.526,
+            "y": 423.55
+          },
+          "transform": "homography_selected_H_once"
+        },
+        "approach_방사선": {
+          "x": 32.67442385,
+          "y": 34.00490676,
+          "point_type": "destination_approach",
+          "evidence": "방사선실 출입문 앞 파란 타일 복도; 방 내부 진입선 미사용",
+          "status": "VERIFIED",
+          "source_old_pixel": {
+            "x": 373.464,
+            "y": 294.912
+          },
+          "highres_pixel": {
+            "x": 836.465,
+            "y": 581.144
+          },
+          "transform": "homography_selected_H_once"
+        },
+        "approach_진료": {
+          "x": 33.20972371,
+          "y": 50.00890395,
+          "point_type": "destination_approach",
+          "evidence": "진료실 출입문 앞 파란 타일 복도; 방 내부 진입선 미사용",
+          "status": "VERIFIED",
+          "source_old_pixel": {
+            "x": 373.464,
+            "y": 365.568
+          },
+          "highres_pixel": {
+            "x": 850.169,
+            "y": 854.652
+          },
+          "transform": "homography_selected_H_once"
+        },
+        "approach_검사": {
+          "x": 35.57232082,
+          "y": 67.14777674,
+          "point_type": "destination_approach",
+          "evidence": "검사실 출입문 앞 파란 타일 복도; 방 내부 진입선 미사용",
+          "status": "VERIFIED",
+          "source_old_pixel": {
+            "x": 385.32,
+            "y": 442.368
+          },
+          "highres_pixel": {
+            "x": 910.651,
+            "y": 1147.556
+          },
+          "transform": "homography_selected_H_once"
+        },
+        "door_axis_재활": {
+          "x": 63.75,
+          "y": 24.2246928,
+          "point_type": "corridor",
+          "evidence": "고해상도 1층 배치도에서 재활보건실 하단 출입문 바로 앞 파란 타일 복도 중심; 좌표 격자 대조",
+          "status": "VERIFIED",
+          "highres_pixel": {
+            "x": 1632.0,
+            "y": 414.0
+          },
+          "transform": "measured_door_threshold_after_homography"
+        },
+        "door_재활": {
+          "x": 64.0625,
+          "y": 24.2246928,
+          "point_type": "destination_approach",
+          "evidence": "고해상도 1층 배치도에 인쇄된 재활보건실 하단 출입문 중앙; 방 내부로 진입하지 않음",
+          "status": "VERIFIED",
+          "highres_pixel": {
+            "x": 1640.0,
+            "y": 414.0
+          },
+          "transform": "measured_door_threshold_after_homography"
+        },
+        "maternal_vertical": {
+          "x": 68.59375,
+          "y": 66.99824459,
+          "point_type": "corridor",
+          "evidence": "중앙 우측 파란 타일 세로 복도 중심; 사용자 녹색선의 첫 수직 구간",
+          "status": "VERIFIED",
+          "highres_pixel": {
+            "x": 1756,
+            "y": 1145
+          },
+          "transform": "user_reference_green_corridor_route"
+        },
+        "maternal_junction": {
+          "x": 81.4453125,
+          "y": 66.99824459,
+          "point_type": "junction",
+          "evidence": "모자보건실 예방접종실 앞 파란 타일 가로 복도 교차점; 사용자 녹색선의 수평 구간 끝",
+          "status": "VERIFIED",
+          "highres_pixel": {
+            "x": 2085,
+            "y": 1145
+          },
+          "transform": "user_reference_green_corridor_route"
+        },
+        "door_모자보건실": {
+          "x": 81.4453125,
+          "y": 62.31714453,
+          "point_type": "destination_approach",
+          "evidence": "모자보건실 예방접종실 하단 이중 출입문 중앙. 문턱에서 멈추고 방 내부로 진입하지 않음",
+          "status": "VERIFIED",
+          "highres_pixel": {
+            "x": 2085,
+            "y": 1065
+          },
+          "transform": "user_reference_green_corridor_route"
+        },
+        "south_east_turn": {
+          "floor": "1층",
+          "x": 68.59375,
+          "y": 76.65301345816266,
+          "point_type": "junction",
+          "evidence": "정문 북쪽 중앙 복도와 중정 남쪽 복도의 교차점; 현재 floor-1.webp 원본 픽셀 및 출입문 확대 대조",
+          "status": "VERIFIED",
+          "highres_pixel": {
+            "x": 1756,
+            "y": 1310
+          },
+          "transform": "direct_current_highres_floorplan_measurement"
+        },
+        "south_inner_turn": {
+          "floor": "1층",
+          "x": 58.59375,
+          "y": 76.65301345816266,
+          "point_type": "junction",
+          "evidence": "중정 남동쪽 굴곡 아래 파란 타일 통로; 하단 돌출 공간 북쪽; 현재 floor-1.webp 원본 픽셀 및 출입문 확대 대조",
+          "status": "VERIFIED",
+          "highres_pixel": {
+            "x": 1500,
+            "y": 1310
+          },
+          "transform": "direct_current_highres_floorplan_measurement"
+        },
+        "south_corridor_east": {
+          "floor": "1층",
+          "x": 50.78125,
+          "y": 73.43475716793446,
+          "point_type": "corridor",
+          "evidence": "중정 남쪽 경사진 복도, 실내 방의 북쪽; 현재 floor-1.webp 원본 픽셀 및 출입문 확대 대조",
+          "status": "VERIFIED",
+          "highres_pixel": {
+            "x": 1300,
+            "y": 1255
+          },
+          "transform": "direct_current_highres_floorplan_measurement"
+        },
+        "south_corridor_mid": {
+          "floor": "1층",
+          "x": 41.015625,
+          "y": 69.57284961966062,
+          "point_type": "corridor",
+          "evidence": "중정 남쪽 경사진 파란 타일 복도 중앙; 현재 floor-1.webp 원본 픽셀 및 출입문 확대 대조",
+          "status": "VERIFIED",
+          "highres_pixel": {
+            "x": 1050,
+            "y": 1189
+          },
+          "transform": "direct_current_highres_floorplan_measurement"
+        },
+        "south_corridor_west": {
+          "floor": "1층",
+          "x": 31.640625,
+          "y": 65.82796957284963,
+          "point_type": "corridor",
+          "evidence": "검사실·화장실 북쪽 경사진 복도; 현재 floor-1.webp 원본 픽셀 및 출입문 확대 대조",
+          "status": "VERIFIED",
+          "highres_pixel": {
+            "x": 810,
+            "y": 1125
+          },
+          "transform": "direct_current_highres_floorplan_measurement"
+        },
+        "west_south_junction": {
+          "floor": "1층",
+          "x": 24.21875,
+          "y": 62.0245757753072,
+          "point_type": "junction",
+          "evidence": "중정 남서쪽 파란 타일 교차점; 현재 floor-1.webp 원본 픽셀 및 출입문 확대 대조",
+          "status": "VERIFIED",
+          "highres_pixel": {
+            "x": 620,
+            "y": 1060
+          },
+          "transform": "direct_current_highres_floorplan_measurement"
+        },
+        "lab_door_turn": {
+          "floor": "1층",
+          "x": 22.109375,
+          "y": 62.0245757753072,
+          "point_type": "corridor",
+          "evidence": "검사실 북쪽 이중문 바로 앞 통로; 현재 floor-1.webp 원본 픽셀 및 출입문 확대 대조",
+          "status": "VERIFIED",
+          "highres_pixel": {
+            "x": 566,
+            "y": 1060
+          },
+          "transform": "direct_current_highres_floorplan_measurement"
+        },
+        "door_검사실": {
+          "floor": "1층",
+          "x": 22.109375,
+          "y": 63.311878291398486,
+          "point_type": "destination_approach",
+          "evidence": "검사실 북쪽 이중문 중앙 복도 쪽 문턱 접근점; 문양 및 갈색 방 내부 직전 정지; 현재 floor-1.webp 원본 픽셀 및 출입문 확대 대조",
+          "status": "VERIFIED",
+          "highres_pixel": {
+            "x": 566,
+            "y": 1082
+          },
+          "transform": "direct_current_highres_floorplan_measurement"
+        },
+        "west_curve_south": {
+          "floor": "1층",
+          "x": 23.203125,
+          "y": 58.22118197776478,
+          "point_type": "corridor",
+          "evidence": "진료실 동쪽 복도 하단 굴곡; 현재 floor-1.webp 원본 픽셀 및 출입문 확대 대조",
+          "status": "VERIFIED",
+          "highres_pixel": {
+            "x": 594,
+            "y": 995
+          },
+          "transform": "direct_current_highres_floorplan_measurement"
+        },
+        "west_curve_mid": {
+          "floor": "1층",
+          "x": 23.4765625,
+          "y": 55.3540081919251,
+          "point_type": "corridor",
+          "evidence": "진료실 동쪽 파란 타일 통로 중앙; 현재 floor-1.webp 원본 픽셀 및 출입문 확대 대조",
+          "status": "VERIFIED",
+          "highres_pixel": {
+            "x": 601,
+            "y": 946
+          },
+          "transform": "direct_current_highres_floorplan_measurement"
+        },
+        "west_corridor_lower": {
+          "floor": "1층",
+          "x": 24.609375,
+          "y": 49.853715623171446,
+          "point_type": "corridor",
+          "evidence": "진료실 동쪽 비스듬한 복도 중앙; 현재 floor-1.webp 원본 픽셀 및 출입문 확대 대조",
+          "status": "VERIFIED",
+          "highres_pixel": {
+            "x": 630,
+            "y": 852
+          },
+          "transform": "direct_current_highres_floorplan_measurement"
+        },
+        "west_corridor_mid": {
+          "floor": "1층",
+          "x": 25.9765625,
+          "y": 43.358689291983616,
+          "point_type": "corridor",
+          "evidence": "서쪽 부속 방들의 동쪽 경사진 복도 중앙; 현재 floor-1.webp 원본 픽셀 및 출입문 확대 대조",
+          "status": "VERIFIED",
+          "highres_pixel": {
+            "x": 665,
+            "y": 741
+          },
+          "transform": "direct_current_highres_floorplan_measurement"
+        },
+        "west_corridor_upper": {
+          "floor": "1층",
+          "x": 27.382812499999996,
+          "y": 36.863662960795786,
+          "point_type": "corridor",
+          "evidence": "서쪽 상단 방들의 동쪽 경사진 통로 중앙; 현재 floor-1.webp 원본 픽셀 및 출입문 확대 대조",
+          "status": "VERIFIED",
+          "highres_pixel": {
+            "x": 701,
+            "y": 630
+          },
+          "transform": "direct_current_highres_floorplan_measurement"
+        },
+        "west_north_junction": {
+          "floor": "1층",
+          "x": 28.125,
+          "y": 33.060269163253366,
+          "point_type": "junction",
+          "evidence": "방사선실·결핵실 남동쪽 넓어지는 파란 타일 통로; 현재 floor-1.webp 원본 픽셀 및 출입문 확대 대조",
+          "status": "VERIFIED",
+          "highres_pixel": {
+            "x": 720,
+            "y": 565
+          },
+          "transform": "direct_current_highres_floorplan_measurement"
+        },
+        "radiology_turn": {
+          "floor": "1층",
+          "x": 26.953125,
+          "y": 27.208894090111173,
+          "point_type": "corridor",
+          "evidence": "방사선실 동쪽 이중문 앞 넓은 파란 타일 복도; 현재 floor-1.webp 원본 픽셀 및 출입문 확대 대조",
+          "status": "VERIFIED",
+          "highres_pixel": {
+            "x": 690,
+            "y": 465
+          },
+          "transform": "direct_current_highres_floorplan_measurement"
+        },
+        "door_방사선실": {
+          "floor": "1층",
+          "x": 24.0234375,
+          "y": 27.208894090111173,
+          "point_type": "destination_approach",
+          "evidence": "방사선실 동쪽 이중문의 중앙, 파란 타일 복도 쪽 접근점; 갈색 방으로 진입하지 않음; 현재 floor-1.webp 원본 픽셀 및 출입문 확대 대조",
+          "status": "VERIFIED",
+          "highres_pixel": {
+            "x": 615,
+            "y": 465
+          },
+          "transform": "direct_current_highres_floorplan_measurement"
+        },
+        "tuberculosis_turn": {
+          "floor": "1층",
+          "x": 29.8828125,
+          "y": 28.964306612053832,
+          "point_type": "corridor",
+          "evidence": "결핵실 남쪽 단일 출입문 앞 파란 타일 통로; 현재 floor-1.webp 원본 픽셀 및 출입문 확대 대조",
+          "status": "VERIFIED",
+          "highres_pixel": {
+            "x": 765,
+            "y": 495
+          },
+          "transform": "direct_current_highres_floorplan_measurement"
+        },
+        "door_결핵실": {
+          "floor": "1층",
+          "x": 29.8828125,
+          "y": 25.980105324751317,
+          "point_type": "destination_approach",
+          "evidence": "결핵실 남쪽 단일 출입문 개구부의 복도 쪽 접근점; 검은 벽선과 문짝을 넘지 않음; 현재 floor-1.webp 원본 픽셀 및 출입문 확대 대조",
+          "status": "VERIFIED",
+          "highres_pixel": {
+            "x": 765,
+            "y": 444
+          },
+          "transform": "direct_current_highres_floorplan_measurement"
+        },
+        "integrated_door_turn": {
+          "floor": "1층",
+          "x": 86.6796875,
+          "y": 79.34464599180806,
+          "point_type": "corridor",
+          "evidence": "정신건강복지센터 상단으로 이어지는 좁은 복도에서 동쪽 이중문을 향하는 지점; 현재 floor-1.webp 원본 픽셀 및 출입문 확대 대조",
+          "status": "VERIFIED",
+          "highres_pixel": {
+            "x": 2219,
+            "y": 1356
+          },
+          "transform": "direct_current_highres_floorplan_measurement"
+        },
+        "door_통합건강증진실": {
+          "floor": "1층",
+          "x": 87.8125,
+          "y": 79.34464599180806,
+          "point_type": "destination_approach",
+          "evidence": "통합건강증진실 서쪽 이중문 중앙, 복도 쪽 문턱 접근점. 위쪽 별도 방의 문과 구분; 현재 floor-1.webp 원본 픽셀 및 출입문 확대 대조",
+          "status": "VERIFIED",
+          "highres_pixel": {
+            "x": 2248,
+            "y": 1356
+          },
+          "transform": "direct_current_highres_floorplan_measurement"
+        }
+      },
+      "routes": {
+        "민원실": {
+          "status": "VERIFIED",
+          "waypoint_ids": [
+            "entrance_door_threshold",
+            "민원_세로복도",
+            "door_민원실"
+          ],
+          "reason": null,
+          "source_status": "USER_REFERENCE_VERIFIED",
+          "projection": "user_reference_citizen_service_green_route",
+          "endpoint": "verified_citizen_service_corridor_door_threshold",
+          "path_geometry": "orthogonal_corridor_polyline"
+        },
+        "모자보건실·예방접종실": {
+          "status": "VERIFIED",
+          "waypoint_ids": [
+            "entrance_door_threshold",
+            "maternal_vertical",
+            "maternal_junction",
+            "door_모자보건실"
+          ],
+          "reason": null,
+          "source_status": "VERIFIED_REUSABLE",
+          "projection": "homography_selected_H_once",
+          "endpoint": "verified_maternal_vaccination_room_door_threshold",
+          "path_geometry": "orthogonal_corridor_polyline"
+        },
+        "모자보건실": {
+          "status": "VERIFIED",
+          "waypoint_ids": [
+            "entrance_door_threshold",
+            "maternal_vertical",
+            "maternal_junction",
+            "door_모자보건실"
+          ],
+          "reason": null,
+          "source_status": "VERIFIED_REUSABLE",
+          "projection": "homography_selected_H_once",
+          "endpoint": "verified_maternal_vaccination_room_door_threshold",
+          "path_geometry": "orthogonal_corridor_polyline"
+        },
+        "예방접종실": {
+          "status": "VERIFIED",
+          "waypoint_ids": [
+            "entrance_door_threshold",
+            "maternal_vertical",
+            "maternal_junction",
+            "door_모자보건실"
+          ],
+          "reason": null,
+          "source_status": "VERIFIED_REUSABLE",
+          "projection": "homography_selected_H_once",
+          "endpoint": "verified_maternal_vaccination_room_door_threshold",
+          "path_geometry": "orthogonal_corridor_polyline"
+        },
+        "모자보건교육실(수유실)": {
+          "status": "REVIEW_REQUIRED",
+          "waypoint_ids": [],
+          "reason": "모자보건교육실(수유실)의 배치도 표기는 확인되지만 복도 쪽 출입문 문턱을 확정할 수 없습니다. 방 내부 좌표로 경로를 만들지 않습니다."
+        },
+        "수유실": {
+          "status": "REVIEW_REQUIRED",
+          "waypoint_ids": [],
+          "reason": "모자보건교육실(수유실)의 배치도 표기는 확인되지만 복도 쪽 출입문 문턱을 확정할 수 없습니다. 방 내부 좌표로 경로를 만들지 않습니다."
+        },
+        "통합건강증진실": {
+          "status": "VERIFIED",
+          "waypoint_ids": [
+            "entrance_door_threshold",
+            "maternal_vertical",
+            "mental_corridor_turn",
+            "integrated_door_turn",
+            "door_통합건강증진실"
+          ],
+          "projection": "current_natural_image_coordinates",
+          "endpoint": "verified_corridor_side_door_approach",
+          "path_geometry": "corridor_polyline",
+          "max_stroke_width_percent": 0.78125,
+          "evidence": "2026-09-05 현재 고해상도 1층 복도·문턱 전수 계측. 실제 경사진 복도에만 대각 선분 사용. 운영 현장 실측을 뜻하지 않음"
+        },
+        "정신건강복지센터": {
+          "status": "VERIFIED",
+          "waypoint_ids": [
+            "entrance_door_threshold",
+            "maternal_vertical",
+            "mental_corridor_turn",
+            "door_정신건강복지센터"
+          ],
+          "reason": null,
+          "source_status": "DIRECT_HIGHRES_VERIFIED",
+          "projection": "direct_highres_corridor_measurement",
+          "endpoint": "verified_mental_health_center_north_double_door_approach",
+          "path_geometry": "orthogonal_corridor_polyline",
+          "max_stroke_width_percent": 1.25
+        },
+        "치매안심센터": {
+          "status": "VERIFIED",
+          "waypoint_ids": [
+            "entrance_door_threshold",
+            "north_spine",
+            "top_치매센터",
+            "door_치매센터"
+          ],
+          "reason": null,
+          "source_status": "DIRECT_HIGHRES_VERIFIED",
+          "projection": "direct_highres_corridor_measurement",
+          "endpoint": "verified_dementia_center_room_door_threshold",
+          "path_geometry": "orthogonal_corridor_polyline"
+        },
+        "치매안심쉼터": {
+          "status": "REVIEW_REQUIRED",
+          "waypoint_ids": [],
+          "reason": "치매안심쉼터의 기존 접근점은 실제 평면도 내부 복도 문턱이 아닌 여백 쪽으로 판정됩니다. 출입문 확인 전에는 경로를 표시하지 않습니다."
+        },
+        "재활보건실": {
+          "status": "VERIFIED",
+          "waypoint_ids": [
+            "entrance_door_threshold",
+            "north_spine",
+            "top_재활",
+            "door_재활"
+          ],
+          "reason": null,
+          "source_status": "DIRECT_HIGHRES_VERIFIED",
+          "projection": "direct_highres_corridor_measurement",
+          "endpoint": "verified_rehabilitation_room_door_threshold",
+          "path_geometry": "orthogonal_corridor_polyline"
+        },
+        "결핵실": {
+          "status": "VERIFIED",
+          "waypoint_ids": [
+            "entrance_door_threshold",
+            "south_east_turn",
+            "south_inner_turn",
+            "south_corridor_east",
+            "south_corridor_mid",
+            "south_corridor_west",
+            "west_south_junction",
+            "west_curve_south",
+            "west_curve_mid",
+            "west_corridor_lower",
+            "west_corridor_mid",
+            "west_corridor_upper",
+            "west_north_junction",
+            "tuberculosis_turn",
+            "door_결핵실"
+          ],
+          "projection": "current_natural_image_coordinates",
+          "endpoint": "verified_corridor_side_door_approach",
+          "path_geometry": "corridor_polyline",
+          "max_stroke_width_percent": 0.78125,
+          "evidence": "2026-09-05 현재 고해상도 1층 복도·문턱 전수 계측. 실제 경사진 복도에만 대각 선분 사용. 운영 현장 실측을 뜻하지 않음"
+        },
+        "영상의학실(방사선실)": {
+          "status": "VERIFIED",
+          "waypoint_ids": [
+            "entrance_door_threshold",
+            "south_east_turn",
+            "south_inner_turn",
+            "south_corridor_east",
+            "south_corridor_mid",
+            "south_corridor_west",
+            "west_south_junction",
+            "west_curve_south",
+            "west_curve_mid",
+            "west_corridor_lower",
+            "west_corridor_mid",
+            "west_corridor_upper",
+            "west_north_junction",
+            "radiology_turn",
+            "door_방사선실"
+          ],
+          "projection": "current_natural_image_coordinates",
+          "endpoint": "verified_corridor_side_door_approach",
+          "path_geometry": "corridor_polyline",
+          "max_stroke_width_percent": 0.78125,
+          "evidence": "2026-09-05 현재 고해상도 1층 복도·문턱 전수 계측. 실제 경사진 복도에만 대각 선분 사용. 운영 현장 실측을 뜻하지 않음",
+          "canonical_destination": "방사선실"
+        },
+        "방사선실": {
+          "status": "VERIFIED",
+          "waypoint_ids": [
+            "entrance_door_threshold",
+            "south_east_turn",
+            "south_inner_turn",
+            "south_corridor_east",
+            "south_corridor_mid",
+            "south_corridor_west",
+            "west_south_junction",
+            "west_curve_south",
+            "west_curve_mid",
+            "west_corridor_lower",
+            "west_corridor_mid",
+            "west_corridor_upper",
+            "west_north_junction",
+            "radiology_turn",
+            "door_방사선실"
+          ],
+          "projection": "current_natural_image_coordinates",
+          "endpoint": "verified_corridor_side_door_approach",
+          "path_geometry": "corridor_polyline",
+          "max_stroke_width_percent": 0.78125,
+          "evidence": "2026-09-05 현재 고해상도 1층 복도·문턱 전수 계측. 실제 경사진 복도에만 대각 선분 사용. 운영 현장 실측을 뜻하지 않음"
+        },
+        "영상의학실": {
+          "status": "VERIFIED",
+          "waypoint_ids": [
+            "entrance_door_threshold",
+            "south_east_turn",
+            "south_inner_turn",
+            "south_corridor_east",
+            "south_corridor_mid",
+            "south_corridor_west",
+            "west_south_junction",
+            "west_curve_south",
+            "west_curve_mid",
+            "west_corridor_lower",
+            "west_corridor_mid",
+            "west_corridor_upper",
+            "west_north_junction",
+            "radiology_turn",
+            "door_방사선실"
+          ],
+          "projection": "current_natural_image_coordinates",
+          "endpoint": "verified_corridor_side_door_approach",
+          "path_geometry": "corridor_polyline",
+          "max_stroke_width_percent": 0.78125,
+          "evidence": "2026-09-05 현재 고해상도 1층 복도·문턱 전수 계측. 실제 경사진 복도에만 대각 선분 사용. 운영 현장 실측을 뜻하지 않음",
+          "canonical_destination": "방사선실"
+        },
+        "진료실": {
+          "status": "REVIEW_REQUIRED",
+          "waypoint_ids": [],
+          "reason": "기존 변환 경로가 고해상도 배치도 경계 픽셀을 4% 이상 통과합니다. 실제 복도 중심과 진료실 출입문 문턱을 새로 대조하기 전에는 경로를 표시하지 않습니다."
+        },
+        "검사실": {
+          "status": "VERIFIED",
+          "waypoint_ids": [
+            "entrance_door_threshold",
+            "south_east_turn",
+            "south_inner_turn",
+            "south_corridor_east",
+            "south_corridor_mid",
+            "south_corridor_west",
+            "west_south_junction",
+            "lab_door_turn",
+            "door_검사실"
+          ],
+          "projection": "current_natural_image_coordinates",
+          "endpoint": "verified_corridor_side_door_approach",
+          "path_geometry": "corridor_polyline",
+          "max_stroke_width_percent": 0.78125,
+          "evidence": "2026-09-05 현재 고해상도 1층 복도·문턱 전수 계측. 실제 경사진 복도에만 대각 선분 사용. 운영 현장 실측을 뜻하지 않음"
+        }
+      },
+      "route_survey_20260905": {
+        "natural_size": [
+          2560,
+          1709
+        ],
+        "status": "VERIFIED_ON_FLOORPLAN",
+        "source": "public/images/floor-1.webp",
+        "corridor_regions": {
+          "central_south": [
+            [
+              1630,
+              1050
+            ],
+            [
+              1970,
+              1050
+            ],
+            [
+              1970,
+              1475
+            ],
+            [
+              1855,
+              1465
+            ],
+            [
+              1855,
+              1570
+            ],
+            [
+              1720,
+              1570
+            ],
+            [
+              1645,
+              1540
+            ],
+            [
+              1573,
+              1512
+            ],
+            [
+              1568,
+              1407
+            ],
+            [
+              1445,
+              1370
+            ],
+            [
+              1410,
+              1440
+            ],
+            [
+              1360,
+              1415
+            ],
+            [
+              1375,
+              1320
+            ],
+            [
+              1480,
+              1245
+            ],
+            [
+              1540,
+              1245
+            ],
+            [
+              1590,
+              1200
+            ],
+            [
+              1620,
+              1140
+            ]
+          ],
+          "south_corridor": [
+            [
+              512,
+              1070
+            ],
+            [
+              565,
+              1030
+            ],
+            [
+              630,
+              1030
+            ],
+            [
+              680,
+              1055
+            ],
+            [
+              950,
+              1125
+            ],
+            [
+              1220,
+              1198
+            ],
+            [
+              1490,
+              1240
+            ],
+            [
+              1590,
+              1200
+            ],
+            [
+              1660,
+              1240
+            ],
+            [
+              1630,
+              1360
+            ],
+            [
+              1460,
+              1360
+            ],
+            [
+              1400,
+              1310
+            ],
+            [
+              1270,
+              1300
+            ],
+            [
+              1030,
+              1245
+            ],
+            [
+              800,
+              1180
+            ],
+            [
+              610,
+              1120
+            ],
+            [
+              510,
+              1090
+            ]
+          ],
+          "west_corridor": [
+            [
+              610,
+              412
+            ],
+            [
+              685,
+              412
+            ],
+            [
+              700,
+              437
+            ],
+            [
+              862,
+              437
+            ],
+            [
+              862,
+              512
+            ],
+            [
+              809,
+              535
+            ],
+            [
+              772,
+              550
+            ],
+            [
+              750,
+              593
+            ],
+            [
+              742,
+              640
+            ],
+            [
+              706,
+              745
+            ],
+            [
+              672,
+              855
+            ],
+            [
+              648,
+              945
+            ],
+            [
+              653,
+              990
+            ],
+            [
+              666,
+              1030
+            ],
+            [
+              690,
+              1050
+            ],
+            [
+              665,
+              1090
+            ],
+            [
+              530,
+              1080
+            ],
+            [
+              540,
+              1000
+            ],
+            [
+              556,
+              945
+            ],
+            [
+              585,
+              855
+            ],
+            [
+              620,
+              745
+            ],
+            [
+              657,
+              630
+            ],
+            [
+              674,
+              596
+            ],
+            [
+              574,
+              555
+            ],
+            [
+              585,
+              526
+            ],
+            [
+              604,
+              465
+            ]
+          ],
+          "lab_threshold": [
+            [
+              535,
+              1050
+            ],
+            [
+              601,
+              1050
+            ],
+            [
+              595,
+              1092
+            ],
+            [
+              545,
+              1085
+            ]
+          ],
+          "tuberculosis_threshold": [
+            [
+              748,
+              433
+            ],
+            [
+              782,
+              433
+            ],
+            [
+              782,
+              462
+            ],
+            [
+              748,
+              462
+            ]
+          ],
+          "east_cross_corridor": [
+            [
+              1640,
+              1090
+            ],
+            [
+              2244,
+              1090
+            ],
+            [
+              2244,
+              1182
+            ],
+            [
+              1640,
+              1182
+            ]
+          ],
+          "east_vertical_corridor": [
+            [
+              2178,
+              1130
+            ],
+            [
+              2246,
+              1130
+            ],
+            [
+              2255,
+              1330
+            ],
+            [
+              2258,
+              1370
+            ],
+            [
+              2180,
+              1370
+            ]
+          ],
+          "integrated_threshold": [
+            [
+              2220,
+              1338
+            ],
+            [
+              2260,
+              1338
+            ],
+            [
+              2260,
+              1370
+            ],
+            [
+              2220,
+              1370
+            ]
+          ]
+        },
+        "door_thresholds": {
+          "검사실": {
+            "x": 566,
+            "y": 1082
+          },
+          "방사선실": {
+            "x": 615,
+            "y": 465
+          },
+          "결핵실": {
+            "x": 765,
+            "y": 444
+          },
+          "통합건강증진실": {
+            "x": 2248,
+            "y": 1356
+          }
+        },
+        "note": "도면상 복도·문 확인. 실제 현장 개방 여부나 접근성 경로 인증을 뜻하지 않음."
+      }
+    },
+    "2층": {
+      "waypoints": {
+        "floor_2_circular_throat": {
+          "floor": "2층",
+          "x": 53.5546875,
+          "y": 83.0,
+          "highres_pixel": {
+            "x": 1371,
+            "y": 1660
+          },
+          "point_type": "floor_transition",
+          "status": "VERIFIED",
+          "evidence": "사용자 시작점 PNG 빨간 표시를 현재 2층 raster에 SIFT/RANSAC 56 inliers로 정합: (1370.955,1660.190), 정수 픽셀 (1371,1660)."
+        },
+        "f2_corridor_1400_1430": {
+          "floor": "2층",
+          "x": 54.6875,
+          "y": 71.5,
+          "highres_pixel": {
+            "x": 1400,
+            "y": 1430
+          },
+          "point_type": "junction",
+          "status": "VERIFIED",
+          "evidence": "현재 2층 평면도 타일 복도 내부 계측. 벽/중정/실내를 제외한 통행 띠 안의 경유점."
+        },
+        "f2_corridor_1230_1360": {
+          "floor": "2층",
+          "x": 48.046875,
+          "y": 68.0,
+          "highres_pixel": {
+            "x": 1230,
+            "y": 1360
+          },
+          "point_type": "corridor",
+          "status": "VERIFIED",
+          "evidence": "현재 2층 평면도 타일 복도 내부 계측. 벽/중정/실내를 제외한 통행 띠 안의 경유점."
+        },
+        "f2_corridor_1000_1290": {
+          "floor": "2층",
+          "x": 39.0625,
+          "y": 64.5,
+          "highres_pixel": {
+            "x": 1000,
+            "y": 1290
+          },
+          "point_type": "corridor",
+          "status": "VERIFIED",
+          "evidence": "현재 2층 평면도 타일 복도 내부 계측. 벽/중정/실내를 제외한 통행 띠 안의 경유점."
+        },
+        "f2_corridor_780_1223": {
+          "floor": "2층",
+          "x": 30.46875,
+          "y": 61.150000000000006,
+          "highres_pixel": {
+            "x": 780,
+            "y": 1223
+          },
+          "point_type": "corridor",
+          "status": "VERIFIED",
+          "evidence": "현재 2층 평면도 타일 복도 내부 계측. 벽/중정/실내를 제외한 통행 띠 안의 경유점."
+        },
+        "f2_corridor_740_1211": {
+          "floor": "2층",
+          "x": 28.90625,
+          "y": 60.550000000000004,
+          "highres_pixel": {
+            "x": 740,
+            "y": 1211
+          },
+          "point_type": "corridor",
+          "status": "VERIFIED",
+          "evidence": "현재 2층 평면도 타일 복도 내부 계측. 벽/중정/실내를 제외한 통행 띠 안의 경유점."
+        },
+        "door_만성질환관리센터": {
+          "floor": "2층",
+          "x": 28.90625,
+          "y": 62.5,
+          "highres_pixel": {
+            "x": 740,
+            "y": 1250
+          },
+          "point_type": "destination_approach",
+          "status": "VERIFIED",
+          "evidence": "현재 2층 평면도 타일 복도 내부 계측. 만성질환관리센터 출입문 복도 쪽 접근점, 방 안으로 연장하지 않음."
+        },
+        "f2_corridor_550_1150": {
+          "floor": "2층",
+          "x": 21.484375,
+          "y": 57.49999999999999,
+          "highres_pixel": {
+            "x": 550,
+            "y": 1150
+          },
+          "point_type": "corridor",
+          "status": "VERIFIED",
+          "evidence": "현재 2층 평면도 타일 복도 내부 계측. 벽/중정/실내를 제외한 통행 띠 안의 경유점."
+        },
+        "f2_corridor_520_1120": {
+          "floor": "2층",
+          "x": 20.3125,
+          "y": 56.00000000000001,
+          "highres_pixel": {
+            "x": 520,
+            "y": 1120
+          },
+          "point_type": "corridor",
+          "status": "VERIFIED",
+          "evidence": "현재 2층 평면도 타일 복도 내부 계측. 벽/중정/실내를 제외한 통행 띠 안의 경유점."
+        },
+        "f2_corridor_520_1060": {
+          "floor": "2층",
+          "x": 20.3125,
+          "y": 53.0,
+          "highres_pixel": {
+            "x": 520,
+            "y": 1060
+          },
+          "point_type": "corridor",
+          "status": "VERIFIED",
+          "evidence": "현재 2층 평면도 타일 복도 내부 계측. 벽/중정/실내를 제외한 통행 띠 안의 경유점."
+        },
+        "f2_corridor_535_990": {
+          "floor": "2층",
+          "x": 20.8984375,
+          "y": 49.5,
+          "highres_pixel": {
+            "x": 535,
+            "y": 990
+          },
+          "point_type": "corridor",
+          "status": "VERIFIED",
+          "evidence": "현재 2층 평면도 타일 복도 내부 계측. 벽/중정/실내를 제외한 통행 띠 안의 경유점."
+        },
+        "f2_corridor_565_900": {
+          "floor": "2층",
+          "x": 22.0703125,
+          "y": 45.0,
+          "highres_pixel": {
+            "x": 565,
+            "y": 900
+          },
+          "point_type": "corridor",
+          "status": "VERIFIED",
+          "evidence": "현재 2층 평면도 타일 복도 내부 계측. 벽/중정/실내를 제외한 통행 띠 안의 경유점."
+        },
+        "f2_corridor_595_800": {
+          "floor": "2층",
+          "x": 23.2421875,
+          "y": 40.0,
+          "highres_pixel": {
+            "x": 595,
+            "y": 800
+          },
+          "point_type": "corridor",
+          "status": "VERIFIED",
+          "evidence": "현재 2층 평면도 타일 복도 내부 계측. 벽/중정/실내를 제외한 통행 띠 안의 경유점."
+        },
+        "f2_corridor_625_700": {
+          "floor": "2층",
+          "x": 24.4140625,
+          "y": 35.0,
+          "highres_pixel": {
+            "x": 625,
+            "y": 700
+          },
+          "point_type": "corridor",
+          "status": "VERIFIED",
+          "evidence": "현재 2층 평면도 타일 복도 내부 계측. 벽/중정/실내를 제외한 통행 띠 안의 경유점."
+        },
+        "f2_corridor_655_620": {
+          "floor": "2층",
+          "x": 25.5859375,
+          "y": 31.0,
+          "highres_pixel": {
+            "x": 655,
+            "y": 620
+          },
+          "point_type": "corridor",
+          "status": "VERIFIED",
+          "evidence": "현재 2층 평면도 타일 복도 내부 계측. 벽/중정/실내를 제외한 통행 띠 안의 경유점."
+        },
+        "f2_corridor_685_585": {
+          "floor": "2층",
+          "x": 26.7578125,
+          "y": 29.25,
+          "highres_pixel": {
+            "x": 685,
+            "y": 585
+          },
+          "point_type": "corridor",
+          "status": "VERIFIED",
+          "evidence": "현재 2층 평면도 타일 복도 내부 계측. 벽/중정/실내를 제외한 통행 띠 안의 경유점."
+        },
+        "f2_corridor_870_585": {
+          "floor": "2층",
+          "x": 33.984375,
+          "y": 29.25,
+          "highres_pixel": {
+            "x": 870,
+            "y": 585
+          },
+          "point_type": "corridor",
+          "status": "VERIFIED",
+          "evidence": "현재 2층 평면도 타일 복도 내부 계측. 벽/중정/실내를 제외한 통행 띠 안의 경유점."
+        },
+        "door_금연상담실": {
+          "floor": "2층",
+          "x": 33.984375,
+          "y": 27.250000000000004,
+          "highres_pixel": {
+            "x": 870,
+            "y": 545
+          },
+          "point_type": "destination_approach",
+          "status": "VERIFIED",
+          "evidence": "현재 2층 평면도 타일 복도 내부 계측. 금연상담실 출입문 복도 쪽 접근점, 방 안으로 연장하지 않음."
+        },
+        "f2_corridor_1340_585": {
+          "floor": "2층",
+          "x": 52.34375,
+          "y": 29.25,
+          "highres_pixel": {
+            "x": 1340,
+            "y": 585
+          },
+          "point_type": "corridor",
+          "status": "VERIFIED",
+          "evidence": "현재 2층 평면도 타일 복도 내부 계측. 벽/중정/실내를 제외한 통행 띠 안의 경유점."
+        },
+        "door_화성시장애아동재활센터": {
+          "floor": "2층",
+          "x": 52.34375,
+          "y": 27.900000000000002,
+          "highres_pixel": {
+            "x": 1340,
+            "y": 558
+          },
+          "point_type": "destination_approach",
+          "status": "VERIFIED",
+          "evidence": "현재 2층 평면도 타일 복도 내부 계측. 화성시장애아동재활센터 출입문 복도 쪽 접근점, 방 안으로 연장하지 않음."
+        },
+        "f2_corridor_1415_1490": {
+          "floor": "2층",
+          "x": 55.2734375,
+          "y": 74.5,
+          "highres_pixel": {
+            "x": 1415,
+            "y": 1490
+          },
+          "point_type": "junction",
+          "status": "VERIFIED",
+          "evidence": "현재 2층 평면도 타일 복도 내부 계측. 벽/중정/실내를 제외한 통행 띠 안의 경유점."
+        },
+        "f2_corridor_1650_1510": {
+          "floor": "2층",
+          "x": 64.453125,
+          "y": 75.5,
+          "highres_pixel": {
+            "x": 1650,
+            "y": 1510
+          },
+          "point_type": "corridor",
+          "status": "VERIFIED",
+          "evidence": "현재 2층 평면도 타일 복도 내부 계측. 벽/중정/실내를 제외한 통행 띠 안의 경유점."
+        },
+        "f2_corridor_1870_1560": {
+          "floor": "2층",
+          "x": 73.046875,
+          "y": 78.0,
+          "highres_pixel": {
+            "x": 1870,
+            "y": 1560
+          },
+          "point_type": "corridor",
+          "status": "VERIFIED",
+          "evidence": "현재 2층 평면도 타일 복도 내부 계측. 벽/중정/실내를 제외한 통행 띠 안의 경유점."
+        },
+        "f2_corridor_2020_1560": {
+          "floor": "2층",
+          "x": 78.90625,
+          "y": 78.0,
+          "highres_pixel": {
+            "x": 2020,
+            "y": 1560
+          },
+          "point_type": "corridor",
+          "status": "VERIFIED",
+          "evidence": "현재 2층 평면도 타일 복도 내부 계측. 벽/중정/실내를 제외한 통행 띠 안의 경유점."
+        },
+        "f2_corridor_2020_1528": {
+          "floor": "2층",
+          "x": 78.90625,
+          "y": 76.4,
+          "highres_pixel": {
+            "x": 2020,
+            "y": 1528
+          },
+          "point_type": "corridor",
+          "status": "VERIFIED",
+          "evidence": "현재 2층 평면도 타일 복도 내부 계측. 벽/중정/실내를 제외한 통행 띠 안의 경유점."
+        },
+        "door_대강당": {
+          "floor": "2층",
+          "x": 80.078125,
+          "y": 76.4,
+          "highres_pixel": {
+            "x": 2050,
+            "y": 1528
+          },
+          "point_type": "destination_approach",
+          "status": "VERIFIED",
+          "evidence": "현재 2층 평면도 타일 복도 내부 계측. 대강당 출입문 복도 쪽 접근점, 방 안으로 연장하지 않음."
+        },
+        "f2_운동실_0": {
+          "floor": "2층",
+          "x": 23.4375,
+          "y": 37.0,
+          "highres_pixel": {
+            "x": 600,
+            "y": 740.0
+          },
+          "point_type": "corridor",
+          "status": "VERIFIED",
+          "evidence": "현재 지도 복도 경계 계측."
+        },
+        "f2_운동실_approach": {
+          "floor": "2층",
+          "x": 22.1875,
+          "y": 37.0,
+          "highres_pixel": {
+            "x": 568,
+            "y": 740.0
+          },
+          "point_type": "destination_approach",
+          "status": "VERIFIED",
+          "evidence": "사용자 지정 글자 방향의 복도 쪽 접근점. 출입문 존재를 새로 단정하지 않음."
+        },
+        "f2_운동지도실_0": {
+          "floor": "2층",
+          "x": 26.93359375,
+          "y": 29.25,
+          "highres_pixel": {
+            "x": 689.5,
+            "y": 585
+          },
+          "point_type": "corridor",
+          "status": "VERIFIED",
+          "evidence": "현재 지도 복도 경계 계측."
+        },
+        "f2_운동지도실_approach": {
+          "floor": "2층",
+          "x": 26.93359375,
+          "y": 27.500000000000004,
+          "highres_pixel": {
+            "x": 689.5,
+            "y": 550
+          },
+          "point_type": "destination_approach",
+          "status": "VERIFIED",
+          "evidence": "사용자 지정 글자 방향의 복도 쪽 접근점. 출입문 존재를 새로 단정하지 않음."
+        }
+      },
+      "routes": {
+        "만성질환관리센터": {
+          "status": "VERIFIED",
+          "waypoint_ids": [
+            "floor_2_circular_throat",
+            "f2_corridor_1400_1430",
+            "f2_corridor_1230_1360",
+            "f2_corridor_1000_1290",
+            "f2_corridor_780_1223",
+            "f2_corridor_740_1211",
+            "door_만성질환관리센터"
+          ],
+          "projection": "current natural raster -> actual displayed image rect",
+          "endpoint": "verified door approach on corridor side",
+          "path_geometry": "M/L polyline only",
+          "max_stroke_width_percent": 0.625,
+          "evidence": "사용자 출발점/입구 기호와 2층 실제 지도 대조. 전체 선폭 복도 경계 검사. 동일 도착지명 공통 적용."
+        },
+        "운동실": {
+          "status": "VERIFIED",
+          "waypoint_ids": [
+            "floor_2_circular_throat",
+            "f2_corridor_1400_1430",
+            "f2_corridor_1230_1360",
+            "f2_corridor_1000_1290",
+            "f2_corridor_780_1223",
+            "f2_corridor_550_1150",
+            "f2_corridor_520_1120",
+            "f2_corridor_520_1060",
+            "f2_corridor_535_990",
+            "f2_corridor_565_900",
+            "f2_corridor_595_800",
+            "f2_운동실_0",
+            "f2_운동실_approach"
+          ],
+          "projection": "current natural raster -> actual image rect",
+          "path_geometry": "M/L polyline only",
+          "max_stroke_width_percent": 0.625,
+          "traversal_policy": "corridor_only",
+          "evidence": "2026-09-05 사용자 확인: 지정 글자 방향의 복도 쪽에서 종료. 보건소장실만 보건행정과 경계 통과 허용.",
+          "letter_reference": {
+            "floor": "2층",
+            "letter": "동",
+            "bbox": [
+              370,
+              712,
+              418,
+              766
+            ],
+            "ink_bbox": [
+              370,
+              714,
+              418,
+              766
+            ],
+            "center": [
+              394.0,
+              740.0
+            ]
+          },
+          "endpoint": "letter-directed corridor-side approach; not a newly verified doorway",
+          "display_notice": "빨간 선은 해당 명칭 방향의 복도 쪽 접근점에서 끝납니다.",
+          "verification_summary": {
+            "outside_allowed_pixels": 0,
+            "unapproved_wall_pixels": 0,
+            "authorized_boundary_crossings": 0
+          }
+        },
+        "운동지도실": {
+          "status": "VERIFIED",
+          "waypoint_ids": [
+            "floor_2_circular_throat",
+            "f2_corridor_1400_1430",
+            "f2_corridor_1230_1360",
+            "f2_corridor_1000_1290",
+            "f2_corridor_780_1223",
+            "f2_corridor_550_1150",
+            "f2_corridor_520_1120",
+            "f2_corridor_520_1060",
+            "f2_corridor_535_990",
+            "f2_corridor_565_900",
+            "f2_corridor_595_800",
+            "f2_corridor_625_700",
+            "f2_corridor_655_620",
+            "f2_corridor_685_585",
+            "f2_운동지도실_0",
+            "f2_운동지도실_approach"
+          ],
+          "projection": "current natural raster -> actual image rect",
+          "path_geometry": "M/L polyline only",
+          "max_stroke_width_percent": 0.625,
+          "traversal_policy": "corridor_only",
+          "evidence": "2026-09-05 사용자 확인: 지정 글자 방향의 복도 쪽에서 종료. 보건소장실만 보건행정과 경계 통과 허용.",
+          "letter_reference": {
+            "floor": "2층",
+            "letter": "지",
+            "bbox": [
+              665,
+              267,
+              714,
+              321
+            ],
+            "ink_bbox": [
+              667,
+              268,
+              712,
+              320
+            ],
+            "center": [
+              689.5,
+              294.0
+            ]
+          },
+          "endpoint": "letter-directed corridor-side approach; not a newly verified doorway",
+          "display_notice": "빨간 선은 해당 명칭 방향의 복도 쪽 접근점에서 끝납니다.",
+          "verification_summary": {
+            "outside_allowed_pixels": 0,
+            "unapproved_wall_pixels": 0,
+            "authorized_boundary_crossings": 0
+          }
+        },
+        "금연상담실": {
+          "status": "VERIFIED",
+          "waypoint_ids": [
+            "floor_2_circular_throat",
+            "f2_corridor_1400_1430",
+            "f2_corridor_1230_1360",
+            "f2_corridor_1000_1290",
+            "f2_corridor_780_1223",
+            "f2_corridor_550_1150",
+            "f2_corridor_520_1120",
+            "f2_corridor_520_1060",
+            "f2_corridor_535_990",
+            "f2_corridor_565_900",
+            "f2_corridor_595_800",
+            "f2_corridor_625_700",
+            "f2_corridor_655_620",
+            "f2_corridor_685_585",
+            "f2_corridor_870_585",
+            "door_금연상담실"
+          ],
+          "projection": "current natural raster -> actual displayed image rect",
+          "endpoint": "verified door approach on corridor side",
+          "path_geometry": "M/L polyline only",
+          "max_stroke_width_percent": 0.625,
+          "evidence": "사용자 출발점/입구 기호와 2층 실제 지도 대조. 전체 선폭 복도 경계 검사. 동일 도착지명 공통 적용."
+        },
+        "화성시장애아동재활센터": {
+          "status": "VERIFIED",
+          "waypoint_ids": [
+            "floor_2_circular_throat",
+            "f2_corridor_1400_1430",
+            "f2_corridor_1230_1360",
+            "f2_corridor_1000_1290",
+            "f2_corridor_780_1223",
+            "f2_corridor_550_1150",
+            "f2_corridor_520_1120",
+            "f2_corridor_520_1060",
+            "f2_corridor_535_990",
+            "f2_corridor_565_900",
+            "f2_corridor_595_800",
+            "f2_corridor_625_700",
+            "f2_corridor_655_620",
+            "f2_corridor_685_585",
+            "f2_corridor_1340_585",
+            "door_화성시장애아동재활센터"
+          ],
+          "projection": "current natural raster -> actual displayed image rect",
+          "endpoint": "verified door approach on corridor side",
+          "path_geometry": "M/L polyline only",
+          "max_stroke_width_percent": 0.625,
+          "evidence": "사용자 출발점/입구 기호와 2층 실제 지도 대조. 전체 선폭 복도 경계 검사. 동일 도착지명 공통 적용."
+        },
+        "대강당": {
+          "status": "VERIFIED",
+          "waypoint_ids": [
+            "floor_2_circular_throat",
+            "f2_corridor_1415_1490",
+            "f2_corridor_1650_1510",
+            "f2_corridor_1870_1560",
+            "f2_corridor_2020_1560",
+            "f2_corridor_2020_1528",
+            "door_대강당"
+          ],
+          "projection": "current natural raster -> actual displayed image rect",
+          "endpoint": "verified door approach on corridor side",
+          "path_geometry": "M/L polyline only",
+          "max_stroke_width_percent": 0.625,
+          "evidence": "사용자 출발점/입구 기호와 2층 실제 지도 대조. 전체 선폭 복도 경계 검사. 동일 도착지명 공통 적용."
+        }
+      },
+      "route_start_waypoint": "floor_2_circular_throat",
+      "route_start_point_type": "floor_transition",
+      "route_survey_20260905": {
+        "natural_size": [
+          2560,
+          2000
+        ],
+        "coordinate_projection": "identity: current displayed raster, no crop or scale applied to source coordinates",
+        "corridor_regions": {
+          "circular_throat": [
+            [
+              1325,
+              1680
+            ],
+            [
+              1440,
+              1680
+            ],
+            [
+              1490,
+              1420
+            ],
+            [
+              1360,
+              1390
+            ]
+          ],
+          "south_corridor": [
+            [
+              453,
+              1168
+            ],
+            [
+              1340,
+              1448
+            ],
+            [
+              1450,
+              1460
+            ],
+            [
+              1490,
+              1408
+            ],
+            [
+              1260,
+              1340
+            ],
+            [
+              1000,
+              1260
+            ],
+            [
+              800,
+              1200
+            ],
+            [
+              610,
+              1140
+            ],
+            [
+              480,
+              1090
+            ]
+          ],
+          "west_corridor": [
+            [
+              450,
+              1150
+            ],
+            [
+              570,
+              1170
+            ],
+            [
+              580,
+              1100
+            ],
+            [
+              570,
+              1030
+            ],
+            [
+              555,
+              1010
+            ],
+            [
+              572,
+              951
+            ],
+            [
+              603,
+              880
+            ],
+            [
+              650,
+              713
+            ],
+            [
+              684,
+              658
+            ],
+            [
+              735,
+              633
+            ],
+            [
+              780,
+              625
+            ],
+            [
+              780,
+              542
+            ],
+            [
+              667,
+              548
+            ],
+            [
+              615,
+              575
+            ],
+            [
+              590,
+              620
+            ]
+          ],
+          "north_corridor": [
+            [
+              680,
+              548
+            ],
+            [
+              865,
+              530
+            ],
+            [
+              1395,
+              542
+            ],
+            [
+              1395,
+              619
+            ],
+            [
+              780,
+              618
+            ],
+            [
+              685,
+              638
+            ]
+          ],
+          "chronic_door": [
+            [
+              715,
+              1200
+            ],
+            [
+              765,
+              1200
+            ],
+            [
+              765,
+              1265
+            ],
+            [
+              715,
+              1252
+            ]
+          ],
+          "south_east_corridor": [
+            [
+              1370,
+              1485
+            ],
+            [
+              1470,
+              1520
+            ],
+            [
+              1930,
+              1654
+            ],
+            [
+              2040,
+              1567
+            ],
+            [
+              2067,
+              1545
+            ],
+            [
+              2067,
+              1480
+            ],
+            [
+              1995,
+              1480
+            ],
+            [
+              1910,
+              1540
+            ],
+            [
+              1810,
+              1510
+            ],
+            [
+              1520,
+              1435
+            ],
+            [
+              1420,
+              1430
+            ]
+          ],
+          "auditorium_approach": [
+            [
+              1995,
+              1480
+            ],
+            [
+              2067,
+              1480
+            ],
+            [
+              2067,
+              1550
+            ],
+            [
+              1995,
+              1550
+            ]
+          ],
+          "exercise_approach": [
+            [
+              568,
+              694
+            ],
+            [
+              614,
+              710
+            ],
+            [
+              596,
+              780
+            ],
+            [
+              545,
+              766
+            ]
+          ],
+          "instruction_approach": [
+            [
+              666,
+              540
+            ],
+            [
+              720,
+              532
+            ],
+            [
+              726,
+              598
+            ],
+            [
+              658,
+              599
+            ]
+          ]
+        },
+        "source_image": "public/images/floor-2.webp",
+        "source_sha256": "fcf2e750b7ec23e8bbad8d09ade0b7452a7929eec2ce30ce414f555b92206149",
+        "start_reference": "2층과 3층의 시작점.png",
+        "door_shape_reference": "2층과 3층의 입구모양.png",
+        "start_evidence": "사용자 시작점 PNG 빨간 표시를 현재 2층 raster에 SIFT/RANSAC 56 inliers로 정합: (1370.955,1660.190), 정수 픽셀 (1371,1660).",
+        "scope": "drawing-level corridor/door verification; not a real-building accessibility or evacuation survey",
+        "cross_floor_connector": "not rendered; each floor starts independently at user-specified circular throat",
+        "wall_check": "full continuous 16px footprint inside independently traced corridor polygons plus raster wall/tile inspection"
+      }
+    },
+    "3층": {
+      "waypoints": {
+        "floor_3_circular_throat": {
+          "floor": "3층",
+          "x": 51.5625,
+          "y": 81.73823072943611,
+          "highres_pixel": {
+            "x": 1320,
+            "y": 1580
+          },
+          "point_type": "floor_transition",
+          "status": "VERIFIED",
+          "evidence": "사용자가 2·3층 공통으로 지시한 원형 구역 북쪽 연결부. 3층 자체 타일 통로 x1260..1428/y1350..1610 안의 (1320,1580)을 별도 계측. 2층 homography는 3층에 사용하지 않음."
+        },
+        "f3_corridor_1350_1380": {
+          "floor": "3층",
+          "x": 52.734375,
+          "y": 71.39161924469735,
+          "highres_pixel": {
+            "x": 1350,
+            "y": 1380
+          },
+          "point_type": "junction",
+          "status": "VERIFIED",
+          "evidence": "현재 3층 평면도 타일 복도 내부 계측. 벽/중정/실내를 제외한 통행 띠 안의 경유점."
+        },
+        "f3_corridor_1230_1350": {
+          "floor": "3층",
+          "x": 48.046875,
+          "y": 69.83962752198654,
+          "highres_pixel": {
+            "x": 1230,
+            "y": 1350
+          },
+          "point_type": "corridor",
+          "status": "VERIFIED",
+          "evidence": "현재 3층 평면도 타일 복도 내부 계측. 벽/중정/실내를 제외한 통행 띠 안의 경유점."
+        },
+        "f3_corridor_1000_1285": {
+          "floor": "3층",
+          "x": 39.0625,
+          "y": 66.47697878944646,
+          "highres_pixel": {
+            "x": 1000,
+            "y": 1285
+          },
+          "point_type": "corridor",
+          "status": "VERIFIED",
+          "evidence": "현재 3층 평면도 타일 복도 내부 계측. 벽/중정/실내를 제외한 통행 띠 안의 경유점."
+        },
+        "f3_corridor_775_1220": {
+          "floor": "3층",
+          "x": 30.2734375,
+          "y": 63.11433005690637,
+          "highres_pixel": {
+            "x": 775,
+            "y": 1220
+          },
+          "point_type": "corridor",
+          "status": "VERIFIED",
+          "evidence": "현재 3층 평면도 타일 복도 내부 계측. 벽/중정/실내를 제외한 통행 띠 안의 경유점."
+        },
+        "f3_corridor_600_1170": {
+          "floor": "3층",
+          "x": 23.4375,
+          "y": 60.52767718572167,
+          "highres_pixel": {
+            "x": 600,
+            "y": 1170
+          },
+          "point_type": "corridor",
+          "status": "VERIFIED",
+          "evidence": "현재 3층 평면도 타일 복도 내부 계측. 벽/중정/실내를 제외한 통행 띠 안의 경유점."
+        },
+        "f3_corridor_520_1145": {
+          "floor": "3층",
+          "x": 20.3125,
+          "y": 59.23435075012933,
+          "highres_pixel": {
+            "x": 520,
+            "y": 1145
+          },
+          "point_type": "corridor",
+          "status": "VERIFIED",
+          "evidence": "현재 3층 평면도 타일 복도 내부 계측. 벽/중정/실내를 제외한 통행 띠 안의 경유점."
+        },
+        "f3_corridor_560_1015": {
+          "floor": "3층",
+          "x": 21.875,
+          "y": 52.50905328504915,
+          "highres_pixel": {
+            "x": 560,
+            "y": 1015
+          },
+          "point_type": "corridor",
+          "status": "VERIFIED",
+          "evidence": "현재 3층 평면도 타일 복도 내부 계측. 벽/중정/실내를 제외한 통행 띠 안의 경유점."
+        },
+        "door_건강증진과": {
+          "floor": "3층",
+          "x": 20.703125,
+          "y": 52.50905328504915,
+          "highres_pixel": {
+            "x": 530,
+            "y": 1015
+          },
+          "point_type": "destination_approach",
+          "status": "VERIFIED",
+          "evidence": "현재 3층 평면도 타일 복도 내부 계측. 건강증진과 출입문 복도 쪽 접근점, 방 안으로 연장하지 않음."
+        },
+        "door_manager_user_confirmed": {
+          "floor": "3층",
+          "x": 19.2578125,
+          "y": 58.6652871184687,
+          "highres_pixel": {
+            "x": 493,
+            "y": 1134
+          },
+          "point_type": "destination_approach",
+          "status": "VERIFIED",
+          "evidence": "사용자가 3층의 건강증진과 과장실 입구지점.png에 빨간색으로 지정한 입구. SIFT/RANSAC 238 inliers로 투영한 빨간 표시의 복도 쪽 상단 중앙 (492.636,1133.881)을 가장 가까운 정수 픽셀로 저장. 중심까지 연장 시 16px 선 끝이 검은 벽선에 닿으므로 표시 영역의 복도 쪽 가장자리에서 종료. 방 안으로 연장하지 않음.",
+          "source_reference": "3층의 건강증진과 과장실 입구지점.png",
+          "source_sha256": "0c533088f4ad1569bf1d28e95f2249a95c5f3f347efbc6418f652857bec8db25",
+          "confirmation_type": "user_marked_entrance"
+        },
+        "f3_보건행정과_0": {
+          "floor": "3층",
+          "x": 23.046875,
+          "y": 47.594412829798245,
+          "highres_pixel": {
+            "x": 590,
+            "y": 920
+          },
+          "point_type": "corridor",
+          "status": "VERIFIED",
+          "evidence": "현재 지도 복도 경계 계측."
+        },
+        "f3_보건행정과_1": {
+          "floor": "3층",
+          "x": 24.0234375,
+          "y": 42.67977237454733,
+          "highres_pixel": {
+            "x": 615,
+            "y": 825
+          },
+          "point_type": "corridor",
+          "status": "VERIFIED",
+          "evidence": "현재 지도 복도 경계 계측."
+        },
+        "f3_보건행정과_2": {
+          "floor": "3층",
+          "x": 25.234374999999996,
+          "y": 38.28246249353337,
+          "highres_pixel": {
+            "x": 646,
+            "y": 740
+          },
+          "point_type": "corridor",
+          "status": "VERIFIED",
+          "evidence": "현재 지도 복도 경계 계측."
+        },
+        "f3_보건행정과_3": {
+          "floor": "3층",
+          "x": 26.210937499999996,
+          "y": 34.91981376099327,
+          "highres_pixel": {
+            "x": 671,
+            "y": 675
+          },
+          "point_type": "corridor",
+          "status": "VERIFIED",
+          "evidence": "현재 지도 복도 경계 계측."
+        },
+        "f3_보건행정과_4": {
+          "floor": "3층",
+          "x": 26.7578125,
+          "y": 33.62648732540093,
+          "highres_pixel": {
+            "x": 685,
+            "y": 650
+          },
+          "point_type": "corridor",
+          "status": "VERIFIED",
+          "evidence": "현재 지도 복도 경계 계측."
+        },
+        "f3_보건행정과_approach": {
+          "floor": "3층",
+          "x": 27.500000000000004,
+          "y": 33.09949575851258,
+          "highres_pixel": {
+            "x": 704,
+            "y": 639.8132530120482
+          },
+          "point_type": "destination_approach",
+          "status": "VERIFIED",
+          "evidence": "사용자 지정 글자 방향의 복도 쪽 접근점. 출입문 존재를 새로 단정하지 않음."
+        },
+        "f3_보건소장실_0": {
+          "floor": "3층",
+          "x": 27.4609375,
+          "y": 33.0056906363166,
+          "highres_pixel": {
+            "x": 703,
+            "y": 638
+          },
+          "point_type": "corridor",
+          "status": "VERIFIED",
+          "evidence": "사용자가 보건소장실에 한해 허용한 보건행정과 경계 통과/내부 경유. 마지막 점은 보건행정과 쪽으로 열린 소장실 동쪽 입구 앞."
+        },
+        "f3_보건소장실_1": {
+          "floor": "3층",
+          "x": 27.4609375,
+          "y": 30.00517330574237,
+          "highres_pixel": {
+            "x": 703,
+            "y": 580
+          },
+          "point_type": "corridor",
+          "status": "VERIFIED",
+          "evidence": "사용자가 보건소장실에 한해 허용한 보건행정과 경계 통과/내부 경유. 마지막 점은 보건행정과 쪽으로 열린 소장실 동쪽 입구 앞."
+        },
+        "f3_보건소장실_2": {
+          "floor": "3층",
+          "x": 27.4609375,
+          "y": 27.93585100879462,
+          "highres_pixel": {
+            "x": 703,
+            "y": 540
+          },
+          "point_type": "corridor",
+          "status": "VERIFIED",
+          "evidence": "사용자가 보건소장실에 한해 허용한 보건행정과 경계 통과/내부 경유. 마지막 점은 보건행정과 쪽으로 열린 소장실 동쪽 입구 앞."
+        },
+        "f3_보건소장실_3": {
+          "floor": "3층",
+          "x": 33.203125,
+          "y": 27.93585100879462,
+          "highres_pixel": {
+            "x": 850,
+            "y": 540
+          },
+          "point_type": "corridor",
+          "status": "VERIFIED",
+          "evidence": "사용자가 보건소장실에 한해 허용한 보건행정과 경계 통과/내부 경유. 마지막 점은 보건행정과 쪽으로 열린 소장실 동쪽 입구 앞."
+        },
+        "f3_보건소장실_4": {
+          "floor": "3층",
+          "x": 33.203125,
+          "y": 22.762545266425246,
+          "highres_pixel": {
+            "x": 850,
+            "y": 440
+          },
+          "point_type": "corridor",
+          "status": "VERIFIED",
+          "evidence": "사용자가 보건소장실에 한해 허용한 보건행정과 경계 통과/내부 경유. 마지막 점은 보건행정과 쪽으로 열린 소장실 동쪽 입구 앞."
+        },
+        "f3_보건소장실_approach": {
+          "floor": "3층",
+          "x": 32.1484375,
+          "y": 22.762545266425246,
+          "highres_pixel": {
+            "x": 823,
+            "y": 440
+          },
+          "point_type": "destination_approach",
+          "status": "VERIFIED",
+          "evidence": "사용자가 보건소장실에 한해 허용한 보건행정과 경계 통과/내부 경유. 마지막 점은 보건행정과 쪽으로 열린 소장실 동쪽 입구 앞."
+        }
+      },
+      "routes": {
+        "보건소장실": {
+          "status": "VERIFIED",
+          "waypoint_ids": [
+            "floor_3_circular_throat",
+            "f3_corridor_1350_1380",
+            "f3_corridor_1230_1350",
+            "f3_corridor_1000_1285",
+            "f3_corridor_775_1220",
+            "f3_corridor_600_1170",
+            "f3_corridor_520_1145",
+            "f3_corridor_560_1015",
+            "f3_보건행정과_0",
+            "f3_보건행정과_1",
+            "f3_보건행정과_2",
+            "f3_보건행정과_3",
+            "f3_보건행정과_4",
+            "f3_보건소장실_0",
+            "f3_보건소장실_1",
+            "f3_보건소장실_2",
+            "f3_보건소장실_3",
+            "f3_보건소장실_4",
+            "f3_보건소장실_approach"
+          ],
+          "projection": "current natural raster -> actual image rect",
+          "path_geometry": "M/L polyline only",
+          "max_stroke_width_percent": 0.625,
+          "traversal_policy": "user_authorized_department_transit",
+          "evidence": "2026-09-05 사용자 확인: 지정 글자 방향의 복도 쪽에서 종료. 보건소장실만 보건행정과 경계 통과 허용.",
+          "endpoint": "director east doorway approached from the administrative department side",
+          "display_notice": "빨간 선은 보건행정과 내부를 경유하여 보건소장실 입구 앞까지 표시합니다.",
+          "authorized_boundary_crossings": [
+            {
+              "department": "보건행정과",
+              "scope": "this route only",
+              "region": [
+                [
+                  690,
+                  599
+                ],
+                [
+                  716,
+                  605
+                ],
+                [
+                  716,
+                  632
+                ],
+                [
+                  690,
+                  626
+                ]
+              ],
+              "reason": "사용자 명시 승인: 보건행정과 경계를 통과하여 소장실 입구까지 접근",
+              "status": "USER_AUTHORIZED"
+            }
+          ],
+          "department_transit_regions": [
+            "administration_transit",
+            "administration_boundary"
+          ],
+          "door_evidence": {
+            "bbox": [
+              738,
+              410,
+              811,
+              466
+            ],
+            "side": "east, administrative side",
+            "approach": [
+              823,
+              440
+            ],
+            "note": "북서쪽 소장실 영역의 동쪽 문 기호. 건강증진과 쪽 남향 문으로 우회하지 않음."
+          },
+          "verification_summary": {
+            "outside_allowed_pixels": 0,
+            "unapproved_wall_pixels": 0,
+            "authorized_boundary_crossings": 1
+          }
+        },
+        "보건행정과": {
+          "status": "VERIFIED",
+          "waypoint_ids": [
+            "floor_3_circular_throat",
+            "f3_corridor_1350_1380",
+            "f3_corridor_1230_1350",
+            "f3_corridor_1000_1285",
+            "f3_corridor_775_1220",
+            "f3_corridor_600_1170",
+            "f3_corridor_520_1145",
+            "f3_corridor_560_1015",
+            "f3_보건행정과_0",
+            "f3_보건행정과_1",
+            "f3_보건행정과_2",
+            "f3_보건행정과_3",
+            "f3_보건행정과_4",
+            "f3_보건행정과_approach"
+          ],
+          "projection": "current natural raster -> actual image rect",
+          "path_geometry": "M/L polyline only",
+          "max_stroke_width_percent": 0.625,
+          "traversal_policy": "corridor_only",
+          "evidence": "2026-09-05 사용자 확인: 지정 글자 방향의 복도 쪽에서 종료. 보건소장실만 보건행정과 경계 통과 허용.",
+          "letter_reference": {
+            "floor": "3층",
+            "letter": "행",
+            "bbox": [
+              1158,
+              355,
+              1206,
+              412
+            ],
+            "ink_bbox": [
+              1161,
+              357,
+              1205,
+              409
+            ],
+            "center": [
+              1183.0,
+              383.0
+            ]
+          },
+          "endpoint": "letter-directed corridor-side approach; not a newly verified doorway",
+          "display_notice": "빨간 선은 해당 명칭 방향의 복도 쪽 접근점에서 끝납니다.",
+          "verification_summary": {
+            "outside_allowed_pixels": 0,
+            "unapproved_wall_pixels": 0,
+            "authorized_boundary_crossings": 0
+          }
+        },
+        "건강증진과": {
+          "status": "VERIFIED",
+          "waypoint_ids": [
+            "floor_3_circular_throat",
+            "f3_corridor_1350_1380",
+            "f3_corridor_1230_1350",
+            "f3_corridor_1000_1285",
+            "f3_corridor_775_1220",
+            "f3_corridor_600_1170",
+            "f3_corridor_520_1145",
+            "f3_corridor_560_1015",
+            "door_건강증진과"
+          ],
+          "projection": "current natural raster -> actual displayed image rect",
+          "endpoint": "verified door approach on corridor side",
+          "path_geometry": "M/L polyline only",
+          "max_stroke_width_percent": 0.625,
+          "evidence": "사용자 출발점/입구 기호와 3층 실제 지도 대조. 전체 선폭 복도 경계 검사. 동일 도착지명 공통 적용."
+        },
+        "건강증진과 과장실": {
+          "status": "VERIFIED",
+          "waypoint_ids": [
+            "floor_3_circular_throat",
+            "f3_corridor_1350_1380",
+            "f3_corridor_1230_1350",
+            "f3_corridor_1000_1285",
+            "f3_corridor_775_1220",
+            "f3_corridor_600_1170",
+            "door_manager_user_confirmed"
+          ],
+          "projection": "user reference homography into current natural raster; normalized to actual image rectangle",
+          "endpoint": "user-marked entrance, corridor side",
+          "path_geometry": "M/L polyline only",
+          "max_stroke_width_percent": 0.625,
+          "evidence": "사용자 제공 입구 표시로 기존 출입구 미확인 상태를 해소함. 기존 3층 독립 시작점과 남쪽 공용 복도 경유점 6개를 재사용."
+        },
+        "소회의실": {
+          "status": "REVIEW_REQUIRED",
+          "waypoint_ids": [],
+          "reason": "평면도 내부 명칭과 방문 위치가 미확인. 기존 REVIEW_REQUIRED 및 지도 미표시 유지."
+        }
+      },
+      "route_start_waypoint": "floor_3_circular_throat",
+      "route_start_point_type": "floor_transition",
+      "route_survey_20260905": {
+        "natural_size": [
+          2560,
+          1933
+        ],
+        "coordinate_projection": "identity: current displayed raster, no crop or scale applied to source coordinates",
+        "corridor_regions": {
+          "circular_throat": [
+            [
+              1260,
+              1610
+            ],
+            [
+              1360,
+              1610
+            ],
+            [
+              1428,
+              1370
+            ],
+            [
+              1325,
+              1350
+            ]
+          ],
+          "south_corridor": [
+            [
+              461,
+              1140
+            ],
+            [
+              1300,
+              1385
+            ],
+            [
+              1425,
+              1410
+            ],
+            [
+              1440,
+              1372
+            ],
+            [
+              1400,
+              1366
+            ],
+            [
+              650,
+              1140
+            ],
+            [
+              575,
+              1090
+            ],
+            [
+              501,
+              1080
+            ]
+          ],
+          "west_corridor": [
+            [
+              461,
+              1140
+            ],
+            [
+              542,
+              1165
+            ],
+            [
+              599,
+              995
+            ],
+            [
+              541,
+              974
+            ],
+            [
+              514,
+              1028
+            ]
+          ],
+          "manager_user_door": [
+            [
+              475,
+              1130
+            ],
+            [
+              545,
+              1150
+            ],
+            [
+              545,
+              1170
+            ],
+            [
+              475,
+              1156
+            ]
+          ],
+          "north_west_extension": [
+            [
+              538,
+              985
+            ],
+            [
+              598,
+              1002
+            ],
+            [
+              628,
+              912
+            ],
+            [
+              655,
+              821
+            ],
+            [
+              677,
+              740
+            ],
+            [
+              694,
+              692
+            ],
+            [
+              720,
+              646
+            ],
+            [
+              730,
+              634
+            ],
+            [
+              642,
+              608
+            ],
+            [
+              620,
+              679
+            ],
+            [
+              595,
+              766
+            ],
+            [
+              571,
+              850
+            ]
+          ]
+        },
+        "source_image": "public/images/floor-3.webp",
+        "source_sha256": "ccb7ae4b55882ebf9337b9c5b622262db6426f510be3e70b0651211a5de66137",
+        "start_reference": "2층과 3층의 시작점.png",
+        "door_shape_reference": "2층과 3층의 입구모양.png",
+        "start_evidence": "사용자가 2·3층 공통으로 지시한 원형 구역 북쪽 연결부. 3층 자체 타일 통로 x1260..1428/y1350..1610 안의 (1320,1580)을 별도 계측. 2층 homography는 3층에 사용하지 않음.",
+        "scope": "drawing-level corridor/door verification; not a real-building accessibility or evacuation survey",
+        "cross_floor_connector": "not rendered; each floor starts independently at user-specified circular throat",
+        "wall_check": "full continuous 16px footprint inside independently traced corridor polygons plus raster wall/tile inspection",
+        "manager_door_confirmation": {
+          "reference": "3층의 건강증진과 과장실 입구지점.png",
+          "source_sha256": "0c533088f4ad1569bf1d28e95f2249a95c5f3f347efbc6418f652857bec8db25",
+          "H": [
+            [
+              1.8894883824364652,
+              -0.001004226336895299,
+              255.61893512727394
+            ],
+            [
+              -0.00018948007141986702,
+              1.886750097455638,
+              901.588009739372
+            ],
+            [
+              -7.377450146646757e-08,
+              -1.68992907543841e-06,
+              1.0
+            ]
+          ],
+          "inliers": 238,
+          "median_error": 0.12763424217700958,
+          "projected_center": [
+            492.6343078613281,
+            1149.9234619140625
+          ],
+          "stored_endpoint": [
+            493,
+            1134
+          ]
+        },
+        "authorized_department_regions": {
+          "administration_transit": [
+            [
+              675,
+              598
+            ],
+            [
+              720,
+              625
+            ],
+            [
+              785,
+              585
+            ],
+            [
+              905,
+              585
+            ],
+            [
+              905,
+              410
+            ],
+            [
+              812,
+              410
+            ],
+            [
+              812,
+              495
+            ],
+            [
+              686,
+              495
+            ]
+          ],
+          "administration_boundary": [
+            [
+              690,
+              599
+            ],
+            [
+              716,
+              605
+            ],
+            [
+              716,
+              647
+            ],
+            [
+              690,
+              647
+            ]
+          ]
+        },
+        "administration_exception": {
+          "scope": "보건소장실 only",
+          "authorized_boundary_region": [
+            [
+              690,
+              599
+            ],
+            [
+              716,
+              605
+            ],
+            [
+              716,
+              632
+            ],
+            [
+              690,
+              626
+            ]
+          ],
+          "corridor_only_for_all_other_routes": true,
+          "source": "사용자 명시 확인 2026-09-05"
+        }
+      }
+    }
+  },
+  "coordinate_projection": {
+    "method": "cv2.findHomography RANSAC",
+    "matrix": [
+      [
+        4.147237289983019,
+        0.21874939612663893,
+        -736.7461376468461
+      ],
+      [
+        -0.19055935210800248,
+        4.072337834836864,
+        -520.7796940133833
+      ],
+      [
+        0.00011411748731593735,
+        1.8222279168823156e-05,
+        1.0
+      ]
+    ],
+    "source_size": [
+      988,
+      1536
+    ],
+    "target_size": [
+      2560,
+      1709
+    ],
+    "holdout_max_error_px": 2.7178758100456495,
+    "fallback_used": false,
+    "scope": "1층 verified corridor waypoints were projected exactly once; 2층/3층 remain REVIEW_REQUIRED"
+  }
+}

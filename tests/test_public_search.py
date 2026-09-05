@@ -1,19 +1,20 @@
 import json
 from pathlib import Path
 
-from app import search_public_tasks
+from app import build_verified_map_target_registry, search_public_tasks
 from public_guidance import (
     EXPECTED_TASK_IDS,
     build_public_search_tasks,
     build_public_suggestion_tasks,
     load_public_guidance,
 )
-from search_engine import search_tasks
+from search_engine import normalize, search_tasks
 
 
 ROOT = Path(__file__).resolve().parents[1]
 TASKS_PATH = ROOT / "data" / "tasks.json"
 GUIDANCE_PATH = ROOT / "data" / "public_guidance.json"
+MAP_POINTS_PATH = ROOT / "data" / "map_points.json"
 H002_APPROVED_QUERIES = (
     "만성질환 위험군 건강관리",
     "만성질환 건강관리",
@@ -61,6 +62,11 @@ def _guidance():
     return load_public_guidance(GUIDANCE_PATH)
 
 
+def _map_target_registry():
+    map_points = json.loads(MAP_POINTS_PATH.read_text(encoding="utf-8"))
+    return build_verified_map_target_registry(_raw_tasks(), map_points)
+
+
 def test_guided_candidates_use_only_public_title_and_public_search_terms():
     raw_tasks = _raw_tasks()
     guidance = _guidance()
@@ -85,14 +91,87 @@ def test_guided_candidates_use_only_public_title_and_public_search_terms():
 def test_all_public_titles_and_terms_rank_the_expected_task_first():
     guidance = _guidance()
     searchable = build_public_search_tasks(_raw_tasks(), guidance)
+    registry = _map_target_registry()
 
     for task_id, item in guidance.items():
         for query in item["public_search_terms"]:
-            ranked = search_public_tasks(searchable, query, 10)
+            ranked = search_public_tasks(searchable, query, 10, registry)
             assert ranked, (task_id, query)
             assert ranked[0]["id"] == task_id, (task_id, query, ranked[0]["id"])
             assert len(ranked) <= 10
             assert len({task["id"] for task in ranked}) == len(ranked)
+
+
+def test_verified_exact_map_target_terms_prioritize_their_location_guide():
+    searchable = build_public_search_tasks(_raw_tasks(), _guidance())
+    registry = _map_target_registry()
+    expected = {
+        "건강증진과": "F303",
+        "건강증진과 위치": "F303",
+        "건강증진과 과장실": "F305",
+        "보건행정과": "F302",
+        "보건행정과 위치": "F302",
+        "민원실": "F108",
+        "결핵실": "F101",
+        "영상의학실": "F102",
+        "진료실": "F103",
+        "금연상담실": "F204",
+        "만성질환관리센터": "F201",
+        "재활보건실": "F106",
+    }
+
+    for query, task_id in expected.items():
+        ranked = search_public_tasks(searchable, query, 10, registry)
+        assert ranked, query
+        assert ranked[0]["id"] == task_id
+
+
+def test_every_verified_map_target_term_prioritizes_its_location_guide():
+    searchable = build_public_search_tasks(_raw_tasks(), _guidance())
+    registry = _map_target_registry()
+    map_points = json.loads(MAP_POINTS_PATH.read_text(encoding="utf-8"))
+    expected_ids = {
+        task["id"]
+        for task in _raw_tasks()
+        if normalize(task["name"]) == normalize(f'{task["place"]} 위치 안내')
+        and task["place"] in map_points.get(task["floor"], {})
+        and map_points[task["floor"]][task["place"]].get("review_status")
+        == "verified_floorplan_label"
+    }
+    assert expected_ids
+    assert "F304" not in expected_ids
+
+    for term, task_id in registry.items():
+        ranked = search_public_tasks(searchable, term, 10, registry)
+        assert ranked, (term, task_id)
+        assert ranked[0]["id"] == task_id
+
+
+def test_all_twenty_three_map_target_names_keep_their_location_guides_first():
+    raw_tasks = _raw_tasks()
+    searchable = build_public_search_tasks(raw_tasks, _guidance())
+    registry = _map_target_registry()
+    location_tasks = [
+        task
+        for task in raw_tasks
+        if normalize(task["name"]) == normalize(f'{task["place"]} 위치 안내')
+    ]
+
+    assert len(location_tasks) == 23
+    assert len({task["place"] for task in location_tasks}) == 23
+    for task in location_tasks:
+        ranked = search_public_tasks(searchable, task["place"], 10, registry)
+        assert ranked, task["id"]
+        assert ranked[0]["id"] == task["id"]
+
+
+def test_general_service_search_rankings_are_unchanged_outside_exact_map_terms():
+    searchable = build_public_search_tasks(_raw_tasks(), _guidance())
+    registry = _map_target_registry()
+    for query in ("결핵 상담", "고위험 임산부 의료비", "방역·소독 문의", "어르신 오늘 건강"):
+        before = search_public_tasks(searchable, query, 10)
+        after = search_public_tasks(searchable, query, 10, registry)
+        assert [task["id"] for task in after] == [task["id"] for task in before]
 
 
 def test_a007_public_queries_rank_a007_first_without_internal_aliases():

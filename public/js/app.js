@@ -3,6 +3,8 @@ const state = {
   mapPoints: {},
   mapPointsReady: false,
   mapPointsError: false,
+  corridorRoutes: null,
+  corridorRoutesError: false,
   mapSelectionToken: 0,
   suggestionTimer: null,
   searchController: null,
@@ -18,15 +20,21 @@ const resultsHeadingEl = el('results-heading');
 const suggestionsEl = el('suggestions');
 const detailEl = el('detail');
 const markerEl = el('map-marker');
-const mapLabelEl = el('map-label');
 const routeEl = el('map-route');
 const routeLineEl = el('map-route-line');
 const floorImageEl = el('floor-image');
 const detailDialogEl = el('detail-dialog');
 const mapPanelEl = document.querySelector('.map-panel');
+const guidanceGridEl = mapPanelEl.closest('.guidance-grid');
 const mapSectionHeadEl = mapPanelEl.querySelector('.section-head');
 const floorTabsEl = mapPanelEl.querySelector('.floor-tabs');
 const mapStageEl = mapPanelEl.querySelector('.map-stage');
+const MAP_CROPS = {
+  '1층': {width: 2560, height: 1709, top: 0, visibleHeight: 1709},
+  '2층': {width: 2560, height: 2000, top: 0, visibleHeight: 2000},
+  '3층': {width: 2560, height: 1933, top: 0, visibleHeight: 1933}
+};
+let visibleMarkerPoint = null;
 
 async function getJson(url, options) {
   const response = await fetch(url, options);
@@ -47,10 +55,12 @@ function createText(tag, className, text) {
 }
 
 function hideMapLocation() {
+  visibleMarkerPoint = null;
+  guidanceGridEl.style.removeProperty('--marker-overhang');
   markerEl.classList.remove('show');
   markerEl.classList.remove('arrived');
-  mapLabelEl.classList.remove('show');
   routeEl.classList.remove('show');
+  routeLineEl.removeAttribute('d');
 }
 
 function setMapControlsHidden(hidden) {
@@ -59,38 +69,216 @@ function setMapControlsHidden(hidden) {
   });
 }
 
+function setMapPanelHidden(hidden) {
+  mapPanelEl.hidden = hidden;
+  guidanceGridEl.classList.toggle('map-unavailable', hidden);
+}
+
+function setMapNavigationHidden(hidden) {
+  [mapSectionHeadEl, floorTabsEl].forEach((element) => {
+    element.hidden = hidden;
+  });
+}
+
+function applyMapCrop(floor) {
+  const crop = MAP_CROPS[floor];
+  if (!crop) {
+    mapStageEl.classList.remove('map-cropped');
+    mapStageEl.style.removeProperty('--map-crop-width');
+    mapStageEl.style.removeProperty('--map-crop-height');
+    mapStageEl.style.removeProperty('--map-crop-offset');
+    return;
+  }
+  mapStageEl.classList.add('map-cropped');
+  mapStageEl.style.setProperty('--map-crop-width', crop.width);
+  mapStageEl.style.setProperty('--map-crop-height', crop.visibleHeight);
+  mapStageEl.style.setProperty(
+    '--map-crop-offset',
+    `${(-crop.top / crop.height) * 100}%`
+  );
+}
+
+function syncMarkerToImage(point) {
+  const box = point?.label_bbox;
+  const image = floorImageEl.getBoundingClientRect();
+  const stage = mapStageEl.getBoundingClientRect();
+  const naturalWidth = floorImageEl.naturalWidth;
+  const naturalHeight = floorImageEl.naturalHeight;
+  if (!box || point.review_status === 'review_required'
+      || ![box.left, box.top, box.width, box.height].every(Number.isFinite)
+      || box.left < 0 || box.top < 0 || box.width <= 0 || box.height <= 0
+      || box.left + box.width > naturalWidth || box.top + box.height > naturalHeight
+      || image.width <= 0 || image.height <= 0 || !naturalWidth || !naturalHeight) return false;
+  // The lower centre of the bitmap sits above the measured printed lettering.
+  // Use the LIVE image rectangle, never the card padding or a stale crop inset.
+  // A common 6 CSS-pixel gap keeps the lettering clear even on small screens.
+  const border = getComputedStyle(mapStageEl);
+  const x = image.left - stage.left - (Number.parseFloat(border.borderLeftWidth) || 0)
+    + (box.left + box.width / 2) * image.width / naturalWidth;
+  const y = image.top - stage.top - (Number.parseFloat(border.borderTopWidth) || 0)
+    + box.top * image.height / naturalHeight - 6;
+  // Let the icon paint beyond the map frame, while reserving its overhang in
+  // layout so it cannot cover the dialog heading. Never clamp its map anchor.
+  const markerHeight = Number.parseFloat(getComputedStyle(markerEl).height) || 0;
+  const panel = mapPanelEl.getBoundingClientRect();
+  // Reserve the entire dance envelope above the frame, not just its rest pose.
+  const overhang = Math.max(0, markerHeight * 1.15 + 6
+    - (image.top - panel.top + box.top * image.height / naturalHeight));
+  guidanceGridEl.style.setProperty('--marker-overhang', `${overhang}px`);
+  markerEl.style.left = `${x}px`;
+  markerEl.style.top = `${y}px`;
+  return true;
+}
+
+function syncRouteOverlayToImage() {
+  // The route must share the floor image's exact rendered box, not the padded
+  // card/stage box.  That keeps the independent 정문 door-threshold anchor on
+  // the printed doorway when responsive layout or map-stage padding changes.
+  const imageRect = floorImageEl.getBoundingClientRect();
+  const stageRect = mapStageEl.getBoundingClientRect();
+  if (imageRect.width <= 0 || imageRect.height <= 0 || stageRect.width <= 0 || stageRect.height <= 0) return false;
+  // clientLeft/clientTop round fractional borders at browser/OS scale factors.
+  // Use the painted CSS border width so the SVG and image share the same origin.
+  const stageStyle = getComputedStyle(mapStageEl);
+  const borderLeft = Number.parseFloat(stageStyle.borderLeftWidth) || 0;
+  const borderTop = Number.parseFloat(stageStyle.borderTopWidth) || 0;
+  routeEl.style.inset = 'auto';
+  routeEl.style.left = `${imageRect.left - stageRect.left - borderLeft}px`;
+  routeEl.style.top = `${imageRect.top - stageRect.top - borderTop}px`;
+  routeEl.style.right = 'auto';
+  routeEl.style.bottom = 'auto';
+  routeEl.style.width = `${imageRect.width}px`;
+  routeEl.style.height = `${imageRect.height}px`;
+  const maxStrokePercent = Number(routeEl.dataset?.maxStrokeWidthPercent || 0);
+  const strokeWidth = maxStrokePercent > 0
+    ? Math.min(7, imageRect.width * maxStrokePercent / 100) : 7;
+  routeEl.style.setProperty('--route-stroke-width', `${strokeWidth}px`);
+  return true;
+}
+
+function observeRouteImageSize() {
+  // Route text and dialog scrollbars can reflow the image after showMap().
+  // Keep the SVG on the live image box, without changing any waypoint.
+  const observer = new ResizeObserver(() => {
+    if (detailDialogEl.open && visibleMarkerPoint) syncMarkerToImage(visibleMarkerPoint);
+    if (detailDialogEl.open && routeEl.classList.contains('show')) {
+      syncRouteOverlayToImage();
+    }
+  });
+  observer.observe(floorImageEl);
+  return observer;
+}
+
+const routeImageSizeObserver = observeRouteImageSize();
+
 function isValidMapPoint(point) {
   return Number.isFinite(Number(point?.x)) && Number.isFinite(Number(point?.y))
     && Number(point.x) >= 0 && Number(point.x) <= 100
     && Number(point.y) >= 0 && Number(point.y) <= 100;
 }
 
-function createMapRoutePath(startPoint, point) {
-  const startX = Number(startPoint.x);
-  const startY = Number(startPoint.y);
-  const endX = Number(point.x);
-  const endY = Number(point.y);
-  const distance = Math.hypot(endX - startX, endY - startY);
-  const bend = Math.min(12, Math.max(5, distance * 0.28));
-  const normalX = distance ? -(endY - startY) / distance : 0;
-  const normalY = distance ? (endX - startX) / distance : 0;
-  const controlX = Math.max(4, Math.min(96, (startX + endX) / 2 + normalX * bend));
-  const controlY = Math.max(4, Math.min(96, (startY + endY) / 2 + normalY * bend));
-
-  return `M ${startX} ${startY} Q ${controlX.toFixed(2)} ${controlY.toFixed(2)} ${endX} ${endY}`;
+function isVerifiedMapTarget(point) {
+  return point?.review_status !== 'review_required';
 }
 
-function showMapRoute(startPoint, point, selectionToken) {
+function getDisplayedMapTarget(task) {
+  // This is the exact location string rendered in each search-result card.
+  // Corridor routes are therefore shared by the visible destination, rather
+  // than by an internal task ID or an older raw-task place value.
+  return task?.room || task?.place || '';
+}
+
+function getMapTargetName(task, point) {
+  return point?.printed_label || getDisplayedMapTarget(task);
+}
+
+function getMapTargetRoute(task, point) {
+  const targetName = getMapTargetName(task, point);
+  const targetType = point?.map_target_type === 'department'
+    ? '담당 부서 위치'
+    : '방문 장소';
+  return `${targetType}: ${task.floor} ${targetName}`;
+}
+
+function createMapRoutePath(points) {
+  return points.map((point, index) => `${index ? 'L' : 'M'} ${Number(point.x).toFixed(2)} ${Number(point.y).toFixed(2)}`).join(' ');
+}
+
+function normalizeRouteTargetName(value) {
+  return String(value || '')
+    .normalize('NFC')
+    .replace(/[\s·ㆍ・]+/g, '')
+    .replace(/^\d+층/, '');
+}
+
+function getMapPointForTarget(points, target) {
+  const normalizedTarget = normalizeRouteTargetName(target);
+  if (!normalizedTarget) return null;
+  let point = points[target] || Object.entries(points).find(([name]) =>
+    name !== 'start' && name !== '정문'
+      && normalizeRouteTargetName(name) === normalizedTarget
+  )?.[1] || Object.entries(points).find(([name]) =>
+    name !== 'start' && name !== '정문'
+      && (String(target).includes(name) || name.includes(String(target)))
+  )?.[1];
+  // Registry aliases share the verified destination anchor as well as the
+  // route. Do not use a stale coordinate copied into an alias entry.
+  const visited = new Set();
+  while (point?.alias_of) {
+    if (visited.has(point.alias_of)) return null;
+    visited.add(point.alias_of);
+    point = points[point.alias_of];
+  }
+  return point || null;
+}
+
+function getCorridorRoute(floor, target) {
+  const routes = state.corridorRoutes?.floors?.[floor]?.routes;
+  if (!routes) return null;
+  if (routes[target]) return routes[target];
+  const canonicalTarget = normalizeRouteTargetName(target);
+  const routeKey = Object.keys(routes).find((name) => normalizeRouteTargetName(name) === canonicalTarget);
+  return routeKey ? routes[routeKey] : null;
+}
+
+function showCorridorRoute(route, floor, selectionToken) {
   routeEl.classList.remove('show');
-  void routeEl.offsetWidth;
-  if (selectionToken !== state.mapSelectionToken) return;
-  routeLineEl.setAttribute('d', createMapRoutePath(startPoint, point));
+  routeLineEl.removeAttribute('d');
+  if (selectionToken !== state.mapSelectionToken || route?.status !== 'VERIFIED') return false;
+  const registry = state.corridorRoutes?.floors?.[floor];
+  const requiredStartId = registry?.route_start_waypoint ||
+    (floor === '1층' ? state.corridorRoutes?.render_contract?.route_start_waypoint : null);
+  const requiredStartType = floor === '1층' ? 'entrance' : registry?.route_start_point_type;
+  // Independent, verified start per floor: the printed main door on 1F;
+  // the user-specified circular throat on 2F/3F. Never copy a 1F entrance
+  // onto an upper floor or measure a start relative to the outer card.
+  if (!requiredStartId || route.waypoint_ids?.[0] !== requiredStartId) return false;
+  const startPoint = registry?.waypoints?.[requiredStartId];
+  // Legacy 1F-only points predate an explicit floor field; their registry
+  // still fixes the floor. New upper-floor points must declare it explicitly.
+  const matchesFloor = (point) => point?.floor === floor ||
+    (floor === '1층' && point?.floor === undefined);
+  if (!['entrance', 'floor_transition'].includes(requiredStartType) ||
+      startPoint?.point_type !== requiredStartType || startPoint?.status !== 'VERIFIED' ||
+      !matchesFloor(startPoint) || !isValidMapPoint(startPoint)) return false;
+  const points = route.waypoint_ids.map((id) => registry?.waypoints?.[id]);
+  // Do not filter a missing waypoint: that would create a diagonal shortcut.
+  if (points.length < 2 || !points.every((point) => isValidMapPoint(point) &&
+      point.status === 'VERIFIED' && matchesFloor(point))) return false;
+  routeEl.dataset.maxStrokeWidthPercent = String(route.max_stroke_width_percent || 0);
+  if (!syncRouteOverlayToImage()) return false;
+  // The SVG now occupies only the actual floor-image rectangle, so natural
+  // map percentages are used directly without card-padding conversion.
+  routeLineEl.setAttribute('d', createMapRoutePath(points));
   routeEl.classList.add('show');
+  return true;
 }
 
 function resetMap() {
   state.mapSelectionToken += 1;
+  setMapPanelHidden(false);
   setMapControlsHidden(false);
+  applyMapCrop('');
   hideMapLocation();
   floorImageEl.removeAttribute('src');
   floorImageEl.alt = '층별 배치도';
@@ -118,7 +306,8 @@ function setActiveFloor(floor, preserveMarker = false) {
     button.setAttribute('aria-pressed', button.dataset.floor === floor ? 'true' : 'false');
   });
   const floorNumber = String(floor || '').replace('층', '');
-  const floorImagePath = floorNumber ? `/images/floor-${floorNumber}.jpg` : '';
+  applyMapCrop(floor);
+  const floorImagePath = floorNumber ? `/images/floor-${floorNumber}.webp` : '';
   if (floorImagePath) {
     if (floorImageEl.getAttribute('src') !== floorImagePath) floorImageEl.src = floorImagePath;
   } else {
@@ -135,87 +324,45 @@ function setActiveFloor(floor, preserveMarker = false) {
 }
 
 function startRunnerJourney(startPoint, point, task, selectionToken) {
-  const finishJourney = () => {
-    if (selectionToken !== state.mapSelectionToken) return;
-    mapLabelEl.classList.add('show');
-    markerEl.classList.add('arrived');
-  };
-  const setMarkerPosition = (position) => {
-    markerEl.style.left = `${position.x}%`;
-    markerEl.style.top = `${position.y}%`;
-  };
-
-  mapLabelEl.style.left = `${point.x}%`;
-  mapLabelEl.style.top = `${point.y}%`;
-  mapLabelEl.textContent = `${task.floor} ${task.place}`;
-  mapLabelEl.classList.remove('show');
-  el('route-text').textContent = task.route || `${task.floor} ${task.place}로 안내합니다.`;
-
-  if (!isValidMapPoint(startPoint)) {
-    routeEl.classList.remove('show');
-    setMarkerPosition(point);
-    markerEl.classList.add('show');
-    finishJourney();
-    return;
-  }
-
-  const samePosition = Number(startPoint.x) === Number(point.x) && Number(startPoint.y) === Number(point.y);
-  if (samePosition) routeEl.classList.remove('show');
-  else showMapRoute(startPoint, point, selectionToken);
-  markerEl.classList.remove('arrived');
-  markerEl.classList.add('is-resetting');
-  setMarkerPosition(startPoint);
-  markerEl.classList.add('show');
-  void markerEl.offsetWidth;
+  if (selectionToken !== state.mapSelectionToken) return;
+  if (!syncMarkerToImage(point)) return;
+  visibleMarkerPoint = point;
   markerEl.classList.remove('is-resetting');
-
-  const reducedMotion = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-  if (reducedMotion || samePosition) {
-    setMarkerPosition(point);
-    finishJourney();
-    return;
+  markerEl.classList.add('show', 'arrived');
+  // The route is selected by the verified printed map target, not by task ID
+  // or the wording of an individual search result.  All results resolving to
+  // the same 1층 민원실 target therefore share one corridor route.
+  const corridorRoute = getCorridorRoute(task.floor, getMapTargetName(task, point));
+  if (showCorridorRoute(corridorRoute, task.floor, selectionToken)) {
+    const routeNotice = corridorRoute.display_notice || '빨간 선은 확인된 복도와 출입구 접근점까지만 표시합니다.';
+    el('route-text').textContent = `${getMapTargetRoute(task, point)}. ${routeNotice}`;
+  } else {
+    routeEl.classList.remove('show');
+    const reason = corridorRoute?.reason || '복도와 출입구 연결 확인이 필요합니다.';
+    el('route-text').textContent = `${getMapTargetRoute(task, point)}. ${reason}`;
   }
-
-  let journeyFinished = false;
-  let fallbackTimer;
-  const completeJourney = () => {
-    if (journeyFinished) return;
-    journeyFinished = true;
-    if (fallbackTimer) globalThis.clearTimeout(fallbackTimer);
-    markerEl.removeEventListener('transitionend', onTransitionEnd);
-    finishJourney();
-  };
-  const onTransitionEnd = (event) => {
-    if (event.target === markerEl && event.propertyName === 'top') completeJourney();
-  };
-  markerEl.addEventListener('transitionend', onTransitionEnd);
-  fallbackTimer = globalThis.setTimeout(completeJourney, 320);
-  const nextFrame = globalThis.requestAnimationFrame || ((callback) => globalThis.setTimeout(callback, 0));
-  nextFrame(() => {
-    if (selectionToken !== state.mapSelectionToken) return;
-    setMarkerPosition(point);
-  });
 }
 
 function showMap(task) {
   const selectionToken = ++state.mapSelectionToken;
   if (task?.show_map === false) {
+    setMapPanelHidden(true);
     setMapControlsHidden(true);
     hideMapLocation();
     routeLineEl.removeAttribute('d');
     markerEl.style.left = '';
     markerEl.style.top = '';
-    mapLabelEl.style.left = '';
-    mapLabelEl.style.top = '';
-    mapLabelEl.textContent = '';
     setActiveFloor('', true);
     floorImageEl.alt = '';
     el('floor-label').textContent = '방문 장소 확인';
     el('route-text').textContent = task.route || '방문 장소는 전화로 확인해 주세요.';
     return;
   }
+  setMapPanelHidden(false);
   setMapControlsHidden(false);
-  if (!task?.floor || !task?.place) {
+  setMapNavigationHidden(true);
+  const displayedTarget = getDisplayedMapTarget(task);
+  if (!task?.floor || !displayedTarget) {
     hideMapLocation();
     setActiveFloor(task?.floor || '', true);
     el('route-text').textContent = '선택한 업무의 위치 정보가 없습니다.';
@@ -231,13 +378,23 @@ function showMap(task) {
     return;
   }
   const points = state.mapPoints[task.floor] || {};
-  const point = points[task.place] || Object.entries(points).find(([name]) =>
-    name !== 'start' && name !== '정문'
-      && (String(task.place).includes(name) || name.includes(String(task.place)))
-  )?.[1];
+  const point = getMapPointForTarget(points, displayedTarget);
   if (!isValidMapPoint(point)) {
     hideMapLocation();
-    el('route-text').textContent = `${task.floor} ${task.place}: 지도 좌표 확인이 필요합니다.`;
+    el('route-text').textContent = `${task.floor} ${displayedTarget}: 지도 좌표 확인이 필요합니다.`;
+    return;
+  }
+  if (!isVerifiedMapTarget(point)) {
+    setMapPanelHidden(true);
+    setMapControlsHidden(true);
+    hideMapLocation();
+    routeLineEl.removeAttribute('d');
+    markerEl.style.left = '';
+    markerEl.style.top = '';
+    setActiveFloor('', true);
+    floorImageEl.alt = '';
+    el('floor-label').textContent = '방문 장소 확인';
+    el('route-text').textContent = `${task.floor} ${displayedTarget}: 지도 위치 확인이 필요합니다.`;
     return;
   }
   const startPoint = isValidMapPoint(points.정문)
@@ -263,91 +420,89 @@ function showMap(task) {
 }
 
 function addDetailRow(container, label, value, className = '') {
+  if (!hasPublicText(value)) return false;
   const row = createText('div', `detail-row ${className}`.trim(), '');
   row.appendChild(createText('strong', '', label));
-  row.appendChild(createText('span', '', value || '확인 필요'));
+  row.appendChild(createText('span', '', value));
   container.appendChild(row);
+  return true;
+}
+
+function hasPublicText(value) {
+  return typeof value === 'string' && value.trim();
 }
 
 function joinPublicText(values) {
   return [...new Set(values.filter((value) => typeof value === 'string' && value.trim()))].join(' ');
 }
 
-function appendPublicContacts(container, contacts) {
-  contacts.forEach((contact, index) => {
-    if (index > 0) container.appendChild(document.createElement('br'));
-    const displayPhone = contact.display_phone || contact.phone || '';
-    const telDigits = String(contact.phone || displayPhone).replace(/\D/g, '');
-    if (telDigits) {
-      const link = createText('a', 'contact-link', displayPhone);
-      link.href = `tel:${telDigits}`;
-      container.appendChild(link);
-    } else {
-      container.appendChild(createText('span', '', displayPhone));
-    }
-    if (contact.is_primary) container.appendChild(createText('span', '', ' · 대표'));
-    if (contact.purpose) container.appendChild(createText('span', '', ` · ${contact.purpose}`));
-    if (contact.condition) {
-      container.appendChild(createText('span', '', ` · 조건: ${contact.condition}`));
-    }
-  });
+function getPrimaryContact(task) {
+  const directContact = task?.primary_contact;
+  if (directContact && (directContact.phone || directContact.display_phone)) return directContact;
+  const contacts = Array.isArray(task?.contacts) ? task.contacts : [];
+  return contacts.find((contact) => contact.is_primary && (contact.phone || contact.display_phone)) || null;
+}
+
+function appendPrimaryContact(container, contact) {
+  const displayPhone = contact.display_phone || contact.phone || '';
+  const telDigits = String(contact.phone || displayPhone).replace(/\D/g, '');
+  if (telDigits) {
+    const link = createText('a', 'contact-link', displayPhone);
+    link.href = `tel:${telDigits}`;
+    container.appendChild(link);
+  } else {
+    container.appendChild(createText('span', '', displayPhone));
+  }
+  if (contact.condition) {
+    container.appendChild(document.createElement('br'));
+    container.appendChild(createText('span', '', `조건: ${contact.condition}`));
+  }
 }
 
 function showDetail(task) {
   state.selectedTask = task;
   clearChildren(detailEl);
   detailEl.className = 'detail-grid';
-  detailEl.appendChild(createText('h3', '', task.public_title || task.name));
-  addDetailRow(detailEl, '문의하는 곳', [task.department, task.team].filter(Boolean).join(' / '));
+  const isGuidedTask = hasPublicText(task.public_title);
+  if (isGuidedTask) detailEl.appendChild(createText('h3', '', task.public_title));
+
+  const publicLocation = isGuidedTask ? task.route : null;
+  addDetailRow(detailEl, '어떤 업무인가요?', isGuidedTask ? task.public_summary : null);
+  addDetailRow(detailEl, '누가 이용할 수 있나요?', isGuidedTask ? task.eligibility : null);
+  addDetailRow(detailEl, '어디로 가나요?', publicLocation);
+  addDetailRow(detailEl, '무엇을 준비하나요?', isGuidedTask ? task.documents : null);
+  addDetailRow(detailEl, '비용은 얼마인가요?', isGuidedTask ? task.fee : null);
+  addDetailRow(detailEl, '언제 이용하나요?', isGuidedTask ? task.operating_hours : null);
   addDetailRow(
     detailEl,
-    '문의 안내',
-    task.public_summary || '전화로 문의해 주세요.'
-  );
-  const publicLocation = task.show_map === false
-    ? task.route
-    : [task.floor, task.room || task.place].filter(Boolean).join(' ');
-  addDetailRow(detailEl, '어디로 가나요?', publicLocation || '방문 장소는 전화로 확인해 주세요.');
-  addDetailRow(detailEl, '이런 경우 이용하세요', task.eligibility || task.question || '전화로 확인해 주세요.');
-  addDetailRow(
-    detailEl,
-    '방문 전 확인사항',
-    joinPublicText([task.public_caution, task.caution, task.documents, task.fee, task.operating_hours])
-      || '방문 전에 전화로 확인해 주세요.'
-  );
-  addDetailRow(
-    detailEl,
-    '이렇게 이용하세요',
-    task.primary_action || task.visit_steps
-      ? joinPublicText([task.primary_action, task.visit_steps])
-      : task.script,
+    '어떻게 이용하나요?',
+    isGuidedTask ? joinPublicText([task.visit_steps, task.primary_action]) : null,
     'script-box'
   );
 
-  const phoneRow = createText('div', 'detail-row', '');
-  phoneRow.appendChild(createText('strong', '', '공식 업무전화'));
-  const contacts = Array.isArray(task.contacts) ? task.contacts : [];
-  const verifiedContact = task.primary_contact || contacts.find((contact) => contact.is_primary);
-  if (contacts.length) {
+  const primaryContact = getPrimaryContact(task);
+  if (primaryContact) {
+    const phoneRow = createText('div', 'detail-row', '');
+    phoneRow.appendChild(createText('strong', '', '문의전화'));
     const contactValue = createText('span', '', '');
-    appendPublicContacts(contactValue, contacts);
+    appendPrimaryContact(contactValue, primaryContact);
     phoneRow.appendChild(contactValue);
-  } else {
-    phoneRow.appendChild(createText('span', '', '전화로 확인해 주세요.'));
+    detailEl.appendChild(phoneRow);
   }
-  detailEl.appendChild(phoneRow);
-  addDetailRow(detailEl, '최근 공식 확인일', task.verified_date || verifiedContact?.verified_date || '전화로 확인해 주세요.');
+  addDetailRow(detailEl, '꼭 알아두세요', isGuidedTask ? task.public_caution : null);
 
-  const smsButton = createText('button', 'contact-button', '이 연락처를 문자로 받기');
-  smsButton.type = 'button';
-  smsButton.disabled = !task.primary_contact?.phone;
-  if (!task.primary_contact?.phone) {
-    smsButton.title = '대표 공식 업무전화가 등록된 뒤 사용할 수 있습니다.';
-  }
-  smsButton.addEventListener('click', openSmsDialog);
-  detailEl.appendChild(smsButton);
-  if (!task.primary_contact?.phone) {
-    detailEl.appendChild(createText('p', 'help', '대표 공식 업무전화 미등록으로 문자 기능이 비활성화되어 있습니다.'));
+  if (isGuidedTask) {
+    const smsButton = createText('button', 'contact-button', '이 안내를 문자메시지로 받기');
+    smsButton.type = 'button';
+    smsButton.disabled = !primaryContact?.phone;
+    if (!primaryContact?.phone) {
+      smsButton.title = '공식 문의전화가 등록된 뒤 사용할 수 있습니다.';
+    }
+    smsButton.addEventListener('click', openSmsDialog);
+    detailEl.appendChild(smsButton);
+    if (!primaryContact?.phone) {
+      detailEl.appendChild(createText('p', 'help', '공식 문의전화 미등록으로 문자 기능이 비활성화되어 있습니다.'));
+    }
   }
   showMap(task);
 }
@@ -401,9 +556,11 @@ function renderResults(items) {
       });
       button.classList.add('active');
       button.setAttribute('aria-pressed', 'true');
-      showDetail(task);
       state.detailTrigger = button;
       if (!detailDialogEl.open) detailDialogEl.showModal();
+      // A cached floor image renders synchronously. Open the dialog before
+      // showDetail measures its image box, including on every later result.
+      showDetail(task);
     });
     resultsEl.appendChild(button);
   });
@@ -477,7 +634,7 @@ async function loadSuggestions() {
 }
 
 function openSmsDialog() {
-  el('sms-task-name').textContent = state.selectedTask?.public_title || state.selectedTask?.name || '';
+  el('sms-task-name').textContent = state.selectedTask?.public_title || '';
   el('sms-status').textContent = '';
   el('recipient').value = '';
   el('consent').checked = false;
@@ -533,20 +690,6 @@ queryInput.addEventListener('input', () => {
   clearTimeout(state.suggestionTimer);
   state.suggestionTimer = setTimeout(loadSuggestions, 300);
 });
-document.querySelectorAll('.floor-tabs button').forEach((button) =>
-  button.addEventListener('click', () => {
-    if (state.selectedTask?.show_map === false) {
-      showMap(state.selectedTask);
-      return;
-    }
-    if (state.selectedTask?.floor === button.dataset.floor) {
-      showMap(state.selectedTask);
-      return;
-    }
-    state.mapSelectionToken += 1;
-    setActiveFloor(button.dataset.floor, false);
-  })
-);
 el('sms-form').addEventListener('submit', submitSms);
 el('cancel-sms').addEventListener('click', () => el('sms-dialog').close());
 el('close-detail').addEventListener('click', () => detailDialogEl.close());
@@ -580,3 +723,45 @@ getJson('/api/map-points').then((data) => {
   if (state.selectedTask) showMap(state.selectedTask);
 });
 queryInput.focus();
+
+
+
+// Temporary v2.7 only: Korean current-floor display, not an interactive control.
+const mapFloorBadgeEl = document.createElement('span');
+mapFloorBadgeEl.className = 'map-floor-badge';
+mapFloorBadgeEl.hidden = true;
+mapFloorBadgeEl.setAttribute('aria-hidden', 'true');
+mapStageEl.appendChild(mapFloorBadgeEl);
+function updateMapFloorBadge() {
+  const match = /^([123])층$/.exec(el('floor-label').textContent || '');
+  const visible = Boolean(match) && !mapPanelEl.hidden && !mapStageEl.hidden;
+  mapFloorBadgeEl.hidden = !visible;
+  if (!visible) return;
+  const floorText = `${match[1]}층`;
+  mapFloorBadgeEl.textContent = floorText;
+  mapStageEl.setAttribute('role', 'img');
+  mapStageEl.setAttribute('aria-label', `현재 ${floorText} 배치도`);
+  floorImageEl.alt = '';
+}
+new MutationObserver(updateMapFloorBadge).observe(el('floor-label'), {childList: true, characterData: true, subtree: true});
+new MutationObserver(updateMapFloorBadge).observe(mapPanelEl, {attributes: true, attributeFilter: ['hidden']});
+new MutationObserver(updateMapFloorBadge).observe(mapStageEl, {attributes: true, attributeFilter: ['hidden']});
+updateMapFloorBadge();
+
+window.addEventListener('resize', () => {
+  if (detailDialogEl.open && visibleMarkerPoint) syncMarkerToImage(visibleMarkerPoint);
+  const task = state.selectedTask;
+  if (!task?.show_map || !state.corridorRoutes) return;
+  const floorPoints = state.mapPoints[task.floor] || {};
+  const displayedTarget = getDisplayedMapTarget(task);
+  const point = getMapPointForTarget(floorPoints, displayedTarget);
+  showCorridorRoute(getCorridorRoute(task.floor, getMapTargetName(task, point)), task.floor, state.mapSelectionToken);
+});
+
+getJson('/data/corridor_routes.json?candidate_revision=shared-route-target-3', {cache: 'no-store'}).then((routes) => {
+  state.corridorRoutes = routes;
+  if (state.selectedTask) showMap(state.selectedTask);
+}).catch(() => {
+  state.corridorRoutesError = true;
+  hideMapLocation();
+});

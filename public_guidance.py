@@ -7,7 +7,7 @@ from pathlib import Path
 from search_engine import normalize as normalize_search_value
 
 
-SCHEMA_VERSION = 2
+SCHEMA_VERSION = 3
 DEFAULT_PUBLIC_GUIDANCE_PATH = (
     Path(__file__).resolve().parent / "data" / "public_guidance.json"
 )
@@ -53,6 +53,20 @@ PUBLIC_CONTACT_FIELDS = (
     "is_primary",
 )
 PUBLIC_SEARCH_TERMS_FIELD = "public_search_terms"
+SMS_FIELDS_FIELD = "sms_fields"
+SMS_ALLOWED_FIELDS = (
+    "public_summary",
+    "eligibility",
+    "location",
+    "documents",
+    "fee",
+    "operating_hours",
+    "visit_steps",
+    "primary_action",
+    "public_caution",
+)
+MIN_SMS_FIELDS = 2
+MAX_SMS_FIELDS = 5
 MIN_PUBLIC_SEARCH_TERMS = 2
 MAX_PUBLIC_SEARCH_TERMS = 6
 MAX_PUBLIC_SEARCH_TERM_LENGTH = 80
@@ -60,6 +74,7 @@ TASK_KEYS = {
     "task_id",
     *PUBLIC_TEXT_FIELDS,
     PUBLIC_SEARCH_TERMS_FIELD,
+    SMS_FIELDS_FIELD,
     "organization",
     "location",
 }
@@ -255,6 +270,38 @@ def _validate_public_search_terms(item, label):
         )
 
 
+def _validate_sms_fields(item, label):
+    fields = item[SMS_FIELDS_FIELD]
+    fields_label = f"{label}.{SMS_FIELDS_FIELD}"
+    if not isinstance(fields, list):
+        raise PublicGuidanceConfigurationError(f"{fields_label} must be an array")
+    if not MIN_SMS_FIELDS <= len(fields) <= MAX_SMS_FIELDS:
+        raise PublicGuidanceConfigurationError(
+            f"{fields_label} must contain {MIN_SMS_FIELDS} to {MAX_SMS_FIELDS} fields"
+        )
+    if any(not isinstance(field, str) for field in fields):
+        raise PublicGuidanceConfigurationError(
+            f"{fields_label} can contain only field names"
+        )
+    if len(set(fields)) != len(fields):
+        raise PublicGuidanceConfigurationError(
+            f"{fields_label} cannot contain duplicate fields"
+        )
+    unknown = set(fields) - set(SMS_ALLOWED_FIELDS)
+    if unknown:
+        raise PublicGuidanceConfigurationError(
+            f"{fields_label} contains disallowed fields"
+        )
+    if "location" not in fields:
+        raise PublicGuidanceConfigurationError(
+            f"{fields_label} must include location"
+        )
+    if {"visit_steps", "primary_action"} <= set(fields):
+        raise PublicGuidanceConfigurationError(
+            f"{fields_label} cannot repeat application steps"
+        )
+
+
 def _validate_guidance_item(item, index):
     label = f"tasks[{index}]"
     _require_exact_keys(item, TASK_KEYS, label)
@@ -270,6 +317,7 @@ def _validate_guidance_item(item, index):
                 f"phone-like value is not allowed at {label}.{field}"
             )
     _validate_public_search_terms(item, label)
+    _validate_sms_fields(item, label)
     try:
         date.fromisoformat(item["verified_date"])
     except ValueError as error:

@@ -50,3 +50,22 @@ def test_every_task_has_a_map_point():
         if not matched:
             missing.append(task["id"])
     assert missing == []
+
+
+def test_map_targets_anchor_to_printed_floorplan_labels_or_require_review():
+    map_points = json.loads((ROOT / "data" / "map_points.json").read_text(encoding="utf-8"))
+    targets = [
+        point
+        for floor_points in map_points.values()
+        for name, point in floor_points.items()
+        if name not in {"start", "정문"}
+    ]
+
+    assert all("map_target_type" in target for target in targets)
+    assert all(target["map_target_type"] in {"room", "department"} for target in targets)
+    verified = [target for target in targets if target["review_status"] == "verified_floorplan_label"]
+    assert all(target["printed_label"] and target["label_bbox"] for target in verified)
+    assert all(target["label_bbox"]["top"] > 0 for target in verified)
+    assert map_points["3층"]["건강증진과"]["map_target_type"] == "department"
+    assert map_points["3층"]["건강증진과"]["printed_label"] == "건강증진과"
+    assert map_points["3층"]["소회의실"]["review_status"] == "review_required"

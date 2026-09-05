@@ -1,136 +1,730 @@
 {
   "1층": {
-    "정문": {
-      "x": 59,
-      "y": 36
-    },
-    "start": {
-      "x": 58,
-      "y": 44
-    },
-    "민원실": {
-      "x": 60,
-      "y": 28
-    },
-    "모자보건실·예방접종실": {
-      "x": 76,
-      "y": 32
-    },
-    "모자보건실": {
-      "x": 74,
-      "y": 31
-    },
-    "예방접종실": {
-      "x": 77,
-      "y": 31
-    },
-    "모자보건교육실(수유실)": {
-      "x": 86,
-      "y": 32
-    },
-    "수유실": {
-      "x": 86,
-      "y": 32
-    },
-    "통합건강증진실": {
-      "x": 85,
-      "y": 45
-    },
-    "정신건강복지센터": {
-      "x": 74,
-      "y": 45
-    },
-    "치매안심센터": {
-      "x": 46,
-      "y": 16
-    },
-    "치매안심쉼터": {
-      "x": 77,
-      "y": 17
-    },
-    "재활보건실": {
-      "x": 58,
-      "y": 16
-    },
     "결핵실": {
-      "x": 35,
-      "y": 10
+      "x": 30.019531249999996,
+      "y": 11.62469280280866,
+      "printed_label": "결핵실",
+      "label_bbox": {
+        "left": 701,
+        "top": 220,
+        "width": 135,
+        "height": 49
+      },
+      "anchor_pixel": {
+        "x": 768.5,
+        "y": 198.666
+      },
+      "map_target_type": "room",
+      "review_status": "verified_floorplan_label",
+      "connected_task_ids": [
+        "A011",
+        "F101"
+      ],
+      "mobile_safe_area": {
+        "marker_anchor_fixed": true,
+        "bubble_clamp_only": true
+      }
     },
     "영상의학실(방사선실)": {
-      "x": 27,
-      "y": 18
-    },
-    "방사선실": {
-      "x": 27,
-      "y": 18
-    },
-    "영상의학실": {
-      "x": 27,
-      "y": 18
+      "x": 18.45703125,
+      "y": 23.034874195435933,
+      "printed_label": "방사선실",
+      "label_bbox": {
+        "left": 381,
+        "top": 415,
+        "width": 183,
+        "height": 52
+      },
+      "anchor_pixel": {
+        "x": 472.5,
+        "y": 393.66600000000005
+      },
+      "map_target_type": "room",
+      "review_status": "verified_floorplan_label",
+      "connected_task_ids": [
+        "A019",
+        "F102"
+      ],
+      "mobile_safe_area": {
+        "marker_anchor_fixed": true,
+        "bubble_clamp_only": true
+      }
     },
     "진료실": {
-      "x": 28,
-      "y": 31
+      "x": 18.57421875,
+      "y": 48.839438267992975,
+      "printed_label": "진료실",
+      "label_bbox": {
+        "left": 408,
+        "top": 856,
+        "width": 135,
+        "height": 51
+      },
+      "anchor_pixel": {
+        "x": 475.5,
+        "y": 834.6659999999999
+      },
+      "map_target_type": "room",
+      "review_status": "verified_floorplan_label",
+      "connected_task_ids": [
+        "A001",
+        "F103"
+      ],
+      "mobile_safe_area": {
+        "marker_anchor_fixed": true,
+        "bubble_clamp_only": true
+      }
     },
     "검사실": {
-      "x": 24,
-      "y": 44
+      "x": 16.93359375,
+      "y": 71.6012873025161,
+      "printed_label": "검사실",
+      "label_bbox": {
+        "left": 366,
+        "top": 1245,
+        "width": 135,
+        "height": 51
+      },
+      "anchor_pixel": {
+        "x": 433.5,
+        "y": 1223.666
+      },
+      "map_target_type": "room",
+      "review_status": "verified_floorplan_label",
+      "connected_task_ids": [
+        "A004",
+        "F104"
+      ],
+      "mobile_safe_area": {
+        "marker_anchor_fixed": true,
+        "bubble_clamp_only": true
+      }
+    },
+    "치매안심센터": {
+      "x": 50.0390625,
+      "y": 13.321591574019894,
+      "printed_label": "치매안심센터",
+      "label_bbox": {
+        "left": 1149,
+        "top": 249,
+        "width": 264,
+        "height": 48
+      },
+      "anchor_pixel": {
+        "x": 1281,
+        "y": 227.666
+      },
+      "map_target_type": "room",
+      "review_status": "verified_floorplan_label",
+      "connected_task_ids": [
+        "D001",
+        "F105"
+      ],
+      "mobile_safe_area": {
+        "marker_anchor_fixed": true,
+        "bubble_clamp_only": true
+      }
+    },
+    "재활보건실": {
+      "x": 64.84375,
+      "y": 13.380105324751316,
+      "printed_label": "재활보건실",
+      "label_bbox": {
+        "left": 1553,
+        "top": 250,
+        "width": 214,
+        "height": 47
+      },
+      "anchor_pixel": {
+        "x": 1660,
+        "y": 228.666
+      },
+      "map_target_type": "room",
+      "review_status": "verified_floorplan_label",
+      "connected_task_ids": [
+        "R003",
+        "R004",
+        "R005",
+        "R006",
+        "F106"
+      ],
+      "mobile_safe_area": {
+        "marker_anchor_fixed": true,
+        "bubble_clamp_only": true
+      }
+    },
+    "치매안심쉼터": {
+      "x": 84.70703125,
+      "y": 13.555646576945582,
+      "printed_label": "치매안심쉼터",
+      "label_bbox": {
+        "left": 2047,
+        "top": 253,
+        "width": 243,
+        "height": 47
+      },
+      "anchor_pixel": {
+        "x": 2168.5,
+        "y": 231.666
+      },
+      "map_target_type": "room",
+      "review_status": "verified_floorplan_label",
+      "connected_task_ids": [
+        "D002",
+        "F107"
+      ],
+      "mobile_safe_area": {
+        "marker_anchor_fixed": true,
+        "bubble_clamp_only": true
+      }
+    },
+    "민원실": {
+      "x": 64.62890625,
+      "y": 44.21685196021065,
+      "printed_label": "민원실",
+      "label_bbox": {
+        "left": 1634,
+        "top": 777,
+        "width": 41,
+        "height": 171
+      },
+      "anchor_pixel": {
+        "x": 1654.5,
+        "y": 755.6659999999999
+      },
+      "map_target_type": "room",
+      "review_status": "verified_floorplan_label",
+      "connected_task_ids": [
+        "A002",
+        "A003",
+        "A009",
+        "A012",
+        "A017",
+        "A018",
+        "F108"
+      ],
+      "mobile_safe_area": {
+        "marker_anchor_fixed": true,
+        "bubble_clamp_only": true
+      }
+    },
+    "모자보건실·예방접종실": {
+      "x": 82.578125,
+      "y": 47.201053247513165,
+      "printed_label": "모자보건실 예방접종실",
+      "label_bbox": {
+        "left": 2011,
+        "top": 828,
+        "width": 206,
+        "height": 110
+      },
+      "anchor_pixel": {
+        "x": 2114,
+        "y": 806.6659999999999
+      },
+      "map_target_type": "room",
+      "review_status": "verified_floorplan_label",
+      "connected_task_ids": [
+        "M007",
+        "M009",
+        "A005",
+        "F109"
+      ],
+      "mobile_safe_area": {
+        "marker_anchor_fixed": true,
+        "bubble_clamp_only": true
+      }
+    },
+    "모자보건교육실(수유실)": {
+      "x": 93.28125,
+      "y": 46.732943241661786,
+      "printed_label": "모자보건교육실(수유실)",
+      "label_bbox": {
+        "left": 2260,
+        "top": 820,
+        "width": 256,
+        "height": 111
+      },
+      "anchor_pixel": {
+        "x": 2388,
+        "y": 798.6659999999999
+      },
+      "map_target_type": "room",
+      "review_status": "verified_floorplan_label",
+      "connected_task_ids": [
+        "F110"
+      ],
+      "mobile_safe_area": {
+        "marker_anchor_fixed": true,
+        "bubble_clamp_only": true
+      }
+    },
+    "정신건강복지센터": {
+      "x": 83.06640625,
+      "y": 83.3625511995319,
+      "printed_label": "정신건강 복지센터",
+      "label_bbox": {
+        "left": 2043,
+        "top": 1446,
+        "width": 167,
+        "height": 113
+      },
+      "anchor_pixel": {
+        "x": 2126.5,
+        "y": 1424.666
+      },
+      "map_target_type": "room",
+      "review_status": "verified_floorplan_label",
+      "connected_task_ids": [
+        "F112"
+      ],
+      "mobile_safe_area": {
+        "marker_anchor_fixed": true,
+        "bubble_clamp_only": true
+      }
+    },
+    "통합건강증진실": {
+      "x": 93.9453125,
+      "y": 82.60198946752487,
+      "printed_label": "통합건강 증진실",
+      "label_bbox": {
+        "left": 2323,
+        "top": 1433,
+        "width": 164,
+        "height": 111
+      },
+      "anchor_pixel": {
+        "x": 2405,
+        "y": 1411.6680000000001
+      },
+      "map_target_type": "room",
+      "review_status": "verified_floorplan_label",
+      "connected_task_ids": [
+        "F111"
+      ],
+      "mobile_safe_area": {
+        "marker_anchor_fixed": true,
+        "bubble_clamp_only": true
+      }
+    },
+    "방사선실": {
+      "x": 20.130468750000002,
+      "y": 23.4651843183148,
+      "printed_label": "방사선실",
+      "label_bbox": {
+        "left": 395.6,
+        "top": 425.02,
+        "width": 239.46,
+        "height": 55.23
+      },
+      "anchor_pixel": {
+        "x": 515.34,
+        "y": 401.02
+      },
+      "map_target_type": "room",
+      "review_status": "verified_floorplan_label",
+      "connected_task_ids": [
+        "A019",
+        "F102"
+      ],
+      "mobile_safe_area": {
+        "marker_anchor_fixed": true,
+        "bubble_clamp_only": true
+      },
+      "alias_of": "영상의학실(방사선실)"
+    },
+    "영상의학실": {
+      "x": 20.130468750000002,
+      "y": 23.4651843183148,
+      "printed_label": "방사선실",
+      "label_bbox": {
+        "left": 395.6,
+        "top": 425.02,
+        "width": 239.46,
+        "height": 55.23
+      },
+      "anchor_pixel": {
+        "x": 515.34,
+        "y": 401.02
+      },
+      "map_target_type": "room",
+      "review_status": "verified_floorplan_label",
+      "connected_task_ids": [
+        "A019",
+        "F102"
+      ],
+      "mobile_safe_area": {
+        "marker_anchor_fixed": true,
+        "bubble_clamp_only": true
+      },
+      "alias_of": "영상의학실(방사선실)"
+    },
+    "모자보건실": {
+      "x": 91.11015625,
+      "y": 51.40725570509069,
+      "printed_label": "모자보건실 예방접종실",
+      "label_bbox": {
+        "left": 2223.24,
+        "top": 902.55,
+        "width": 218.36,
+        "height": 112.1
+      },
+      "anchor_pixel": {
+        "x": 2332.42,
+        "y": 878.55
+      },
+      "map_target_type": "room",
+      "review_status": "verified_floorplan_label",
+      "connected_task_ids": [
+        "M007",
+        "M009",
+        "A005",
+        "F109"
+      ],
+      "mobile_safe_area": {
+        "marker_anchor_fixed": true,
+        "bubble_clamp_only": true
+      },
+      "alias_of": "모자보건실·예방접종실"
+    },
+    "예방접종실": {
+      "x": 91.11015625,
+      "y": 51.40725570509069,
+      "printed_label": "모자보건실 예방접종실",
+      "label_bbox": {
+        "left": 2223.24,
+        "top": 902.55,
+        "width": 218.36,
+        "height": 112.1
+      },
+      "anchor_pixel": {
+        "x": 2332.42,
+        "y": 878.55
+      },
+      "map_target_type": "room",
+      "review_status": "verified_floorplan_label",
+      "connected_task_ids": [
+        "M007",
+        "M009",
+        "A005",
+        "F109"
+      ],
+      "mobile_safe_area": {
+        "marker_anchor_fixed": true,
+        "bubble_clamp_only": true
+      },
+      "alias_of": "모자보건실·예방접종실"
+    },
+    "수유실": {
+      "x": 103.295703125,
+      "y": 50.07665301345816,
+      "printed_label": "모자보건교육실(수유실)",
+      "label_bbox": {
+        "left": 2483.81,
+        "top": 879.81,
+        "width": 321.12,
+        "height": 137.86
+      },
+      "anchor_pixel": {
+        "x": 2644.37,
+        "y": 855.81
+      },
+      "map_target_type": "room",
+      "review_status": "verified_floorplan_label",
+      "connected_task_ids": [
+        "F110"
+      ],
+      "mobile_safe_area": {
+        "marker_anchor_fixed": true,
+        "bubble_clamp_only": true
+      },
+      "alias_of": "모자보건교육실(수유실)"
+    },
+    "start": {
+      "x": 72.8216,
+      "y": 113.52732124049152
+    },
+    "정문": {
+      "x": 72.8216,
+      "y": 113.52732124049152
     }
   },
   "2층": {
-    "start": {
-      "x": 52,
-      "y": 45
-    },
-    "만성질환관리센터": {
-      "x": 18,
-      "y": 39
-    },
-    "운동실": {
-      "x": 13,
-      "y": 25
-    },
     "운동지도실": {
-      "x": 20,
-      "y": 10
+      "x": 26.914062500000004,
+      "y": 12.1964,
+      "printed_label": "운동지도실",
+      "label_bbox": {
+        "left": 567,
+        "top": 267,
+        "width": 244,
+        "height": 54
+      },
+      "anchor_pixel": {
+        "x": 689,
+        "y": 243.928
+      },
+      "map_target_type": "room",
+      "review_status": "verified_floorplan_label",
+      "connected_task_ids": [
+        "F203"
+      ],
+      "mobile_safe_area": {
+        "marker_anchor_fixed": true,
+        "bubble_clamp_only": true
+      }
     },
     "금연상담실": {
-      "x": 31,
-      "y": 12
+      "x": 38.65234375,
+      "y": 19.6964,
+      "printed_label": "금연상담실",
+      "label_bbox": {
+        "left": 869,
+        "top": 417,
+        "width": 241,
+        "height": 54
+      },
+      "anchor_pixel": {
+        "x": 989.5,
+        "y": 393.928
+      },
+      "map_target_type": "room",
+      "review_status": "verified_floorplan_label",
+      "connected_task_ids": [
+        "H001",
+        "F204"
+      ],
+      "mobile_safe_area": {
+        "marker_anchor_fixed": true,
+        "bubble_clamp_only": true
+      }
     },
     "화성시장애아동재활센터": {
-      "x": 61,
-      "y": 11
+      "x": 70.859375,
+      "y": 17.0964,
+      "printed_label": "화성시장애아동재활센터",
+      "label_bbox": {
+        "left": 1567,
+        "top": 365,
+        "width": 494,
+        "height": 62
+      },
+      "anchor_pixel": {
+        "x": 1814,
+        "y": 341.928
+      },
+      "map_target_type": "room",
+      "review_status": "verified_floorplan_label",
+      "connected_task_ids": [
+        "F205"
+      ],
+      "mobile_safe_area": {
+        "marker_anchor_fixed": true,
+        "bubble_clamp_only": true
+      }
+    },
+    "운동실": {
+      "x": 15.410156250000002,
+      "y": 34.4464,
+      "printed_label": "운동실",
+      "label_bbox": {
+        "left": 321,
+        "top": 712,
+        "width": 147,
+        "height": 54
+      },
+      "anchor_pixel": {
+        "x": 394.5,
+        "y": 688.928
+      },
+      "map_target_type": "room",
+      "review_status": "verified_floorplan_label",
+      "connected_task_ids": [
+        "F202"
+      ],
+      "mobile_safe_area": {
+        "marker_anchor_fixed": true,
+        "bubble_clamp_only": true
+      }
+    },
+    "만성질환관리센터": {
+      "x": 21.81640625,
+      "y": 65.54639999999999,
+      "printed_label": "만성질환 관리센터",
+      "label_bbox": {
+        "left": 461,
+        "top": 1334,
+        "width": 195,
+        "height": 118
+      },
+      "anchor_pixel": {
+        "x": 558.5,
+        "y": 1310.9279999999999
+      },
+      "map_target_type": "room",
+      "review_status": "verified_floorplan_label",
+      "connected_task_ids": [
+        "H002",
+        "F201"
+      ],
+      "mobile_safe_area": {
+        "marker_anchor_fixed": true,
+        "bubble_clamp_only": true
+      }
     },
     "대강당": {
-      "x": 84,
-      "y": 34
+      "x": 90.3125,
+      "y": 63.49640000000001,
+      "printed_label": "대강당",
+      "label_bbox": {
+        "left": 2249,
+        "top": 1293,
+        "width": 126,
+        "height": 50
+      },
+      "anchor_pixel": {
+        "x": 2312,
+        "y": 1269.928
+      },
+      "map_target_type": "room",
+      "review_status": "verified_floorplan_label",
+      "connected_task_ids": [
+        "H003",
+        "F206"
+      ],
+      "mobile_safe_area": {
+        "marker_anchor_fixed": true,
+        "bubble_clamp_only": true
+      }
+    },
+    "start": {
+      "x": 58.050312500000004,
+      "y": 81.575672
     }
   },
   "3층": {
-    "start": {
-      "x": 50,
-      "y": 43
-    },
     "보건소장실": {
-      "x": 18,
-      "y": 17
+      "x": 20.99609375,
+      "y": 14.262752198654944,
+      "printed_label": "보건소장실",
+      "label_bbox": {
+        "left": 415,
+        "top": 298,
+        "width": 245,
+        "height": 58
+      },
+      "anchor_pixel": {
+        "x": 537.5,
+        "y": 275.69900000000007
+      },
+      "map_target_type": "room",
+      "review_status": "verified_floorplan_label",
+      "connected_task_ids": [
+        "F301"
+      ],
+      "mobile_safe_area": {
+        "marker_anchor_fixed": true,
+        "bubble_clamp_only": true
+      }
     },
     "보건행정과": {
-      "x": 42,
-      "y": 16
+      "x": 46.23046875,
+      "y": 17.211536471805488,
+      "printed_label": "보건행정과",
+      "label_bbox": {
+        "left": 1065,
+        "top": 355,
+        "width": 237,
+        "height": 57
+      },
+      "anchor_pixel": {
+        "x": 1183.5,
+        "y": 332.69900000000007
+      },
+      "map_target_type": "department",
+      "review_status": "verified_floorplan_label",
+      "connected_task_ids": [
+        "A006",
+        "A008",
+        "A010",
+        "A013",
+        "A014",
+        "A015",
+        "A016",
+        "F302"
+      ],
+      "mobile_safe_area": {
+        "marker_anchor_fixed": true,
+        "bubble_clamp_only": true
+      }
     },
     "건강증진과": {
-      "x": 15,
-      "y": 30
+      "x": 17.3828125,
+      "y": 34.74904293843766,
+      "printed_label": "건강증진과",
+      "label_bbox": {
+        "left": 320,
+        "top": 694,
+        "width": 250,
+        "height": 58
+      },
+      "anchor_pixel": {
+        "x": 445,
+        "y": 671.6990000000001
+      },
+      "map_target_type": "department",
+      "review_status": "verified_floorplan_label",
+      "connected_task_ids": [
+        "H004",
+        "M001",
+        "R001",
+        "F303"
+      ],
+      "mobile_safe_area": {
+        "marker_anchor_fixed": true,
+        "bubble_clamp_only": true
+      }
     },
     "건강증진과 과장실": {
-      "x": 16,
-      "y": 43
+      "x": 17.40234375,
+      "y": 63.9781686497672,
+      "printed_label": "건강증진과 과장실",
+      "label_bbox": {
+        "left": 354,
+        "top": 1259,
+        "width": 183,
+        "height": 125
+      },
+      "anchor_pixel": {
+        "x": 445.5,
+        "y": 1236.6979999999999
+      },
+      "map_target_type": "room",
+      "review_status": "verified_floorplan_label",
+      "connected_task_ids": [
+        "F305"
+      ],
+      "mobile_safe_area": {
+        "marker_anchor_fixed": true,
+        "bubble_clamp_only": true
+      }
     },
     "소회의실": {
-      "x": 84,
-      "y": 36
+      "x": null,
+      "y": null,
+      "printed_label": null,
+      "label_bbox": null,
+      "anchor_pixel": null,
+      "map_target_type": "room",
+      "review_status": "review_required",
+      "review_reason": "printed name is not visible inside the corrected floor plan",
+      "connected_task_ids": [
+        "F304"
+      ]
+    },
+    "start": {
+      "x": 56.8711625,
+      "y": 87.09029280910502
     }
   }
 }

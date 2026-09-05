@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "tasks": [
     {
       "task_id": "A011",
@@ -10,6 +10,7 @@
         "결핵 관리",
         "결핵 관련 상담"
       ],
+      "sms_fields": ["public_summary", "location", "visit_steps", "public_caution"],
       "public_summary": "결핵 상담과 관리를 안내해 드립니다.",
       "eligibility": "결핵 치료 중 관리가 필요하거나 결핵환자와 함께 지낸 뒤 상담이 필요한 분",
       "documents": null,
@@ -39,6 +40,7 @@
         "결핵 검사 문의",
         "결핵 검사를 받으러 왔어요"
       ],
+      "sms_fields": ["public_summary", "location", "visit_steps", "public_caution"],
       "public_summary": "결핵 검사를 원하시면 검사 종류를 먼저 안내받으세요.",
       "eligibility": "결핵 검사를 원하거나 어떤 검사를 받아야 할지 문의하는 분",
       "documents": null,
@@ -70,6 +72,7 @@
         "AI·IoT 어르신 건강관리",
         "스마트워치 건강관리"
       ],
+      "sms_fields": ["public_summary", "eligibility", "location", "public_caution"],
       "public_summary": "65세 이상 어르신이 스마트폰과 건강기기를 이용해 6개월 동안 건강관리를 받을 수 있는 사업입니다.",
       "eligibility": "만성질환 관리 또는 건강생활 실천이 필요한 65세 이상 어르신",
       "documents": null,
@@ -100,6 +103,7 @@
         "진료 접수",
         "진료를 받으러 왔어요"
       ],
+      "sms_fields": ["eligibility", "location", "documents", "fee", "operating_hours"],
       "public_summary": "고혈압, 당뇨, 고지혈증 같은 만성질환과 일부 감염질환을 진료합니다.",
       "eligibility": "화성시민이 이용할 수 있습니다.",
       "documents": "준비물: 실물 신분증을 준비해 주세요.",
@@ -130,6 +134,7 @@
         "골밀도 검사 예약",
         "예약한 골다공증 검사"
       ],
+      "sms_fields": ["eligibility", "location", "documents", "fee", "public_caution"],
       "public_summary": "화성시민이 예약 후 요추와 고관절의 골밀도를 검사받는 서비스입니다.",
       "eligibility": "주민등록등본상 화성시민이 연 1회 이용할 수 있습니다.",
       "documents": "준비물: 신분증을 준비해 주세요.",
@@ -160,6 +165,7 @@
         "금연상담 예약",
         "담배 끊기 상담"
       ],
+      "sms_fields": ["public_summary", "location", "visit_steps", "public_caution"],
       "public_summary": "금연상담과 금연보조제, 니코틴 검사를 안내받는 서비스입니다.",
       "eligibility": "담배를 끊기 위한 상담을 원하는 화성시민",
       "documents": null,
@@ -190,6 +196,7 @@
         "운동 영양 상담",
         "만성질환 건강상담"
       ],
+      "sms_fields": ["eligibility", "location", "visit_steps", "public_caution"],
       "public_summary": "만성질환 위험요인이 있는 분의 건강관리와 지역주민 대상 운동·영양 상담을 안내합니다.",
       "eligibility": "30세부터 69세까지의 화성시민 중 만성질환 위험요인이 있는 분이 대상입니다. 운동·영양 상담은 지역주민이 이용할 수 있습니다.",
       "documents": null,
@@ -220,6 +227,7 @@
         "선천성대사이상 환아 지원",
         "신생아 선천성대사이상 지원"
       ],
+      "sms_fields": ["eligibility", "location", "documents", "fee", "public_caution"],
       "public_summary": "신생아 검사비와 확진된 환아의 의료비·특수식이를 지원하는 사업입니다.",
       "eligibility": "검사비는 대상 영아의 부모가 출생일로부터 1년 이내에 신청할 수 있습니다. 환아 지원은 해당 질환이 있는 만 19세 미만이 대상입니다.",
       "documents": "준비물: 지원신청서, 검사비 영수증과 세부내역서, 통장 사본, 주민등록등본을 준비해 주세요. 확진검사비와 환아 지원은 진단서 등 추가 서류가 필요합니다.",
@@ -251,6 +259,7 @@
         "인공수정 지원",
         "난임 시술비 사전신청"
       ],
+      "sms_fields": ["eligibility", "location", "documents", "visit_steps", "public_caution"],
       "public_summary": "난임 진단을 받은 부부의 체외수정과 인공수정 시술비를 지원합니다.",
       "eligibility": "화성시에 거주하고 난임 진단과 건강보험 자격을 갖춘 법률혼 또는 사실혼 부부가 신청할 수 있습니다.",
       "documents": "준비물: 난임진단서, 주민등록등본, 건강보험 서류와 혼인관계에 따른 추가서류를 준비해 주세요.",
@@ -281,6 +290,7 @@
         "출산가정 방문 건강관리",
         "산후도우미 지원"
       ],
+      "sms_fields": ["public_summary", "location", "documents", "fee", "visit_steps"],
       "public_summary": "건강관리사가 출산가정을 방문해 산모의 회복과 신생아 양육을 돕는 서비스의 이용비 일부를 지원합니다.",
       "eligibility": "화성시의 모든 출산가정이 신청할 수 있습니다.",
       "documents": "준비물: 산모 신분증, 산모수첩 또는 출생증명과 필요한 가족·보험 서류를 준비해 주세요.",
@@ -311,6 +321,7 @@
         "고위험 임산부 의료비",
         "고위험 임신 의료비 지원"
       ],
+      "sms_fields": ["eligibility", "location", "documents", "fee", "primary_action"],
       "public_summary": "고위험 임신질환으로 입원치료를 받은 분의 의료비 일부를 지원합니다.",
       "eligibility": "가구 소득과 관계없이 19개 고위험 임신질환으로 진단받아 입원치료를 받고, 분만일로부터 6개월 이내인 분이 신청할 수 있습니다.",
       "documents": "준비물: 진단서, 입퇴원확인서, 영수증과 세부내역서, 통장 사본, 신분증 등을 준비해 주세요.",
@@ -342,6 +353,7 @@
         "아기 기저귀 지원",
         "아기 분유 지원"
       ],
+      "sms_fields": ["eligibility", "location", "documents", "fee", "public_caution"],
       "public_summary": "지원 대상 가정의 만 2세 미만 영아에게 기저귀와 조제분유 구매비를 바우처로 지원합니다.",
       "eligibility": "기저귀는 만 2세 미만 영아가 있는 기초생활보장·차상위·한부모 가정과 소득 기준을 충족한 장애인·다자녀 가정이 대상입니다. 조제분유는 이 중 모유수유가 어려운 경우 등 추가 조건을 충족해야 합니다.",
       "documents": "준비물: 주민등록등본과 자격 증명, 필요한 경우 가족·소득·진단 서류를 준비해 주세요.",
@@ -371,6 +383,7 @@
         "선천성이상아 의료비 지원",
         "미숙아 선천성이상아 지원"
       ],
+      "sms_fields": ["eligibility", "location", "documents", "visit_steps", "public_caution"],
       "public_summary": "입원치료를 받은 미숙아와 선천성이상아의 의료비 일부를 지원합니다.",
       "eligibility": "미숙아는 출생 후 24시간 이내 긴급한 수술이나 치료가 필요하여 신생아 중환자실(NICU)에 입원한 임신 37주 미만 또는 출생 시 체중 2.5kg 미만 영아가 대상입니다. 선천성이상아는 출생 후 2년 이내 진단받고 해당 질환을 치료하기 위해 입원해 수술한 경우가 대상입니다.",
       "documents": "준비물: 신청서, 영수증과 세부내역서, 통장 사본, 주민등록등본과 출생·진단·입퇴원 증빙을 준비해 주세요.",
@@ -401,6 +414,7 @@
         "건강진단서 발급 준비",
         "외국인 결핵검진 확인서 발급"
       ],
+      "sms_fields": ["location", "documents", "fee", "visit_steps", "public_caution"],
       "public_summary": "건강진단결과서(보건증), 건강진단서와 외국인 결핵검진 확인서의 검사·발급을 안내합니다.",
       "eligibility": "건강진단결과서, 건강진단서 또는 체류자격 변경·연장 등을 위한 외국인 결핵검진 확인서가 필요한 분",
       "documents": "건강진단결과서와 건강진단서는 사진이 있는 국가기관 발급 신분증이 필요합니다. 미성년자와 외국인은 필요한 서류가 다르므로 방문 전에 확인해 주세요.",
@@ -429,6 +443,7 @@
         "보건소 진료실 찾아가는 길",
         "일반진료 받는 곳 안내"
       ],
+      "sms_fields": ["location", "primary_action", "public_caution"],
       "public_summary": "보건소 1층 진료실 위치를 안내합니다.",
       "eligibility": "보건소 진료실 위치를 찾는 분",
       "documents": null,
@@ -457,6 +472,7 @@
         "보건소 민원 접수 장소 안내",
         "민원 창구 찾아가는 길"
       ],
+      "sms_fields": ["location", "primary_action", "public_caution"],
       "public_summary": "민원 접수와 수납을 처리하는 1층 민원실 위치를 안내합니다.",
       "eligibility": "민원접수·수납 등 민원 업무로 민원실 위치를 찾는 분",
       "documents": null,
@@ -485,6 +501,7 @@
         "보건소 만성질환 상담 장소 안내",
         "건강관리센터 찾아가는 길"
       ],
+      "sms_fields": ["location", "primary_action", "public_caution"],
       "public_summary": "보건소 2층 만성질환관리센터 위치를 안내합니다.",
       "eligibility": "만성질환관리센터 위치를 찾는 분",
       "documents": null,
@@ -514,6 +531,7 @@
         "소독 의무시설 서류 제출",
         "소독업 신고 준비 안내"
       ],
+      "sms_fields": ["public_summary", "location", "documents", "visit_steps", "public_caution"],
       "public_summary": "취약지역의 위생해충 방제와 소독 의무시설·소독업 관련 업무를 안내합니다.",
       "eligibility": "취약지역 방역을 문의하거나 법정 소독 의무시설을 관리하거나 소독업 신고를 준비하는 분",
       "documents": "소독 의무시설 관련 제출에는 소독증명서 또는 소독 자율점검표가 필요합니다. 그 밖의 서류는 전화로 확인해 주세요.",

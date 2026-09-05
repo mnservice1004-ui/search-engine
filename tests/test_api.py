@@ -14,9 +14,10 @@ os.environ["ENABLE_LLM"] = "false"
 os.environ["SMS_MODE"] = "mock"
 os.environ["PYTHON_DOTENV_DISABLED"] = "1"
 
-from app import app  # noqa: E402
+from app import app, attach_public_contacts  # noqa: E402
+from db import get_all_tasks  # noqa: E402
 from public_guidance import EXPECTED_TASK_IDS  # noqa: E402
-from sms_service import send_contact_sms  # noqa: E402
+from sms_service import SMS_FIELD_LABELS, send_contact_sms  # noqa: E402
 
 
 FORBIDDEN_PUBLIC_KEYS = {
@@ -225,7 +226,7 @@ def test_homepage_uses_dongtan_gu_branding():
 
     required_ids = (
         "query", "search-button", "clear-button", "suggestions", "status", "results",
-        "floor-label", "floor-image", "map-marker", "map-label", "route-text", "detail",
+        "floor-label", "floor-image", "map-marker", "route-text", "detail",
         "detail-dialog", "detail-dialog-title", "close-detail",
         "sms-dialog", "sms-form", "recipient", "consent", "sms-status", "cancel-sms", "send-sms",
     )
@@ -238,7 +239,7 @@ def test_homepage_uses_dongtan_gu_branding():
     detail_dialog_start = html.index('<dialog id="detail-dialog"')
     detail_dialog_end = html.index("</dialog>", detail_dialog_start)
     detail_dialog_html = html[detail_dialog_start:detail_dialog_end]
-    for element_id in ("floor-image", "map-marker", "map-label", "route-text", "detail"):
+    for element_id in ("floor-image", "map-marker", "route-text", "detail"):
         assert f'id="{element_id}"' in detail_dialog_html
     for floor in ("1층", "2층", "3층"):
         assert f'data-floor="{floor}"' in detail_dialog_html
@@ -273,18 +274,31 @@ def test_frontend_script_opens_details_only_after_result_selection():
 
 def test_frontend_contact_renderer_uses_safe_text_and_digit_only_tel_links():
     script = Path("public/js/app.js").read_text(encoding="utf-8")
+    detail_renderer = script[
+        script.index("function showDetail(task)"):script.index("function renderResults(items)")
+    ]
 
-    assert "function appendPublicContacts(container, contacts)" in script
+    assert "function hasPublicText(value)" in script
+    assert "if (!hasPublicText(value)) return false;" in script
+    assert "function getPrimaryContact(task)" in script
+    assert "function appendPrimaryContact(container, contact)" in script
     assert "contact.display_phone || contact.phone" in script
     assert "replace(/\\D/g, '')" in script
     assert "link.href = `tel:${telDigits}`" in script
-    assert "contact.is_primary" in script
-    assert "contact.purpose" in script
+    assert "task?.primary_contact" in script
+    assert "contacts.find((contact) => contact.is_primary" in script
     assert "contact.condition" in script
     assert "innerHTML" not in script
-    assert "task.primary_contact?.phone" in script
-    assert "const verifiedContact = task.primary_contact || contacts.find((contact) => contact.is_primary);" in script
-    assert "verifiedContact?.verified_date" in script
+    assert "const primaryContact = getPrimaryContact(task);" in detail_renderer
+    assert "문의전화" in detail_renderer
+    assert "appendPrimaryContact(contactValue, primaryContact);" in detail_renderer
+    assert "이 안내를 문자메시지로 받기" in detail_renderer
+    assert "isGuidedTask" in detail_renderer
+    assert "const isGuidedTask = hasPublicText(task.public_title);" in script
+    assert "task.public_title || task.name" not in detail_renderer
+    assert "task.question" not in detail_renderer
+    assert "task.caution" not in detail_renderer
+    assert "task.script" not in detail_renderer
     assert "task.contact_verified_at" not in script
     assert "showMap(task);" in script
     assert "task?.show_map === false" in script
@@ -295,18 +309,120 @@ def test_frontend_contact_renderer_uses_safe_text_and_digit_only_tel_links():
     assert "task.contact_role" not in script
 
 
+def test_frontend_detail_uses_ordered_public_fields_and_skips_empty_rows():
+    script = Path("public/js/app.js").read_text(encoding="utf-8")
+    detail_renderer = script[
+        script.index("function showDetail(task)"):script.index("function renderResults(items)")
+    ]
+
+    labels = (
+        "어떤 업무인가요?",
+        "누가 이용할 수 있나요?",
+        "어디로 가나요?",
+        "무엇을 준비하나요?",
+        "비용은 얼마인가요?",
+        "언제 이용하나요?",
+        "어떻게 이용하나요?",
+        "문의전화",
+        "꼭 알아두세요",
+    )
+    positions = [detail_renderer.index(f"'{label}'") for label in labels]
+
+    assert positions == sorted(positions)
+    assert "isGuidedTask ? task.public_summary : null" in detail_renderer
+    assert "isGuidedTask ? task.eligibility : null" in detail_renderer
+    assert "isGuidedTask ? task.documents : null" in detail_renderer
+    assert "isGuidedTask ? task.fee : null" in detail_renderer
+    assert "isGuidedTask ? task.operating_hours : null" in detail_renderer
+    assert "joinPublicText([task.visit_steps, task.primary_action])" in detail_renderer
+    assert "isGuidedTask ? task.public_caution : null" in detail_renderer
+    assert "task.public_title || task.name" not in detail_renderer
+    assert "task.question" not in detail_renderer
+    assert "task.caution" not in detail_renderer
+    assert "task.script" not in detail_renderer
+    assert "전화로 확인해 주세요." not in detail_renderer
+    assert "문의하는 곳" not in detail_renderer
+    assert "최근 공식 확인일" not in detail_renderer
+    assert "createText('strong', '', '공식 업무전화')" not in detail_renderer
+    assert "문의 안내" not in detail_renderer
+    assert "대표" not in detail_renderer
+    assert "contact.purpose" not in detail_renderer
+    assert "appendPublicContacts" not in detail_renderer
+
+
+def test_frontend_detail_renders_only_one_primary_contact_and_hides_sms_for_unregistered_tasks():
+    script = Path("public/js/app.js").read_text(encoding="utf-8")
+    contact_renderer = script[
+        script.index("function getPrimaryContact(task)"):script.index("function showDetail(task)")
+    ]
+    detail_renderer = script[
+        script.index("function showDetail(task)"):script.index("function renderResults(items)")
+    ]
+
+    assert "task?.primary_contact" in contact_renderer
+    assert "contacts.find((contact) => contact.is_primary" in contact_renderer
+    assert "contact.purpose" not in contact_renderer
+    assert "contact.is_primary) container" not in contact_renderer
+    assert "const primaryContact = getPrimaryContact(task);" in detail_renderer
+    assert "createText('strong', '', '문의전화')" in detail_renderer
+    assert "appendPrimaryContact(contactValue, primaryContact);" in detail_renderer
+    assert "if (isGuidedTask) {" in detail_renderer
+    assert "이 안내를 문자메시지로 받기" in detail_renderer
+    assert "이 연락처를 문자로 받기" not in detail_renderer
+
+
 def test_frontend_accessibility_contract_keeps_phone_targets_and_hides_no_map_controls():
     css = Path("public/css/style.css").read_text(encoding="utf-8")
     script = Path("public/js/app.js").read_text(encoding="utf-8")
 
     assert ".contact-link{display:inline-flex;align-items:center;box-sizing:border-box;min-width:44px;min-height:44px;" in css
-    assert ".map-panel .section-head[hidden],.map-panel .floor-tabs[hidden],.map-panel .map-stage[hidden]{display:none!important}" in css
+    assert ".map-panel[hidden],.map-panel .section-head[hidden],.map-panel .floor-tabs[hidden],.map-panel .map-stage[hidden]{display:none!important}" in css
+    assert ".detail-dialog .guidance-grid.map-unavailable{grid-template-columns:minmax(0,1fr)}" in css
     assert "function setMapControlsHidden(hidden)" in script
+    assert "function setMapPanelHidden(hidden)" in script
+    assert "function setMapNavigationHidden(hidden)" in script
+    assert "mapPanelEl.hidden = hidden;" in script
+    assert "guidanceGridEl.classList.toggle('map-unavailable', hidden);" in script
     assert "[mapSectionHeadEl, floorTabsEl, mapStageEl]" in script
     assert "element.hidden = hidden;" in script
-    assert "if (task?.show_map === false) {\n    setMapControlsHidden(true);" in script
-    assert "setMapControlsHidden(false);\n  if (!task?.floor || !task?.place)" in script
+    assert "if (task?.show_map === false) {\n    setMapPanelHidden(true);" in script
+    assert "setMapPanelHidden(false);\n  setMapControlsHidden(false);\n  setMapNavigationHidden(true);" in script
     assert "task.route || '방문 장소는 전화로 확인해 주세요.'" in script
+    assert (
+        "document.querySelectorAll('.floor-tabs button').forEach((button) =>\n"
+        "  button.addEventListener('click'"
+    ) not in script
+
+
+def test_floor_maps_crop_only_the_embedded_facility_directories():
+    css = Path("public/css/style.css").read_text(encoding="utf-8")
+    script = Path("public/js/app.js").read_text(encoding="utf-8")
+
+    assert "'1층': {width: 2560, height: 1709, top: 0, visibleHeight: 1709}" in script
+    assert "'2층': {width: 2560, height: 2000, top: 0, visibleHeight: 2000}" in script
+    assert "'3층': {width: 2560, height: 1933, top: 0, visibleHeight: 1933}" in script
+    assert "function applyMapCrop(floor)" in script
+    assert "function syncMarkerToImage(point)" in script
+    assert "function isVerifiedMapTarget(point)" in script
+    assert "function getDisplayedMapTarget(task)" in script
+    assert "return task?.room || task?.place || '';" in script
+    assert "function getMapTargetName(task, point)" in script
+    assert "function getMapTargetRoute(task, point)" in script
+    assert "if (!syncMarkerToImage(point)) return;" in script
+    assert "function createMapRoutePath(points)" in script
+    assert "function normalizeRouteTargetName(value)" in script
+    assert "getCorridorRoute(task.floor, getMapTargetName(task, point))" in script
+    assert "const displayedTarget = getDisplayedMapTarget(task);" in script
+    assert "showCorridorRoute(corridorRoute, task.floor, selectionToken)" in script
+    assert "mapLabelEl" not in script
+    assert "if (!isVerifiedMapTarget(point))" in script
+    assert ".map-stage.map-cropped{min-height:0;aspect-ratio:var(--map-crop-width)/var(--map-crop-height)}" in css
+    assert ".map-stage.map-cropped #floor-image{position:absolute;top:0;left:0;width:100%;max-width:none;height:auto;transform:translateY(var(--map-crop-offset));transform-origin:top left}" in css
+    assert "#map-marker{display:none;position:absolute;width:78px;height:84px;margin:0;transform:translate(-50%,-100%)" in css
+    assert "#map-label" not in css
+    assert "#map-marker{width:64px;height:69px}" in css
+    assert ".map-stage{position:relative" in css
+    assert "overflow:hidden" in css
 
 
 @pytest.mark.parametrize(
@@ -341,6 +457,57 @@ def test_search_post_returns_expected_first_item():
     assert body["returned_count"] == body["displayed_count"] == len(body["items"])
     assert len(body["results"]) <= 10
     assert body["total"] >= body["returned_count"]
+
+
+def test_api_prioritizes_exact_verified_map_location_queries():
+    expected = {
+        "건강증진과": "F303",
+        "건강증진과 위치": "F303",
+        "건강증진과 과장실": "F305",
+        "보건행정과": "F302",
+        "보건행정과 위치": "F302",
+        "민원실": "F108",
+        "결핵실": "F101",
+        "영상의학실": "F102",
+        "진료실": "F103",
+        "금연상담실": "F204",
+        "만성질환관리센터": "F201",
+        "재활보건실": "F106",
+    }
+
+    test_client = client()
+    for index, (query, task_id) in enumerate(expected.items(), start=1):
+        response = test_client.post(
+            "/api/search",
+            json={"query": query},
+            environ_overrides={"REMOTE_ADDR": f"198.18.0.{index}"},
+        )
+        body = response.get_json()
+        assert response.status_code == 200
+        assert body["items"][0]["id"] == task_id
+        assert body["returned_count"] == len(body["items"])
+        assert body["total"] >= body["returned_count"]
+        assert body["returned_count"] <= 10
+
+
+def test_every_visible_munwonsil_destination_shares_the_munwonsil_route_target():
+    """Use the final public card location, never an internal task-ID list."""
+
+    public_items = attach_public_contacts(get_all_tasks())
+
+    munwonsil_items = [
+        item
+        for item in public_items
+        if item["floor"] == "1층" and (item["room"] or item["place"]) == "민원실"
+    ]
+    assert len(munwonsil_items) == 7
+    assert all(item["place"] == item["room"] == "민원실" for item in munwonsil_items)
+
+    script = Path("public/js/app.js").read_text(encoding="utf-8")
+    assert "function getDisplayedMapTarget(task)" in script
+    assert "return task?.room || task?.place || '';" in script
+    assert "const displayedTarget = getDisplayedMapTarget(task);" in script
+    assert "getCorridorRoute(task.floor, getMapTargetName(task, point))" in script
 
 
 def test_search_api_returns_only_public_contact_fields_for_core_tasks():
@@ -745,13 +912,22 @@ def test_sms_blocks_task_without_primary_contact():
         json={"task_id": "H004", "recipient": "01000000000", "consent": True},
     )
     assert response.status_code == 400
-    assert "공식 담당 연락처" in response.get_json()["error"]
+    assert "공개 안내" in response.get_json()["error"]
 
 
 def test_sms_mock_preview_uses_dongtan_gu_branding(monkeypatch):
     monkeypatch.setenv("SMS_MODE", "mock")
     task = {
         "name": "예방접종 문의",
+        "public_title": "예방접종 안내가 필요하신가요?",
+        "eligibility": "예방접종 안내가 필요한 분",
+        "route": "방문 장소는 전화로 확인해 주세요.",
+        "documents": "신분증을 준비해 주세요.",
+        "fee": "비용은 전화로 확인해 주세요.",
+        "operating_hours": None,
+        "visit_steps": "대표전화로 먼저 문의해 주세요.",
+        "primary_action": "접종 종류를 확인해 주세요.",
+        "public_caution": "방문 전에 전화로 확인해 주세요.",
         "department": "보건행정과",
         "team": "감염병관리팀",
         "contact_name": "홍길동",
@@ -762,15 +938,18 @@ def test_sms_mock_preview_uses_dongtan_gu_branding(monkeypatch):
             "display_phone": "031-000-0000",
             "verified_date": "2026-08-28",
         },
+        "_sms_fields": ["eligibility", "location", "documents", "fee"],
     }
 
     result = send_contact_sms(task, "010-1234-5678")
 
     assert result["status"] == "mocked"
     assert result["provider"] == "mock"
-    assert result["preview"].startswith("[동탄구보건소 민원안내]\n")
-    assert "전화: 031-000-0000" in result["preview"]
+    assert result["preview"].startswith("[동탄구보건소]\n업무: 예방접종 안내가 필요하신가요?\n")
+    assert "문의: 031-000-0000" in result["preview"]
     assert "031-999-9999" not in result["preview"]
+    assert "보건행정과" not in result["preview"]
+    assert "확인일" not in result["preview"]
     assert "[동탄보건소 민원안내]" not in result["preview"]
 
 
@@ -784,8 +963,8 @@ def test_sms_mock_endpoint_uses_primary_contact(monkeypatch):
 
     assert response.status_code == 200
     assert response.get_json()["status"] == "mocked"
-    assert response.get_json()["preview"].startswith("[동탄구보건소 민원안내]\n")
-    assert "전화: 031-5189-4364" in response.get_json()["preview"]
+    assert response.get_json()["preview"].startswith("[동탄구보건소]\n")
+    assert "문의: 031-5189-4364" in response.get_json()["preview"]
 
 
 def test_a007_api_and_sms_use_runtime_primary_without_internal_location(monkeypatch):
@@ -815,8 +994,11 @@ def test_a007_api_and_sms_use_runtime_primary_without_internal_location(monkeypa
     assert_no_internal_public_keys(item)
     assert_no_internal_public_values(item)
 
+    from app import PUBLIC_GUIDANCE
+
+    item["_sms_fields"] = PUBLIC_GUIDANCE["A007"]["sms_fields"]
     preview = send_contact_sms(item, "01012345678")["preview"]
-    assert "전화: 031-5189-5093" in preview
+    assert "문의: 031-5189-5093" in preview
     assert "방문 장소는 전화로 확인해 주세요." in preview
     assert "3층" not in preview
     assert "031-5189-5093" not in json.dumps(
@@ -828,8 +1010,10 @@ def test_a007_api_and_sms_use_runtime_primary_without_internal_location(monkeypa
 def test_sms_does_not_fall_back_to_legacy_task_phone():
     task = {
         "name": "보류 업무",
+        "public_title": "공개 안내 업무",
         "department": "건강증진과",
         "phone": "031-999-9999",
+        "_sms_fields": ["eligibility", "location", "visit_steps", "public_caution"],
         "primary_contact": None,
     }
 
@@ -842,10 +1026,16 @@ def test_sms_uses_only_public_guidance_and_primary_contact(monkeypatch):
     task = {
         "name": "내부 업무명",
         "public_title": "65세 이상 건강관리 서비스를 찾으시나요?",
-        "public_summary": "65세 이상 어르신이 스마트폰과 건강기기를 이용해 6개월 동안 건강관리를 받을 수 있는 사업입니다.",
+        "eligibility": "건강관리가 필요한 65세 이상 어르신",
         "department": "건강증진과",
         "team": "지역보건팀",
         "route": "방문 장소는 전화로 확인해 주세요.",
+        "documents": None,
+        "fee": None,
+        "operating_hours": None,
+        "visit_steps": "스마트폰과 건강기기를 이용해 6개월 동안 건강관리를 받습니다.",
+        "primary_action": "참여 가능 여부를 먼저 확인해 주세요.",
+        "public_caution": "현재 모집 여부는 전화로 확인해 주세요.",
         "verified_date": "2026-08-28",
         "primary_contact": {
             "phone": "031-5189-5032",
@@ -860,6 +1050,7 @@ def test_sms_uses_only_public_guidance_and_primary_contact(monkeypatch):
         "floor": "3층",
         "place": "보건행정과",
         "phone": "031-999-9999",
+        "_sms_fields": ["eligibility", "location", "visit_steps", "public_caution"],
     }
 
     preview = send_contact_sms(task, "01012345678")["preview"]
@@ -867,7 +1058,6 @@ def test_sms_uses_only_public_guidance_and_primary_contact(monkeypatch):
     assert "031-5189-5032" in preview
     assert "65세 이상" in preview
     assert "6개월" in preview
-    assert "건강증진과 / 지역보건팀" in preview
     assert "방문 장소는 전화로 확인해 주세요." in preview
     for forbidden in (
         "검수 메모",
@@ -884,10 +1074,84 @@ def test_sms_uses_only_public_guidance_and_primary_contact(monkeypatch):
         assert forbidden not in preview
 
 
+def test_sms_uses_public_fields_and_one_primary_contact_for_all_guided_tasks(monkeypatch):
+    from app import PUBLIC_GUIDANCE
+
+    monkeypatch.setenv("SMS_MODE", "mock")
+    required_fragments = {
+        "A003": ("수수료와 준비물은 방문 전에 확인",),
+        "A007": ("문의 종류에 따라", "방문 장소는 전화로 확인"),
+        "A019": ("6,000원", "변동될 수"),
+        "H002": ("현재 접수 여부", "상담 일정"),
+        "M002": ("대상 영아의 부모",),
+        "M003": ("시술 전에", "소급 지원"),
+        "M004": ("출산일 60일 후",),
+        "M005": ("19개 고위험 임신질환", "분만일로부터 6개월"),
+        "M006": ("조제분유", "추가 조건"),
+        "M008": ("출생 후 24시간", "신생아 중환자실", "6개월 이내"),
+        "R002": ("65세 이상", "6개월", "방문 장소는 전화로 확인"),
+        "F103": ("1층 진료실", "현재 이용 가능"),
+        "F108": ("1층 민원실", "민원 종류에 따라"),
+        "F201": ("2층 만성질환관리센터", "현재 상담·접수 여부"),
+    }
+
+    for task_id in PUBLIC_GUIDANCE:
+        detail = client().get(f"/api/tasks/{task_id}").get_json()
+        assert "sms_fields" not in detail
+        detail["_sms_fields"] = PUBLIC_GUIDANCE[task_id]["sms_fields"]
+        preview = send_contact_sms(detail, "01012345678")["preview"]
+
+        assert preview.startswith("[동탄구보건소]\n")
+        assert f"업무: {detail['public_title']}" in preview
+        assert f"문의: {detail['primary_contact']['display_phone']}" in preview
+        assert "대표전화" not in preview.splitlines()[-1]
+        assert "문의하는 곳:" not in preview
+        assert "확인일:" not in preview
+        if "public_summary" in detail["_sms_fields"]:
+            assert f"안내: {detail['public_summary']}" in preview
+        assert "대표" not in preview.splitlines()[-1]
+        labels = [line.split(":", 1)[0] for line in preview.splitlines()[2:-1]]
+        expected_labels = [
+            SMS_FIELD_LABELS[field]
+            for field in detail["_sms_fields"]
+            if (detail["route"] if field == "location" else detail.get(field))
+        ]
+        assert labels == expected_labels
+        assert "대표전화" not in preview
+        assert "\n\n" not in preview
+        assert preview == preview.strip()
+        assert len(preview) == len(preview.encode("utf-8").decode("utf-8"))
+        for contact in detail["contacts"]:
+            if not contact["is_primary"]:
+                assert contact["display_phone"] not in preview
+        for fragment in required_fragments.get(task_id, ()):
+            assert fragment in preview
+
+
+def test_sms_rejects_unregistered_task_without_using_internal_fields(monkeypatch):
+    from app import send_sms
+
+    monkeypatch.setenv("SMS_MODE", "mock")
+
+    with app.test_request_context(
+        "/api/sms",
+        method="POST",
+        json={"task_id": "M009", "recipient": "01012345678", "consent": True},
+    ):
+        response = app.make_response(send_sms.__wrapped__())
+
+    assert response.status_code == 400
+    assert "공개 안내" in response.get_json()["error"]
+    assert "예방접종실" not in response.get_json()["error"]
+
+
 @pytest.mark.parametrize("task_id", ("M003", "M008"))
 def test_no_map_public_guidance_sms_uses_phone_confirmation_route(task_id, monkeypatch):
     monkeypatch.setenv("SMS_MODE", "mock")
     detail = client().get(f"/api/tasks/{task_id}").get_json()
+    from app import PUBLIC_GUIDANCE
+
+    detail["_sms_fields"] = PUBLIC_GUIDANCE[task_id]["sms_fields"]
 
     preview = send_contact_sms(detail, "01012345678")["preview"]
 
@@ -909,6 +1173,9 @@ def test_h002_public_api_detail_and_sms_omit_unverified_claims(monkeypatch):
     )
     detail_response = client().get("/api/tasks/H002")
     detail = detail_response.get_json()
+    from app import PUBLIC_GUIDANCE
+
+    detail["_sms_fields"] = PUBLIC_GUIDANCE["H002"]["sms_fields"]
     preview = send_contact_sms(detail, "01012345678")["preview"]
 
     assert search_response.status_code == 200

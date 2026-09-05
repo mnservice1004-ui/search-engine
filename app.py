@@ -65,8 +65,66 @@ def _public_match_tier(task, query):
     return 0
 
 
+def _map_point_for_place(map_points, floor, place):
+    points = map_points.get(str(floor or ""), {})
+    if place in points:
+        return points[place]
+    matches = [
+        point
+        for name, point in points.items()
+        if name not in {"start", "정문"}
+        and (str(place or "") in name or name in str(place or ""))
+    ]
+    return matches[0] if len(matches) == 1 else None
+
+
+def build_verified_map_target_registry(tasks, map_points):
+    """Map exact, verified floor-plan terms to their location-guide task IDs."""
+
+    registry = {}
+    ambiguous_terms = set()
+    for task in tasks:
+        place = str(task.get("place") or "")
+        name = str(task.get("name") or "")
+        if not place or normalize(name) != normalize(f"{place} 위치 안내"):
+            continue
+        point = _map_point_for_place(map_points, task.get("floor"), place)
+        if not point or point.get("review_status") != "verified_floorplan_label":
+            continue
+        terms = [place, point.get("printed_label")]
+        terms.extend(
+            alias.get("text")
+            for alias in task.get("aliases", [])
+            if alias.get("type") == "장소어"
+        )
+        for term in terms:
+            normalized_term = normalize(term)
+            if not normalized_term or normalized_term in ambiguous_terms:
+                continue
+            previous_task_id = registry.get(normalized_term)
+            if previous_task_id and previous_task_id != task.get("id"):
+                registry.pop(normalized_term, None)
+                ambiguous_terms.add(normalized_term)
+                continue
+            registry[normalized_term] = task.get("id")
+    return registry
+
+
+def _exact_map_location_task_id(query, map_target_registry):
+    normalized_query = normalize(query)
+    if normalized_query in map_target_registry:
+        return map_target_registry[normalized_query]
+    for suffix in ("위치", "어디"):
+        if normalized_query.endswith(suffix):
+            task_id = map_target_registry.get(normalized_query[: -len(suffix)])
+            if task_id:
+                return task_id
+    return None
+
+
 def _public_rank_key(task):
     return (
+        -int(task.get("_map_location_match_tier") or 0),
         -int(task.get("_public_match_tier") or 0),
         -int(task.get("score") or 0),
         -int(task.get("priority") or 0),
@@ -75,9 +133,27 @@ def _public_rank_key(task):
     )
 
 
-def search_public_tasks(searchable_tasks, query, limit=100):
+def search_public_tasks(searchable_tasks, query, limit=100, map_target_registry=None):
     ranked = search_tasks(searchable_tasks, query, 100)
+    exact_location_task_id = _exact_map_location_task_id(
+        query, map_target_registry or {}
+    )
+    if exact_location_task_id and not any(
+        task.get("id") == exact_location_task_id for task in ranked
+    ):
+        location_task = next(
+            (
+                task for task in searchable_tasks
+                if task.get("id") == exact_location_task_id
+            ),
+            None,
+        )
+        if location_task is not None:
+            ranked.append({**location_task, "score": 0})
     for task in ranked:
+        task["_map_location_match_tier"] = int(
+            task.get("id") == exact_location_task_id
+        )
         task["_public_match_tier"] = _public_match_tier(task, query)
     ranked.sort(key=_public_rank_key)
     return ranked[: max(1, min(int(limit), 100))]
@@ -148,7 +224,11 @@ def search():
 
     tasks = get_all_tasks()
     searchable_tasks = build_public_search_tasks(tasks, PUBLIC_GUIDANCE)
-    all_results = search_public_tasks(searchable_tasks, query, 100)
+    map_points = json.loads((ROOT / "data" / "map_points.json").read_text(encoding="utf-8"))
+    map_target_registry = build_verified_map_target_registry(tasks, map_points)
+    all_results = search_public_tasks(
+        searchable_tasks, query, 100, map_target_registry
+    )
     expansions = []
     if not all_results and _allow_query_expansion(query):
         expansions = expand_query(query)
@@ -195,6 +275,10 @@ def send_sms():
     if task is None:
         return jsonify({"error": "업무를 찾을 수 없습니다."}), 404
     task = attach_public_contacts([task])[0]
+    guidance = PUBLIC_GUIDANCE.get(task["id"])
+    if guidance is not None:
+        # 문자용 필드 선택은 공개 API 응답에 노출하지 않고 서버 안에서만 사용한다.
+        task["_sms_fields"] = list(guidance["sms_fields"])
     try:
         result = send_contact_sms(task, payload.get("recipient"))
     except ValueError as exc:

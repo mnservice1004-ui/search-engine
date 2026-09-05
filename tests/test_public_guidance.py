@@ -9,6 +9,7 @@ from public_guidance import (
     EXPECTED_TASK_IDS,
     PUBLIC_CONTACT_FIELDS,
     PUBLIC_TEXT_FIELDS,
+    SMS_ALLOWED_FIELDS,
     PublicGuidanceConfigurationError,
     load_public_guidance,
     serialize_public_task,
@@ -264,7 +265,7 @@ def test_checked_in_public_guidance_has_exact_eighteen_task_contract(monkeypatch
     payload = base_payload()
     guidance = load_public_guidance(GUIDANCE_PATH)
 
-    assert payload["schema_version"] == 2
+    assert payload["schema_version"] == 3
     assert set(guidance) == EXPECTED_TASK_IDS
     assert len(guidance) == 18
     assert sum(len(item["public_search_terms"]) for item in guidance.values()) == 83
@@ -277,6 +278,10 @@ def test_checked_in_public_guidance_has_exact_eighteen_task_contract(monkeypatch
         assert tuple(item["public_search_terms"]) == EXPECTED_PUBLIC_SEARCH_TERMS[task_id]
         assert item["public_title"] in item["public_search_terms"]
         assert 2 <= len(item["public_search_terms"]) <= 6
+        assert 2 <= len(item["sms_fields"]) <= 5
+        assert "location" in item["sms_fields"]
+        assert len(set(item["sms_fields"])) == len(item["sms_fields"])
+        assert set(item["sms_fields"]) <= set(SMS_ALLOWED_FIELDS)
         serialized = json.dumps(item, ensure_ascii=False)
         assert "031-" not in serialized
         for forbidden in ("note", "source", "status", "source_row", "hash", "local_path"):
@@ -311,13 +316,16 @@ def test_checked_in_public_guidance_has_exact_eighteen_task_contract(monkeypatch
     assert set(load_public_guidance()) == EXPECTED_TASK_IDS
 
 
-def test_existing_fourteen_guidance_objects_are_unchanged():
+def test_existing_fourteen_guidance_content_is_unchanged_except_sms_selection():
     payload = base_payload()
     existing = [
         item for item in payload["tasks"] if item["task_id"] not in SECOND_READY_TASK_IDS
     ]
     canonical = json.dumps(
-        existing,
+        [
+            {key: value for key, value in item.items() if key != "sms_fields"}
+            for item in existing
+        ],
         ensure_ascii=False,
         separators=(",", ":"),
         sort_keys=True,
@@ -473,7 +481,7 @@ def test_h002_public_guidance_omits_unverified_claims():
     assert not any(fragment in serialized for fragment in H002_FORBIDDEN_PUBLIC_FRAGMENTS)
 
 
-def test_public_search_terms_use_only_the_safe_schema_v2_layer():
+def test_public_search_terms_use_only_the_safe_schema_v3_layer():
     guidance = load_public_guidance(GUIDANCE_PATH)
     all_normalized_terms = []
 
@@ -500,6 +508,24 @@ def test_public_search_terms_use_only_the_safe_schema_v2_layer():
     assert not any(fragment in h002_terms for fragment in H002_FORBIDDEN_PUBLIC_FRAGMENTS)
 
 
+def test_sms_field_selection_is_small_safe_and_location_aware():
+    guidance = load_public_guidance(GUIDANCE_PATH)
+
+    for item in guidance.values():
+        fields = item["sms_fields"]
+        assert 2 <= len(fields) <= 5
+        assert len(fields) == len(set(fields))
+        assert "location" in fields
+        assert set(fields) <= set(SMS_ALLOWED_FIELDS)
+        assert not {"visit_steps", "primary_action"} <= set(fields)
+        assert not {
+            "public_title",
+            "organization",
+            "verified_date",
+            "public_search_terms",
+        } & set(fields)
+
+
 def test_guidance_missing_or_invalid_json_fails_closed(tmp_path):
     with pytest.raises(PublicGuidanceConfigurationError, match="missing"):
         load_public_guidance(tmp_path / "missing.json")
@@ -510,12 +536,12 @@ def test_guidance_missing_or_invalid_json_fails_closed(tmp_path):
         load_public_guidance(invalid)
 
     payload = base_payload()
-    payload.update({"schema_version": 2.0})
+    payload.update({"schema_version": 3.0})
     with pytest.raises(PublicGuidanceConfigurationError):
         load_public_guidance(write_payload(tmp_path / "float-schema.json", payload))
 
 
-@pytest.mark.parametrize("unsupported_version", (1, 3, True))
+@pytest.mark.parametrize("unsupported_version", (1, 2, True))
 def test_unsupported_schema_versions_are_rejected(tmp_path, unsupported_version):
     payload = base_payload()
     payload["schema_version"] = unsupported_version
@@ -527,6 +553,14 @@ def test_unsupported_schema_versions_are_rejected(tmp_path, unsupported_version)
 @pytest.mark.parametrize(
     ("mutation", "error_fragment"),
     (
+        (lambda item: item.pop("sms_fields"), "invalid keys"),
+        (lambda item: item.update(sms_fields="location"), "must be an array"),
+        (lambda item: item.update(sms_fields=["location"]), "must contain"),
+        (lambda item: item.update(sms_fields=["location"] * 6), "must contain"),
+        (lambda item: item.update(sms_fields=["location", "location"]), "duplicate"),
+        (lambda item: item.update(sms_fields=["location", "unknown"]), "disallowed"),
+        (lambda item: item.update(sms_fields=["public_summary", "eligibility"]), "include location"),
+        (lambda item: item.update(sms_fields=["location", "visit_steps", "primary_action"]), "repeat application"),
         (lambda item: item.pop("public_search_terms"), "invalid keys"),
         (lambda item: item.update(public_search_terms="결핵 상담"), "must be an array"),
         (lambda item: item.update(public_search_terms=[item["public_title"]]), "must contain"),
@@ -713,8 +747,8 @@ def test_guidance_schema_errors_are_rejected(tmp_path, mutate):
 
 def test_duplicate_json_object_key_is_rejected(tmp_path):
     duplicate = GUIDANCE_PATH.read_text(encoding="utf-8").replace(
-        '"schema_version": 2,',
-        '"schema_version": 2,\n  "schema_version": 2,',
+        '"schema_version": 3,',
+        '"schema_version": 3,\n  "schema_version": 3,',
         1,
     )
     path = tmp_path / "duplicate-key.json"

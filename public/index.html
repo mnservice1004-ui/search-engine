@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>동탄구보건소 보건민원 정보 검색</title>
-  <link rel="stylesheet" href="/css/style.css">
-  <script src="/js/app.js" defer></script>
+    <link rel="stylesheet" href="/css/style.css?revision=mental-door-route-7">
+  <script src="/js/app.js?revision=mental-door-route-7" defer></script>
 </head>
 <body>
   <div class="hero-stage">
@@ -119,10 +119,9 @@
           <div class="map-stage">
             <img id="floor-image" alt="선택한 층의 배치도">
             <svg id="map-route" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-              <path id="map-route-line" pathLength="1"></path>
+              <path id="map-route-line"></path>
             </svg>
-            <div id="map-marker" aria-hidden="true"></div>
-            <div id="map-label" aria-hidden="true"></div>
+            <div id="map-marker" aria-hidden="true"><span class="map-runner"><span class="map-runner-sprite"></span></span></div>
           </div>
           <p id="route-text" class="help">검색 결과를 선택하면 위치가 표시됩니다.</p>
         </section>
