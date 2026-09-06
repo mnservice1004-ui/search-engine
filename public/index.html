@@ -4,11 +4,15 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>동탄구보건소 보건민원 정보 검색</title>
-  <link rel="stylesheet" href="/css/style.css?revision=hero-typewriter-2">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/css/style.css?revision=hero-atmosphere-1">
   <script src="/js/app.js?revision=hero-typewriter-2" defer></script>
+  <script src="/qa/layer-engine.js?revision=a-whole-sky" defer></script>
+  <script src="/qa/layer-home.js?revision=a-whole-sky" defer></script>
 </head>
 <body>
   <div class="hero-stage">
+    <canvas id="hero-atmosphere" class="hero-atmosphere" aria-hidden="true" hidden></canvas>
     <header class="site-header">
       <div class="topbar">
         <div class="topbar-brand-row">
@@ -90,6 +94,8 @@
     </main>
 
     <footer class="site-footer">
+      <button id="background-motion-toggle" class="background-motion-toggle" type="button"
+              aria-pressed="true" aria-label="배경 움직임" hidden>배경 움직임 <span>켜짐</span></button>
       <p class="footer-tagline">오늘의 하늘처럼, 민원 안내도 맑고 편안하게</p>
     </footer>
   </div>
