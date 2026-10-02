@@ -1,0 +1,44 @@
+{
+  "date": "2026-10-02",
+  "scope": "Local PC website content management, preview, backup and verified publication",
+  "production_url": "https://search-engine-delta-seven.vercel.app",
+  "deployment_id": "dpl_9VEFEeSk7B3JfMMyPZb9NdeSc6Zk",
+  "deployment_url": "https://search-engine-7l1xpwrew-mnservice1004-ui.vercel.app",
+  "publication_completed_at": "2026-10-02T11:40:21+09:00",
+  "runtime_files": 76,
+  "public_assets": 54,
+  "upload_files": 75,
+  "validation": {
+    "regression_tests_passed": 213,
+    "manager_tests_after_cli_format_fix_passed": 12,
+    "test_counts_overlap": true,
+    "browser_manager_pages": 7,
+    "browser_publish_completed": true,
+    "browser_public_prenatal_results": 3,
+    "verified_task_details": 63,
+    "verified_search_queries": [
+      "보건증",
+      "접종",
+      "검사",
+      "산전검사"
+    ],
+    "public_search_matches_preview": true,
+    "preview_sms_blocked": true,
+    "existing_local_paths_preserved": 49,
+    "private_operating_database_unchanged": true
+  },
+  "exposure": {
+    "manager_bind": "127.0.0.1",
+    "manager_uploaded_to_public_site": false,
+    "private_database_uploaded": false,
+    "credentials_uploaded": false
+  },
+  "operator_entrypoint": "관리자 실행.bat",
+  "operator_guide": "관리자 사용안내.html",
+  "limits": [
+    "Content management only; layout, new features and security upgrades require development.",
+    "No automatic interpretation or import of PDF/HWPX documents.",
+    "Hidden entries are excluded from site results; hide is not a confidentiality control.",
+    "Content backups require the application project to restore on another PC."
+  ]
+}

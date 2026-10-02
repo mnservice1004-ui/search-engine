@@ -39,11 +39,12 @@ def search_official_services(query, *, today=None, include_ids=()):
         return dict(checked_on=data['checked_on'],total=0,guides=[])
     ranked = []
     for item in data['guides']:
+        if item.get('active', True) is False: continue
         title = normalize(item['title'])
         subjects = title + normalize(' '.join(item['keywords']) + item['summary'])
         if item['id'] not in include_ids and not generic and (not terms or not all(term in subjects for term in terms)):
             continue
-        public = {k:v for k,v in item.items() if k != 'keywords'}
+        public = {k:v for k,v in item.items() if k not in {'keywords', 'active'}}
         public['expired'] = bool(item['valid_until'] and today.isoformat() > item['valid_until'])
         ranked.append((public['expired'], -sum(10 if t in title else 1 for t in terms), public))
     ranked.sort(key=lambda row:row[:2])

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>동탄구보건소 홈페이지 직접 관리 안내</title>
+<style>body{font:18px/1.8 "Malgun Gothic",sans-serif;color:#20323d;background:#f5f8fa;max-width:850px;margin:40px auto;padding:24px}article{background:white;border:1px solid #dae3e8;border-radius:16px;padding:32px}h1{font-size:30px}h2{margin-top:32px;font-size:23px}li{margin:10px 0}strong{color:#006d77}a{color:#006d77}code{background:#edf3f5;padding:2px 6px} @media print{body{background:white;margin:0}article{border:0}}</style>
+<article><h1>홈페이지 직접 관리 안내</h1>
+<p>현재 작업 PC에서 실행하는 관리 도구입니다. Codex를 열거나 명령어를 입력하지 않고 안내 내용을 수정할 수 있습니다.</p>
+<h2>1. 관리 화면 열기</h2>
+<p>프로젝트 폴더의 <strong>관리자 실행.bat</strong>을 두 번 클릭하세요. 브라우저에 관리 화면이 열립니다. 화면을 사용하는 동안 실행 창을 열어두세요. 처음 설치하거나 PC를 바꾼 경우에는 <strong>setup_admin.bat</strong>을 먼저 실행합니다.</p>
+<h2>2. 수정할 메뉴 선택</h2>
+<ul><li><strong>업무·연락처:</strong> 업무 설명, 부서, 검색어, 문의전화 수정. 같은 번호가 여러 안내에 있으면 ‘같은 전화번호를 모든 안내에서 변경’을 사용하세요.</li>
+<li><strong>사업 안내·검색어:</strong> 검사·예방접종·보건사업 안내 수정, 새 안내 등록, 표시 여부 변경. 검색어는 한 줄에 하나씩 입력하세요.</li>
+<li><strong>월간 일정:</strong> 프로그램명, 일정, 장소, 대상, 내용, 연결 업무 수정. 다음 달에는 ‘공개할 월 변경’에서 월을 바꾸고 일정을 등록하세요.</li>
+<li><strong>홈페이지 사진:</strong> 사진 교체, 설명 수정, 네 장의 표시 순서 변경.</li></ul>
+<p><strong>수정본 저장</strong>을 누르면 이 PC에 저장됩니다. 아직 공개 홈페이지에는 반영되지 않습니다. 담당자 이름 대신 부서·담당 업무·공식 전화번호를 사용하세요.</p>
+<h2>3. 미리보기에서 확인</h2>
+<p>‘미리보기·공개 반영’ → <strong>최신 수정본 미리보기 만들기</strong>를 누르세요. 홈페이지 모양과 검색 결과를 확인합니다. 미리보기에서는 실제 문자 발송이 차단됩니다.</p>
+<p>예를 들어 신혼부부 건강검진 안내에 검색어를 추가했다면 ‘산전검사’로 검색해 원하는 안내가 보이는지 확인하세요.</p>
+<h2>4. 공개 홈페이지에 반영</h2>
+<p>미리보기 확인란을 선택하고 <strong>홈페이지에 공개 반영</strong>을 누르세요. 준비·배포·공개 확인이 진행됩니다. <strong>공개 반영 완료</strong>가 표시되면 <a href="https://search-engine-delta-seven.vercel.app/">공개 홈페이지</a>를 열어 확인하세요. 오류가 나면 완료로 간주하지 말고 표시된 안내를 따르세요.</p>
+<p>Vercel 로그인이 만료되면 관리 화면의 ‘배포 계정 로그인’을 사용합니다. 별도의 배포 비밀번호를 이 관리 도구에 입력할 필요는 없습니다.</p>
+<h2>5. 잘못 수정했을 때</h2>
+<p>‘이력·백업·복원’에서 이전 내용을 골라 <strong>선택한 내용을 수정본으로 복원</strong>을 누릅니다. 미리보기로 확인하고 다시 공개하면 홈페이지에도 복원됩니다. 이력 복원만으로 공개 홈페이지가 즉시 바뀌지는 않습니다.</p>
+<h2>6. 정기 백업과 PC 교체</h2>
+<p>중요한 수정 후 ‘백업 파일 준비’ → ‘백업 파일 내려받기’를 눌러 별도 저장장치에 보관하세요. 백업에는 현재 수정본의 안내·연락처·일정·사진이 들어가며 계정 비밀번호는 포함되지 않습니다.</p>
+<p>PC를 교체할 때는 <strong>프로젝트 폴더와 콘텐츠 백업을 함께</strong> 옮겨야 합니다. 콘텐츠 백업만으로 프로그램 자체를 재설치할 수는 없습니다. 새 PC에서 Python 3.12와 Node.js LTS를 설치한 뒤 setup_admin.bat을 실행하고, 관리자 화면에서 백업 파일을 불러옵니다. Vercel은 새 PC에서 다시 로그인하세요.</p>
+<h2>관리 범위</h2>
+<p>일상적인 안내·연락처·검색어·일정·사진은 관리 화면에서 수정합니다. 지도 도형이나 홈페이지 구조 변경, 새로운 기능 개발, 프로그램 보안 업데이트는 개발 작업이 필요합니다. 과거 원본 PDF·HWPX의 내용을 자동으로 판단하여 가져오는 기능은 포함되지 않습니다.</p>
+<p>기관 안내의 금액·대상·운영시간은 공식 원문을 확인하고 입력하세요. 관리 도구는 입력 형식·중복·연결 오류를 검사하며 안내 내용의 사실 여부를 대신 판단하지 않습니다.</p>
+</article></html>

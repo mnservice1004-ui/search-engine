@@ -69,9 +69,10 @@ def search_vaccination(query, *, kind='sources', page=1, today=None, region='all
     now = today or datetime.now(ZoneInfo('Asia/Seoul')).date().isoformat()
     guides=[]; sources=[]; facilities=[]
     for record in data['guides']:
+        if record.get('active', True) is False: continue
         rank=score(record['title'],' '.join(record['keywords'])+' 화성 동탄 보건소 '+record['summary'])
         if rank or record['id'] in include_ids:
-            public = {k:v for k,v in record.items() if k not in {'keywords','review_required'}}
+            public = {k:v for k,v in record.items() if k not in {'keywords','review_required','active'}}
             public.update(needs_confirmation=record['review_required'], expired=bool(record['valid_until'] and record['valid_until']<now))
             guides.append((rank,public))
     guides.sort(key=lambda p:(p[1]['expired'],-p[0],p[1]['id']))

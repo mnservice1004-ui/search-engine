@@ -1,44 +1,33 @@
+"""Local operator interface for the public health-center website."""
 import sys
 from pathlib import Path
-
-import pandas as pd
 import streamlit as st
-
-
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+from admin.ui import store
 
-from db import get_all_tasks, get_event_rows  # noqa: E402
-
-
-st.set_page_config(page_title="보건민원 검색 관리자", layout="wide")
-st.title("보건민원 검색 데이터·이용현황")
-st.caption("외부 민원인용 화면이 아니라 내부 검수·분석용 화면입니다.")
-
-tasks = pd.DataFrame(get_all_tasks())
-events = pd.DataFrame(get_event_rows())
-
-left, middle, right = st.columns(3)
-left.metric("활성 업무", len(tasks))
-middle.metric("공식 연락처 미등록", int(tasks["phone"].fillna("").eq("").sum()) if not tasks.empty else 0)
-right.metric("주의사항 보유", int(tasks["caution"].fillna("").ne("").sum()) if not tasks.empty else 0)
-
-st.subheader("업무 데이터 검수")
-if tasks.empty:
-    st.warning("업무 데이터가 없습니다.")
-else:
-    visible_columns = [
-        "id", "name", "department", "team", "floor", "place", "status",
-        "contact_name", "contact_role", "phone", "contact_verified_at", "source"
-    ]
-    st.dataframe(tasks[visible_columns], use_container_width=True, hide_index=True)
-
-st.subheader("개인정보를 남기지 않는 집계")
-if events.empty:
-    st.info("아직 집계 이벤트가 없습니다.")
-else:
-    counts = events.groupby("event_type").size().rename("count").reset_index()
-    st.bar_chart(counts, x="event_type", y="count")
-    st.dataframe(events[["event_type", "task_id", "result_count", "created_at"]], use_container_width=True, hide_index=True)
-
-st.warning("검색 원문, IP, 민원인의 휴대전화번호는 분석 화면과 로그에 저장하지 마십시오.")
+st.set_page_config(page_title='동탄구보건소 홈페이지 관리', page_icon=':material/edit_note:', layout='wide')
+if st.get_option('server.address') not in ('127.0.0.1', 'localhost', '::1'):
+    st.error('관리자 실행.bat 또는 run_admin.bat으로 실행해 주세요. 이 도구는 현재 PC에서만 사용합니다.')
+    st.stop()
+try:
+    store().initialize()
+except Exception as exc:
+    st.error(f'관리 자료를 열 수 없습니다: {exc}')
+    st.stop()
+if st.session_state.get('notice'):
+    st.success(st.session_state.pop('notice'))
+navigation = st.navigation([
+    st.Page('app_pages/start.py', title='시작·사용 방법', icon=':material/home:', default=True),
+    st.Page('app_pages/tasks.py', title='업무·연락처', icon=':material/contact_phone:'),
+    st.Page('app_pages/guides.py', title='사업 안내·검색어', icon=':material/manage_search:'),
+    st.Page('app_pages/plans.py', title='월간 일정', icon=':material/calendar_month:'),
+    st.Page('app_pages/photos.py', title='홈페이지 사진', icon=':material/photo_library:'),
+    st.Page('app_pages/publish.py', title='미리보기·공개 반영', icon=':material/publish:'),
+    st.Page('app_pages/history.py', title='이력·백업·복원', icon=':material/history:'),
+])
+with st.sidebar:
+    st.caption('이 PC에서만 열리는 관리 화면')
+    st.link_button('공개 홈페이지 열기', 'https://search-engine-delta-seven.vercel.app/')
+    st.caption('저장은 수정본에 적용됩니다. 홈페이지에는 공개 반영 후 표시됩니다.')
+navigation.run()

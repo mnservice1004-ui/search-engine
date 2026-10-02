@@ -49,6 +49,7 @@ def search_examinations(query, *, include_ids=()):
         return dict(checked_on=data['checked_on'],total=0,guides=[],preparation=[])
     matched=[]
     for item in data['guides']:
+        if item.get('active', True) is False: continue
         title=canonical(item['title'])
         haystack=title+canonical(' '.join(item['keywords'])+item['summary'])
         # Negative cautions and missing-field notices must not create matches.

@@ -2,7 +2,7 @@
 (() => {
   'use strict';
   const DATA_URL = '/data/monthly-plan-2026-10.json';
-  const PLAN_SEARCH_CONTEXT = '2026년 10월 월간 일정 프로그램 월간업무계획';
+  let PLAN_SEARCH_CONTEXT = '2026년 10월 월간 일정 프로그램 월간업무계획';
   const normalize = (text) => String(text || '').normalize('NFKC').toLocaleLowerCase('ko').replace(/[\s·ㆍ,「」『』()\-]/g, '');
   function matches(item, query) {
     const words = String(query || '').trim().split(/\s+/).map(normalize).filter(Boolean);
@@ -29,10 +29,10 @@
       && /^[A-Z]\d{3}$/.test(link.task_id);
   }
   function validate(data) {
-    if (data.schema_version !== 1 || data.month !== '2026-10' || !Array.isArray(data.items)) throw new Error('Invalid plan data');
+    if (data.schema_version !== 1 || !/^20\d{2}-(0[1-9]|1[0-2])$/.test(data.month) || !Array.isArray(data.items)) throw new Error('Invalid plan data');
     const seen = new Set();
     for (const item of data.items) {
-      if (!/^MP202610-\d{2}$/.test(item.id) || seen.has(item.id)) throw new Error('Invalid plan ID');
+      if (!/^MP\d{6}-\d{2,}$/.test(item.id) || seen.has(item.id)) throw new Error('Invalid plan ID');
       seen.add(item.id);
       for (const field of ['title','department','team','schedule_text','location','audience','content']) {
         if (typeof item[field] !== 'string') throw new Error('Invalid plan text');
@@ -52,7 +52,10 @@
   async function load() {
     const response = await fetch(DATA_URL, {credentials:'same-origin'});
     if (!response.ok) throw new Error('Unable to load plan');
-    return validate(await response.json());
+    const data = validate(await response.json());
+    const [year, month] = data.month.split('-');
+    PLAN_SEARCH_CONTEXT = `${year}년 ${Number(month)}월 월간 일정 프로그램 월간업무계획`;
+    return {...data, items:data.items.filter(item=>item.active !== false)};
   }
   function separateTopics(text) {
     return text.replace(/\s*(\[(?:구강|영양)\])/g, '\n\n$1').trim();
@@ -83,6 +86,13 @@
     try {
       const data = await load(), today = koreaDate();
       const input=byId('plan-query'),team=byId('plan-team');
+      const [year, month] = data.month.split('-');
+      byId('plan-title').replaceChildren(document.createTextNode(`${year}년 ${Number(month)}월`),node('br'),document.createTextNode('월간 일정·프로그램'));
+      document.title = `${year}년 ${Number(month)}월 월간 일정·프로그램 | 동탄구보건소 보건민원 안내`;
+      const eyebrow = document.querySelector('.mp-eyebrow');
+      if (eyebrow) eyebrow.textContent = `${data.department} · 월간업무계획`;
+      team.replaceChildren(node('option','','전체'), ...[...new Set(data.items.map(item=>item.team))].filter(Boolean).map(value=>{const option=node('option','',value);option.value=value;return option;}));
+      team.firstElementChild.value='';
       const params = new URL(window.location.href).searchParams;
       input.value = (params.get('q') || '').slice(0,80);
       const taskId = params.get('task');
@@ -111,7 +121,9 @@
     if (!byId('monthly-discovery')) return;
     try {
       const data=await load();const link=byId('monthly-query-link');const input=byId('query');
-      byId('monthly-all-link').textContent=`10월 계획 ${data.items.length}건 보기`;
+      const [year, month] = data.month.split('-');
+      byId('monthly-discovery-title').textContent=`${year}년 ${Number(month)}월 월간 일정·프로그램`;
+      byId('monthly-all-link').textContent=`${Number(month)}월 계획 ${data.items.length}건 보기`;
       function update() {
         const query=(input?.value || '').trim();
         const count=query ? data.items.filter((item)=>matches(item,query)).length : 0;
@@ -123,7 +135,7 @@
       const heading=byId('results-heading');
       if (heading) new MutationObserver(update).observe(heading,{childList:true,subtree:true,characterData:true});
       byId('clear-button')?.addEventListener('click',update);update();
-    } catch (_) {byId('monthly-all-link').textContent='10월 월간 계획 보기';}
+    } catch (_) {byId('monthly-all-link').textContent='월간 계획 보기';}
   }
   startPage();startDiscovery();
 })();
