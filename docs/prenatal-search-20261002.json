@@ -1,0 +1,338 @@
+{
+  "recorded_at_utc": "2026-10-02T01:38:03.640184+00:00",
+  "production_url": "https://search-engine-delta-seven.vercel.app",
+  "deployment_id": "dpl_D9wvz9S8oeZARrLrJgB6RF4bcDWV",
+  "deployment_url": "https://search-engine-nyaq6rb91-mnservice1004-ui.vercel.app",
+  "package_sha256": "37f5f772202ee9f94fbb7ede5743c91970a483bc679e9e73a5bb6a86feba4077",
+  "changed_runtime_files": [
+    "data/examination_guidance.json",
+    "examinations.py"
+  ],
+  "change": "Link the existing newlywed checkup E022 to prenatal searches, distinguish its display title as preconception, and support spaced preconception query aliases without duplicating guides.",
+  "terminology": "Use the official newlywed checkup name with an editorial preconception label. The requested implantation-before wording is a search alias, not a claim that this service provides embryo genetic testing.",
+  "official_source": "https://www.hscity.go.kr/health/minwon/guidance.jsp",
+  "validation": {
+    "targeted_tests_passed": 92,
+    "production_release_checks_passed": 131,
+    "production_search_cases_passed": 13,
+    "search_checks": [
+      {
+        "query": "산전검사",
+        "guides": [
+          {
+            "id": "E022",
+            "title": "예비신혼부부 무료 건강검진 · 임신 전 검사"
+          },
+          {
+            "id": "E031",
+            "title": "임산부 초기 검사"
+          },
+          {
+            "id": "E032",
+            "title": "임산부 막달·말기 검사"
+          }
+        ],
+        "linked_task_ids": [
+          "A002",
+          "F104",
+          "A005",
+          "F109"
+        ],
+        "passed": true
+      },
+      {
+        "query": "산전 검사",
+        "guides": [
+          {
+            "id": "E022",
+            "title": "예비신혼부부 무료 건강검진 · 임신 전 검사"
+          },
+          {
+            "id": "E031",
+            "title": "임산부 초기 검사"
+          },
+          {
+            "id": "E032",
+            "title": "임산부 막달·말기 검사"
+          }
+        ],
+        "linked_task_ids": [
+          "A019",
+          "A012",
+          "A009",
+          "A004",
+          "D001",
+          "M002",
+          "M007",
+          "A005",
+          "F104",
+          "A002",
+          "F109"
+        ],
+        "passed": true
+      },
+      {
+        "query": "산전검진",
+        "guides": [
+          {
+            "id": "E022",
+            "title": "예비신혼부부 무료 건강검진 · 임신 전 검사"
+          },
+          {
+            "id": "E031",
+            "title": "임산부 초기 검사"
+          },
+          {
+            "id": "E032",
+            "title": "임산부 막달·말기 검사"
+          }
+        ],
+        "linked_task_ids": [
+          "A002",
+          "F104",
+          "A005",
+          "F109"
+        ],
+        "passed": true
+      },
+      {
+        "query": "산전 검사 안내",
+        "guides": [
+          {
+            "id": "E022",
+            "title": "예비신혼부부 무료 건강검진 · 임신 전 검사"
+          },
+          {
+            "id": "E031",
+            "title": "임산부 초기 검사"
+          },
+          {
+            "id": "E032",
+            "title": "임산부 막달·말기 검사"
+          }
+        ],
+        "linked_task_ids": [
+          "D001",
+          "M007",
+          "A005",
+          "A019",
+          "H004",
+          "A006",
+          "A012",
+          "R003",
+          "A009",
+          "A014",
+          "A018",
+          "A013",
+          "A004",
+          "R006",
+          "R005",
+          "A007",
+          "H003",
+          "A008",
+          "M002",
+          "R001",
+          "A016",
+          "A017",
+          "A015",
+          "R004",
+          "D002",
+          "M001",
+          "A010",
+          "F305",
+          "F303",
+          "F104",
+          "F101",
+          "F206",
+          "F201",
+          "F109",
+          "F108",
+          "F301",
+          "F302",
+          "F304",
+          "F202",
+          "F203",
+          "A002",
+          "F112",
+          "F103",
+          "F105",
+          "F107",
+          "F111",
+          "F205"
+        ],
+        "passed": true
+      },
+      {
+        "query": "착상 전 검사",
+        "guides": [
+          {
+            "id": "E022",
+            "title": "예비신혼부부 무료 건강검진 · 임신 전 검사"
+          }
+        ],
+        "linked_task_ids": [
+          "A019",
+          "A012",
+          "A009",
+          "A004",
+          "D001",
+          "M002",
+          "M007",
+          "A005",
+          "F104",
+          "A002"
+        ],
+        "passed": true
+      },
+      {
+        "query": "착상전검사",
+        "guides": [
+          {
+            "id": "E022",
+            "title": "예비신혼부부 무료 건강검진 · 임신 전 검사"
+          }
+        ],
+        "linked_task_ids": [
+          "A002",
+          "F104"
+        ],
+        "passed": true
+      },
+      {
+        "query": "임신 전 검사",
+        "guides": [
+          {
+            "id": "E022",
+            "title": "예비신혼부부 무료 건강검진 · 임신 전 검사"
+          }
+        ],
+        "linked_task_ids": [
+          "A019",
+          "A012",
+          "M005",
+          "A009",
+          "A004",
+          "D001",
+          "M002",
+          "M007",
+          "A005",
+          "F104",
+          "A002"
+        ],
+        "passed": true
+      },
+      {
+        "query": "임신전검사",
+        "guides": [
+          {
+            "id": "E022",
+            "title": "예비신혼부부 무료 건강검진 · 임신 전 검사"
+          }
+        ],
+        "linked_task_ids": [
+          "A002",
+          "F104"
+        ],
+        "passed": true
+      },
+      {
+        "query": "임신 전 건강검진",
+        "guides": [
+          {
+            "id": "E022",
+            "title": "예비신혼부부 무료 건강검진 · 임신 전 검사"
+          }
+        ],
+        "linked_task_ids": [
+          "M005",
+          "A002",
+          "F104"
+        ],
+        "passed": true
+      },
+      {
+        "query": "신혼부부 건강검진",
+        "guides": [
+          {
+            "id": "E022",
+            "title": "예비신혼부부 무료 건강검진 · 임신 전 검사"
+          }
+        ],
+        "linked_task_ids": [
+          "A002",
+          "F104"
+        ],
+        "passed": true
+      },
+      {
+        "query": "혼전검사",
+        "guides": [
+          {
+            "id": "E022",
+            "title": "예비신혼부부 무료 건강검진 · 임신 전 검사"
+          }
+        ],
+        "linked_task_ids": [
+          "A002",
+          "F104"
+        ],
+        "passed": true
+      },
+      {
+        "query": "임산부 초기 검사",
+        "guides": [
+          {
+            "id": "E031",
+            "title": "임산부 초기 검사"
+          }
+        ],
+        "linked_task_ids": [
+          "A005",
+          "M005",
+          "A019",
+          "A012",
+          "A009",
+          "A004",
+          "D001",
+          "M002",
+          "M007",
+          "F104",
+          "A002",
+          "F109"
+        ],
+        "passed": true
+      },
+      {
+        "query": "임산부 막달 검사",
+        "guides": [
+          {
+            "id": "E032",
+            "title": "임산부 막달·말기 검사"
+          }
+        ],
+        "linked_task_ids": [
+          "A005",
+          "M005",
+          "A019",
+          "A012",
+          "A009",
+          "A004",
+          "D001",
+          "M002",
+          "M007",
+          "F104",
+          "A002",
+          "F109"
+        ],
+        "passed": true
+      }
+    ],
+    "browser_visual_qa": "Not performed; API responses verified."
+  },
+  "safety": {
+    "operational_database_unchanged": true,
+    "private_local_files_preserved": true,
+    "environment_files_uploaded": false,
+    "actual_sms_sends": 0
+  }
+}

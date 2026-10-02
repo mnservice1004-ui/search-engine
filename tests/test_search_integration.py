@@ -20,6 +20,35 @@ def test_pneumonia_links_real_tasks_and_preserves_public_detail(client):
         assert {k:v for k,v in t.items() if k!='score'}==client.get('/api/tasks/'+t['id']).get_json()
 
 
+@pytest.mark.parametrize('query',['산전검사','산전 검사','산전검진','산전 검사 안내'])
+def test_prenatal_search_also_shows_distinct_preconception_checkup(client,query):
+    body=client.post('/api/search',json={'query':query,'limit':100}).get_json()
+    guides=body['examinations']['guides']
+    ids=[g['id'] for g in guides]
+    assert set(ids)=={'E022','E031','E032'}
+    assert len(ids)==len(set(ids))==3
+    before=next(g for g in guides if g['id']=='E022')
+    assert '임신 전 검사' in before['title']
+    assert before['related_task_ids']==['A002','F104']
+    assert before['fee']=='무료'
+    for id in ['E031','E032']:
+        after=next(g for g in guides if g['id']==id)
+        assert '임산부' in after['title']
+        assert after['related_task_ids']==['A005','F109']
+    task_ids=[t['id'] for t in body['items']]
+    assert {'A002','F104','A005','F109'}<=set(task_ids)
+    assert len(task_ids)==len(set(task_ids))
+
+
+@pytest.mark.parametrize('query',[
+    '착상 전 검사','착상전검사','임신 전 검사','임신전검사',
+    '임신 전 건강검진','신혼부부 건강검진','혼전검사',
+])
+def test_preconception_queries_link_existing_newlywed_guide_once(client,query):
+    guides=client.post('/api/search',json={'query':query}).get_json()['examinations']['guides']
+    assert [g['id'] for g in guides]==['E022']
+
+
 def test_cancer_diagnosis_shows_screening_and_existing_support_without_false_diagnosis(client):
     body=client.post('/api/search',json={'query':'암진단','limit':100}).get_json()
     assert [g['id'] for g in body['examinations']['guides']]==['E033']
