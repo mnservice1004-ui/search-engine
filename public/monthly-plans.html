@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>2026년 10월 월간 일정·프로그램 | 동탄구보건소 보건민원 안내</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/css/monthly-plans.css">
+  <script src="/js/monthly-plans.js" defer></script>
+  <link rel="preload" href="/fonts/PretendardVariable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/readability.css?revision=20261001-1">
+</head>
+<body class="monthly-page">
+  <a class="mp-skip" href="#plan-query">일정 검색으로 바로가기</a>
+  <header class="mp-header">
+    <a href="/" class="mp-back">홈으로</a>
+  </header>
+  <main class="mp-main">
+    <section class="mp-intro" aria-labelledby="plan-title">
+      <p class="mp-eyebrow">건강증진과 · 월간업무계획</p>
+      <h1 id="plan-title">2026년 10월<br>월간 일정·프로그램</h1>
+    </section>
+    <section class="mp-controls" aria-label="월간 계획 검색과 분류">
+      <form id="plan-search" role="search">
+        <label for="plan-query">일정·프로그램 검색</label>
+        <div class="mp-search-row">
+          <input id="plan-query" type="search" maxlength="80" placeholder="예: 임산부, 운동교실, 치매">
+          <button type="submit">찾기</button>
+        </div>
+      </form>
+      <div class="mp-filters">
+        <label for="plan-team">담당 팀</label>
+        <select id="plan-team">
+          <option value="">전체</option><option>건강증진팀</option><option>모자보건팀</option>
+          <option>지역보건팀</option><option>치매관리팀</option>
+        </select>
+        <button id="plan-reset" type="button">검색 초기화</button>
+      </div>
+    </section>
+    <section class="mp-results" aria-labelledby="plan-results-title">
+      <div class="mp-results-heading"><h2 id="plan-results-title">월간 계획 목록</h2><p id="plan-count" role="status" aria-live="polite">계획을 불러오는 중입니다.</p></div>
+      <p id="plan-error" role="alert" hidden>계획을 불러오지 못했습니다. 페이지를 새로고침해 주세요.</p>
+      <div id="plan-list"></div>
+      <p id="plan-empty" hidden>해당하는 계획이 없습니다. 검색어를 줄이거나 담당 팀을 전체로 바꿔 주세요.</p>
+    </section>
+  </main>
+  <footer class="mp-footer"><p>개인 제작 · 비공식 평가용</p><p>월간 계획은 상시 업무의 지원 자격·운영시간을 대신하지 않습니다.</p><a href="/">상시 업무와 문의전화 확인하기</a></footer>
+  <noscript>월간 계획 검색에는 JavaScript가 필요합니다.</noscript>
+</body>
+</html>

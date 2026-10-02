@@ -1,3 +1,4 @@
+# Baseline includes the official 2026-09-30 M004 eligibility/caution/SMS correction.
 import copy
 import json
 from hashlib import sha256
@@ -33,7 +34,10 @@ NEW_TASK_IDS = {
     "M008",
 }
 SECOND_READY_TASK_IDS = {"A003", "F103", "F108", "F201"}
-DISALLOWED_TASK_IDS = {"A002", "A004", "A008", "F101", "F106", "F204", "R006"}
+ADDITIONAL_READY_TASK_IDS = {"A004", "F102", "F104", "F106", "F204"}
+NEXT_READY_TASK_IDS = {"A002", "A005", "A009", "M009", "F110"}
+REMAINING_READY_TASK_IDS = {'F301', 'F202', 'F303', 'R003', 'D002', 'H003', 'M001', 'F302', 'F112', 'F305', 'R004', 'F107', 'A017', 'F109', 'F111', 'R006', 'F206', 'A018', 'R001', 'R005', 'F203', 'A008'}
+DISALLOWED_TASK_IDS = {"F101", "M007", "F304"}
 MAP_LOCATIONS = {
     "A001": ("1층", "진료실"),
     "A003": ("1층", "민원실"),
@@ -54,6 +58,16 @@ H002_FORBIDDEN_PUBLIC_FRAGMENTS = (
     "18:00",
 )
 EXPECTED_PUBLIC_SEARCH_TERMS = {
+    "A002": ("일반 검사를 접수하고 싶으신가요?", "일반 검사 접수", "혈액검사 접수", "소변검사 접수", "검사 준비물 문의"),
+    "A005": ("임산부 등록과 지원을 안내받고 싶으신가요?", "임산부 일반 상담", "임산부 등록 문의", "임산부 영양제 검사 안내"),
+    "A009": ("성매개감염병 검사를 받고 싶으신가요?", "성매개감염병 검사", "성병 검사", "성병그린검진", "매독 임질 클라미디아 검사"),
+    "M009": ("예방접종 장소와 준비사항을 확인하고 싶으신가요?", "예방접종", "예방접종 준비물", "성인 예방접종 문의", "영유아 예방접종 장소"),
+    "F110": ("모자보건교육실 또는 수유실을 찾으시나요?", "모자보건교육실 위치", "수유실 위치", "모유수유 교육 장소 문의"),
+    "A004": ("이름을 밝히지 않고 HIV 검사를 받고 싶으신가요?", "익명 HIV 검사", "익명 검사", "HIV 검사", "에이즈 검사", "에이즈"),
+    "F102": ("영상의학실 또는 방사선실을 찾으시나요?", "영상의학실 위치", "방사선실 위치", "엑스레이실 위치"),
+    "F104": ("검사실을 찾으시나요?", "검사실 위치", "진단검사실 찾아가는 길"),
+    "F106": ("재활보건실을 찾으시나요?", "재활보건실 위치", "보건소 재활보건실 찾아가는 길"),
+    "F204": ("금연상담실을 찾으시나요?", "금연상담실 위치", "금연상담 예약 장소"),
     "A001": (
         "보건소 진료를 받고 싶으신가요?",
         "보건소 진료",
@@ -175,6 +189,29 @@ EXPECTED_PUBLIC_SEARCH_TERMS = {
     ),
 }
 
+EXPECTED_PUBLIC_SEARCH_TERMS.update({'H003': ('비만타파·근력강화 운동교실 참여 안내', '비만타파 운동교실', '근력강화 운동교실'),
+ 'M001': ('희귀질환 의료비 지원 신청 안내', '희귀질환 의료비 지원', '희귀질환 지원 신청'),
+ 'R001': ('암환자 의료비 지원 신청 안내', '암환자 의료비 지원', '암 의료비 신청'),
+ 'R003': ('사전연명의료의향서 작성 안내', '사전연명의료의향서 작성', '연명의료의향서 등록', '연명치료'),
+ 'R004': ('장기기증 희망등록 방법 안내', '장기기증 희망등록', '장기기증 등록 문의'),
+ 'R005': ('무릎인공관절 수술비 지원 문의 안내', '무릎인공관절 수술비 지원', '무릎 수술비 지원 문의'),
+ 'R006': ('휠체어 대여·반납 이용 안내', '휠체어 대여', '휠체어 반납'),
+ 'D002': ('치매쉼터·치매예방교실 참여 안내', '치매쉼터 참여', '치매예방교실 신청'),
+ 'A008': ('성매개감염병 상담·관리 안내', '성매개감염병 상담', '성매개감염병 관리 문의'),
+ 'A017': ('의약무 관련 제증명 수납 안내', '의약무 제증명 수납', '의약무 수수료 납부'),
+ 'A018': ('예방접종 비용 수납 안내', '예방접종 수납', '예방접종 비용 납부'),
+ 'F107': ('치매안심쉼터 위치 안내', '치매안심쉼터', '치매안심쉼터 어디에 있나요'),
+ 'F109': ('모자보건실·예방접종실 위치 안내', '모자보건실', '예방접종실'),
+ 'F111': ('통합건강증진실 위치 안내', '통합건강증진실', '통합건강증진실 어디에 있나요'),
+ 'F112': ('정신건강복지센터 위치 안내', '정신건강복지센터', '정신건강복지센터 어디에 있나요'),
+ 'F202': ('운동실 위치 안내', '운동실', '운동실 어디에 있나요'),
+ 'F203': ('운동지도실 위치 안내', '운동지도실', '운동지도실 어디에 있나요'),
+ 'F206': ('대강당 위치 안내', '대강당', '대강당 어디에 있나요'),
+ 'F301': ('보건소장실 위치 안내', '보건소장실', '보건소장실 어디에 있나요'),
+ 'F302': ('보건행정과 위치 안내', '보건행정과', '보건행정과 어디에 있나요'),
+ 'F303': ('건강증진과 위치 안내', '건강증진과', '건강증진과 어디에 있나요'),
+ 'F305': ('건강증진과 과장실 위치 안내', '건강증진과 과장실', '건강증진과 과장실 어디에 있나요')})
+
 
 def write_payload(path, payload):
     path.write_text(
@@ -261,14 +298,14 @@ def set_nested(payload, path, value):
     target[path[-1]] = value
 
 
-def test_checked_in_public_guidance_has_exact_eighteen_task_contract(monkeypatch, tmp_path):
+def test_checked_in_public_guidance_has_exact_twenty_three_task_contract(monkeypatch, tmp_path):
     payload = base_payload()
     guidance = load_public_guidance(GUIDANCE_PATH)
 
     assert payload["schema_version"] == 3
     assert set(guidance) == EXPECTED_TASK_IDS
-    assert len(guidance) == 18
-    assert sum(len(item["public_search_terms"]) for item in guidance.values()) == 83
+    assert len(guidance) == 50
+    assert sum(len(item["public_search_terms"]) for item in guidance.values()) == 192
     assert not DISALLOWED_TASK_IDS & set(guidance)
     assert NEW_TASK_IDS <= set(guidance)
     assert SECOND_READY_TASK_IDS <= set(guidance)
@@ -319,7 +356,7 @@ def test_checked_in_public_guidance_has_exact_eighteen_task_contract(monkeypatch
 def test_existing_fourteen_guidance_content_is_unchanged_except_sms_selection():
     payload = base_payload()
     existing = [
-        item for item in payload["tasks"] if item["task_id"] not in SECOND_READY_TASK_IDS
+        item for item in payload["tasks"] if item["task_id"] not in SECOND_READY_TASK_IDS | ADDITIONAL_READY_TASK_IDS | NEXT_READY_TASK_IDS | REMAINING_READY_TASK_IDS
     ]
     canonical = json.dumps(
         [
@@ -333,7 +370,7 @@ def test_existing_fourteen_guidance_content_is_unchanged_except_sms_selection():
 
     assert len(existing) == 14
     assert sha256(canonical).hexdigest() == (
-        "5e3a102c6c575b37f9f93a2e250474880ab538e33cbcf37fc8d2f42c5d4fc2a8"
+        "9e90ddac175da7ad3e48e61a1908624cb8314f6487fc1474417352263502467d"
     )
 
 
@@ -494,8 +531,8 @@ def test_public_search_terms_use_only_the_safe_schema_v3_layer():
         assert task_id not in item["public_search_terms"]
         all_normalized_terms.extend(normalized)
 
-    assert len(all_normalized_terms) == 83
-    assert len(set(all_normalized_terms)) == 83
+    assert len(all_normalized_terms) == 192
+    assert len(set(all_normalized_terms)) == 192
 
     h002_terms = " ".join(guidance["H002"]["public_search_terms"])
     for expected in (
@@ -684,7 +721,7 @@ def test_guidance_rejects_missing_or_unapproved_task_ids(tmp_path, mutation):
     if mutation == "missing":
         payload["tasks"].pop()
     else:
-        payload["tasks"][-1]["task_id"] = "X999"
+        payload["tasks"][0]["task_id"] = "X999"
 
     with pytest.raises(PublicGuidanceConfigurationError, match="contain exactly"):
         load_public_guidance(write_payload(tmp_path / f"{mutation}.json", payload))
@@ -760,7 +797,7 @@ def test_duplicate_json_object_key_is_rejected(tmp_path):
 
 def test_unregistered_task_uses_allowlist_instead_of_raw_task_copy():
     raw = {
-        "id": "R003",
+        "id": "M007",
         "name": "연명치료",
         "department": "건강증진과",
         "team": "지역보건팀",
@@ -798,7 +835,7 @@ def test_unregistered_task_uses_allowlist_instead_of_raw_task_copy():
     item = serialize_public_task(raw, contacts, load_public_guidance(GUIDANCE_PATH))
     serialized = json.dumps(item, ensure_ascii=False)
 
-    assert item["id"] == "R003"
+    assert item["id"] == "M007"
     assert item["score"] == 321
     assert item["show_map"] is True
     assert set(item["contacts"][0]) == set(PUBLIC_CONTACT_FIELDS)
@@ -815,12 +852,12 @@ def test_unregistered_task_uses_allowlist_instead_of_raw_task_copy():
         assert forbidden not in serialized
 
 
-def test_remaining_forty_five_tasks_serialize_without_internal_fallback_or_config_error():
+def test_remaining_tasks_serialize_without_internal_fallback_or_config_error():
     guidance = load_public_guidance(GUIDANCE_PATH)
     tasks = json.loads(TASKS_PATH.read_text(encoding="utf-8"))
     remaining = [task for task in tasks if task["id"] not in guidance]
 
-    assert len(remaining) == 45
+    assert len(remaining) == 13
     for raw in remaining:
         item = serialize_public_task(raw, [], guidance)
         serialized = json.dumps(item, ensure_ascii=False)

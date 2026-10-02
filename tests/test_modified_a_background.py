@@ -5,21 +5,24 @@ from pathlib import Path
 import subprocess
 
 ROOT=Path(__file__).resolve().parents[1]
+PRESERVED_HOME='public/qa/home-modified-a.html'
 
 
 def test_modified_a_reference_files_match_approved_5037_bytes():
     manifest=json.loads((ROOT/'docs/approved-background-modified-a.json').read_text(encoding='utf-8'))
     assert manifest['name']=='수정 A안'
     assert (manifest['variant'],manifest['look'],manifest['playbackRate'])==('A','sunset-wide',3.5)
+    assert manifest['sourceLocations']=={'public/index.html':PRESERVED_HOME}
     for name,digest in manifest['sourceSha256'].items():
-        content=(ROOT/name).read_bytes()
+        location=manifest['sourceLocations'].get(name,name)
+        content=(ROOT/location).read_bytes()
         if Path(name).suffix in {'.html','.css','.js'}:
             content=content.replace(b'\r\n',b'\n')
-        assert hashlib.sha256(content).hexdigest()==digest,name
+        assert hashlib.sha256(content).hexdigest()==digest,f'{name} preserved at {location}'
 
 
 def test_modified_a_home_loads_the_approved_engine_not_legacy_animation():
-    html=(ROOT/'public/index.html').read_text(encoding='utf-8')
+    html=(ROOT/PRESERVED_HOME).read_text(encoding='utf-8')
     assert '/qa/layer-engine.js?revision=a-whole-sky' in html
     assert '/qa/layer-home.js?revision=a-whole-sky' in html
     assert '/js/hero-atmosphere.js' not in html

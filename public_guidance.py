@@ -8,29 +8,65 @@ from search_engine import normalize as normalize_search_value
 
 
 SCHEMA_VERSION = 3
+# The user withdrew this destination; its printed label/anchor is unverified.
+# Do not let legacy floor/place text alone re-enable a map for this task.
+WITHHELD_MAP_TASK_IDS = frozenset({"F304"})
 DEFAULT_PUBLIC_GUIDANCE_PATH = (
     Path(__file__).resolve().parent / "data" / "public_guidance.json"
 )
 EXPECTED_TASK_IDS = {
     "A001",
+    "A002",
     "A003",
+    "A004",
+    "A005",
     "A007",
+    "A008",
+    "A009",
     "A011",
     "A012",
+    "A017",
+    "A018",
     "A019",
+    "D002",
+    "F102",
     "F103",
+    "F104",
+    "F106",
+    "F107",
     "F108",
+    "F109",
+    "F110",
+    "F111",
+    "F112",
     "F201",
+    "F202",
+    "F203",
+    "F204",
+    "F206",
+    "F301",
+    "F302",
+    "F303",
+    "F305",
     "H001",
     "H002",
+    "H003",
+    "M001",
     "M002",
     "M003",
     "M004",
     "M005",
     "M006",
     "M008",
+    "M009",
+    "R001",
     "R002",
+    "R003",
+    "R004",
+    "R005",
+    "R006",
 }
+
 PUBLIC_TEXT_FIELDS = (
     "public_title",
     "public_summary",
@@ -250,7 +286,17 @@ def _validate_public_search_terms(item, label):
             or HEX_DIGEST_RE.search(normalized)
             or UNSAFE_CONTACT_VALUE_RE.search(normalized)
             or TASK_ID_SEARCH_TERM_RE.search(normalized.upper())
-            or EMPLOYEE_SEARCH_TERM_RE.search(normalized)
+            or (
+                EMPLOYEE_SEARCH_TERM_RE.search(normalized)
+                # Only this verified room name, never a staff name or job query.
+                and not (
+                    item["task_id"] == "F305"
+                    and normalized in {
+                        "건강증진과과장실", "건강증진과과장실위치안내",
+                        "건강증진과과장실어디에있나요",
+                    }
+                )
+            )
         ):
             raise PublicGuidanceConfigurationError(
                 f"unsafe public search term at {term_label}"
@@ -429,6 +475,14 @@ def _public_contact(contact, task_id):
                 role="어르신 건강관리 문의",
                 condition=None,
             )
+        elif public_contact["phone"] in {
+            "031-5189-5297", "031-5189-4733", "031-5189-4782"
+        }:
+            public_contact.update(
+                purpose="어르신 오늘건강 문의",
+                role="AI·IoT 어르신 건강관리",
+                condition="참여 가능 여부와 방문 장소를 먼저 확인해 주세요.",
+            )
         else:
             public_contact.update(
                 purpose="권역별 방문건강 문의",
@@ -529,6 +583,12 @@ def serialize_public_task(task, contacts, guidance_by_task):
         location_condition = task.get("location_condition") or task.get(
             "locationCondition"
         ) or ""
+
+    if task_id in WITHHELD_MAP_TASK_IDS:
+        floor = None
+        room = None
+        show_map = False
+        route = "방문 장소는 전화로 확인해 주세요."
 
     result = {
         "id": task_id,

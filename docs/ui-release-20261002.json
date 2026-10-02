@@ -1,0 +1,47 @@
+{
+  "recorded_at_utc": "2026-10-02T01:26:55.365737+00:00",
+  "production_url": "https://search-engine-delta-seven.vercel.app",
+  "deployment_id": "dpl_EpmS3tug265mZx39svhm2qCQqDQz",
+  "deployment_url": "https://search-engine-hrd6kolqt-mnservice1004-ui.vercel.app",
+  "previous_deployment_id": "dpl_6TPLoLMHj1RHSMFkSME9yXvBokhf",
+  "package_sha256": "0e03f3a3a9a646929f56d047b03ab1314717f06ac2094927d40cf957e1b0cdfe",
+  "changed_runtime_files": [
+    "public/css/home-v2.css",
+    "public/css/monthly-plans.css",
+    "public/css/readability.css",
+    "public/index.html",
+    "public/js/monthly-plans.js"
+  ],
+  "changes": [
+    "Ongoing monthly-plan badges use blue text on a pale blue background; date logic is unchanged.",
+    "Home navigation labels distinguish popular inquiries from service categories.",
+    "Privacy text is slightly larger and mobile card descriptions have stronger contrast."
+  ],
+  "git_publication_scope": "Synchronize previously deployed public portal code and assets, selected public-data tests, and the five latest UI changes.",
+  "preserved": [
+    "desktop and mobile layouts",
+    "search queries and navigation",
+    "operational database",
+    "private source documents and unrelated local work"
+  ],
+  "validation": {
+    "candidate_pytest_passed": 859,
+    "candidate_pytest_failed": 0,
+    "production_http_passed": 131,
+    "production_http_failed": 0,
+    "public_assets_hash_verified": 54,
+    "task_details_verified": 63,
+    "reviewed_guides_verified": 50,
+    "runtime_package_files": 76,
+    "dry_run_upload_files": 75,
+    "browser_visual_qa_this_release": "Not performed: the browser automation helper could not start.",
+    "actual_browser_zoom_200_percent": "Not verified.",
+    "initial_test_retry": "Two byte-comparison tests initially failed because git archive applied CRLF in the temporary candidate snapshot. Restoring the same LF bytes as the source workspace resolved both; source route data was unchanged.",
+    "git_diff_check": "Application source passed. The upstream Pretendard license retains one trailing space at line 22; third-party license bytes were preserved."
+  },
+  "safety": {
+    "environment_files_uploaded": false,
+    "operational_database_uploaded": false,
+    "actual_sms_sends": 0
+  }
+}

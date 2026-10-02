@@ -15,13 +15,19 @@ class TaskContactsMigrationRequiredError(RuntimeError):
 
 
 def _sqlite_path():
+    if os.getenv("VERCEL") == "1":
+        return ROOT / "data" / "deployment_catalog.db"
     configured = os.getenv("SQLITE_PATH", "data/health_search.db")
     path = Path(configured)
     return path if path.is_absolute() else ROOT / path
 
 
 def _sqlite_connection():
-    connection = sqlite3.connect(_sqlite_path())
+    if os.getenv("VERCEL") == "1" or os.getenv("SQLITE_READ_ONLY", "false").lower() == "true":
+        connection = sqlite3.connect(_sqlite_path().resolve().as_uri() + "?mode=ro", uri=True)
+        connection.execute("PRAGMA query_only=ON")
+    else:
+        connection = sqlite3.connect(_sqlite_path())
     connection.row_factory = sqlite3.Row
     connection.execute("PRAGMA foreign_keys = ON")
     return connection
@@ -153,6 +159,10 @@ def get_contacts_by_task_ids(task_ids):
 
 
 def log_event(event_type, task_id=None, result_count=None):
+    # A serverless bundle is immutable. Never write logs into it or /tmp and
+    # pretend they are durable. Local development/operation remains unchanged.
+    if os.getenv("VERCEL") == "1":
+        return
     # 검색 원문, IP, 민원인 휴대전화번호는 기록하지 않는다.
     payload = {
         "event_type": event_type,

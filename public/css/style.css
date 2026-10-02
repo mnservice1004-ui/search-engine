@@ -644,3 +644,86 @@ dialog{color:var(--text)}
 /* Temporary final route candidate: icon remains bottom-center anchored at the verified point. */
 #map-route-line{stroke-linejoin:round}
 .guidance-grid{padding-top:var(--marker-overhang,0px)}
+
+/* Shared floor layout: use the second floor's 2560 x 2000 display ratio.
+   The frame's bottom inset equals its side inset at both breakpoints. */
+.map-panel{--map-frame-gap:26px;padding-bottom:var(--map-frame-gap)}
+.map-stage.map-cropped{--map-image-gap:19px;margin:0 var(--map-frame-gap);padding:var(--map-image-gap);min-height:0}
+.map-stage.map-cropped #floor-image{aspect-ratio:2560/2000;object-fit:fill}
+.map-panel #route-text{display:none!important;margin:0;padding:0}
+@media(max-width:760px){
+  .map-panel{--map-frame-gap:16px}
+  .map-stage.map-cropped{--map-image-gap:16px}
+}
+
+#sms-preview{display:block;width:100%;max-width:100%;font:inherit;border:1px solid var(--line);border-radius:10px;padding:10px;color:var(--ink);background:#fff}
+#sms-preview{resize:vertical;white-space:pre-wrap;overflow-wrap:anywhere;min-height:140px}
+#sms-status:empty{display:none}
+
+/* Keep the background controller mounted without showing its QA footer. */
+.site-footer[hidden]{display:none!important}
+
+/* HOME reference composition: 2048 x 874. One unit scales all desktop
+   landmarks together. Keep results in normal flow and never transform the
+   stage, fixed background, maps, or dialogs. Smaller screens keep readable
+   controls and their existing responsive wrapping. */
+#search-workspace[hidden]{display:none!important}
+#search-workspace{scroll-margin-top:24px}
+@media screen and (min-width:1000px) and (min-height:600px){
+  .hero-stage{--home-unit:min(.048828125vw,.114416476svh)}
+  .site-header{--header-name-font-size:calc(46 * var(--home-unit))}
+  .topbar{width:calc(1888 * var(--home-unit));min-height:calc(200 * var(--home-unit))}
+  .topbar-brand-row{gap:calc(40 * var(--home-unit))}
+  .city-bi-link{--bi-visible-width:calc(380 * var(--home-unit))}
+  .hero-intro{width:calc(1480 * var(--home-unit));padding:calc(20 * var(--home-unit)) 0 calc(56 * var(--home-unit))}
+  .service-signature{margin:0 0 calc(24 * var(--home-unit));gap:0}
+  .service-signature span{font-size:calc(44 * var(--home-unit));line-height:1.2}
+  .hero-title{font-size:calc(94 * var(--home-unit));gap:calc(24 * var(--home-unit));line-height:1}
+  .hero-title-line{white-space:nowrap}
+  .hero-subtitle-viewport{margin-top:calc(32 * var(--home-unit))}
+  .site-header p.hero-subtitle{font-size:max(14px,calc(23 * var(--home-unit)));line-height:calc(48 * var(--home-unit));white-space:nowrap}
+  .search-panel{width:calc(1388 * var(--home-unit));padding:calc(14 * var(--home-unit)) calc(15 * var(--home-unit)) calc(24 * var(--home-unit));border-radius:calc(34 * var(--home-unit))}
+  .search-row{grid-template-columns:minmax(0,1fr) max(100px,calc(150 * var(--home-unit)));gap:calc(8 * var(--home-unit));padding:calc(10 * var(--home-unit));border-radius:calc(26 * var(--home-unit))}
+  #query{height:max(44px,calc(72 * var(--home-unit)));padding:0 max(44px,calc(62 * var(--home-unit))) 0 calc(58 * var(--home-unit));font-size:max(16px,calc(23 * var(--home-unit)));border-radius:calc(20 * var(--home-unit))}
+  .search-icon{left:calc(14 * var(--home-unit));width:calc(31 * var(--home-unit));height:calc(31 * var(--home-unit))}
+  #search-button{height:max(44px,calc(72 * var(--home-unit)));padding:0 calc(21 * var(--home-unit));gap:calc(14 * var(--home-unit));border-radius:calc(20 * var(--home-unit));font-size:max(15px,calc(22 * var(--home-unit)))}
+  #search-button svg{width:calc(26 * var(--home-unit));height:calc(26 * var(--home-unit))}
+  .recommendation-row{padding:calc(16 * var(--home-unit)) calc(13 * var(--home-unit)) 0;gap:calc(13 * var(--home-unit))}
+  .recommendation-label{font-size:max(12px,calc(17 * var(--home-unit)));margin-right:calc(3 * var(--home-unit))}
+  .quick-suggestions,.suggestions{gap:calc(11 * var(--home-unit))}
+  .quick-suggestion,.suggestions button{min-height:calc(40 * var(--home-unit));padding:calc(6 * var(--home-unit)) calc(16 * var(--home-unit));font-size:max(12px,calc(17 * var(--home-unit)))}
+}
+
+/* User-approved brighter soft gold for the health-center name only. */
+.health-center-link{color:#e2c46e}
+
+/* Compact, distinct SMS fields and an accessible acknowledgement dialog. */
+#sms-dialog{padding:20px}
+#sms-form{gap:10px}
+#sms-title{margin:0;font-size:20px;line-height:1.35}
+#sms-task-name{margin:6px 0 0;line-height:1.5}
+#sms-form>label[for]{font-weight:700}
+#sms-preview{background:#eef6f7;border-color:#b4cdd1;height:clamp(160px,28dvh,210px);color:var(--ink)}
+#sms-dialog #recipient{background:#fff8e8;border-color:#c6a14d;min-height:48px;color:var(--ink)}
+#sms-preview:focus-visible{outline:3px solid #f59e0b;outline-offset:2px}
+#sms-dialog .consent-row{align-items:center;gap:12px;min-height:44px;padding:8px;border:1px solid #d7e6e8;border-radius:10px;background:#f0f8f8;cursor:pointer}
+#sms-dialog #consent{appearance:none;width:28px;height:28px;min-width:28px;flex:0 0 28px;margin:0;padding:0;display:grid;place-content:center;border:2px solid #087f8c;border-radius:6px;background:#fff;box-shadow:0 0 0 2px rgba(8,127,140,.1);cursor:pointer}
+#sms-dialog #consent::before{content:"";width:7px;height:13px;border:solid #fff;border-width:0 3px 3px 0;transform:translateY(-2px) rotate(45deg) scale(0)}
+#sms-dialog #consent:checked{background:#087f8c;border-color:#087f8c}
+#sms-dialog #consent:checked::before{transform:translateY(-2px) rotate(45deg) scale(1)}
+#sms-dialog #consent:disabled{cursor:wait;opacity:.6}
+#sms-status{margin:0;font-size:14px}
+#sms-result-dialog{width:min(380px,calc(100% - 32px));max-height:calc(100dvh - 32px);padding:28px;text-align:center;overflow:auto}
+.sms-result-icon{width:56px;height:56px;margin:0 auto 14px;display:grid;place-items:center;border-radius:50%;background:#e3f5ed;color:#067647;font-size:34px;font-weight:800}
+#sms-result-title{margin:0;font-size:24px;line-height:1.4}
+#sms-result-message{margin:12px 0 20px;color:var(--muted);font-size:14px;line-height:1.6;white-space:pre-line}
+#close-sms-result{min-width:112px;min-height:44px}
+@media(forced-colors:active){
+  #sms-dialog #consent{appearance:auto;box-shadow:none}
+  #sms-dialog #consent::before{content:none}
+}
+
+/* SMS heading hierarchy: subtle dividers and an inset supporting sentence. */
+#sms-title{padding-bottom:7px;border-bottom:1px solid #e5e7eb}
+#sms-task-name{padding:0 0 7px 12px;border-bottom:1px solid #e5e7eb;overflow-wrap:anywhere}
+#sms-form>label[for]{padding-bottom:5px;border-bottom:1px solid #e5e7eb}

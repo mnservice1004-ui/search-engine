@@ -16,14 +16,23 @@ from public_guidance import (
     serialize_public_task,
 )
 from search_engine import normalize, search_tasks, suggest_terms
-from sms_service import send_contact_sms
+from vaccination import search_vaccination
+from examinations import search_examinations
+from official_services import search_official_services, menu_guide_ids
+from sms_service import send_contact_sms, build_message, sms_capability, SmsConfigurationError, SmsDeliveryError
 
 
 ROOT = Path(__file__).resolve().parent
-load_dotenv(ROOT / ".env")
+if os.getenv('VERCEL') != '1':
+    load_dotenv(ROOT / ".env")
 PUBLIC_GUIDANCE = load_public_guidance()
 
-app = Flask(__name__, static_folder="public", static_url_path="")
+app = Flask(__name__, static_folder=None if os.getenv('VERCEL') == '1' else 'public', static_url_path='')
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024
+if os.getenv('VERCEL') == '1':
+    # Vercel is the sole trusted edge; do not trust forwarded headers locally.
+    from werkzeug.middleware.proxy_fix import ProxyFix
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=0, x_proto=1, x_host=0)
 limiter = Limiter(get_remote_address, app=app, default_limits=["120 per minute"], storage_uri="memory://")
 
 
@@ -184,7 +193,7 @@ def add_security_headers(response):
 
 @app.get("/")
 def index():
-    return send_from_directory(app.static_folder, "index.html")
+    return send_from_directory(ROOT / 'public', "index.html")
 
 
 @app.get("/api/health")
@@ -194,7 +203,7 @@ def health():
         "task_count": len(get_all_tasks()),
         "data_backend": os.getenv("DATA_BACKEND", "sqlite"),
         "llm_enabled": os.getenv("ENABLE_LLM", "false").lower() == "true",
-        "sms_mode": os.getenv("SMS_MODE", "mock"),
+        "sms_mode": sms_capability()['mode'],
     })
 
 
@@ -222,15 +231,41 @@ def search():
     if not 2 <= len(query) <= 80:
         return jsonify({"error": "검색어를 2~80자로 입력하십시오."}), 400
 
+    # Legacy callers retain their top-10 contract. The result directory opts
+    # into all ranked records so category counts and pagination are truthful.
+    limit = payload.get("limit", 10)
+    if isinstance(limit, bool) or not isinstance(limit, int) or not 1 <= limit <= 100:
+        return jsonify({"error": "검색 결과 수는 1~100 사이의 정수여야 합니다."}), 400
+
     tasks = get_all_tasks()
     searchable_tasks = build_public_search_tasks(tasks, PUBLIC_GUIDANCE)
     map_points = json.loads((ROOT / "data" / "map_points.json").read_text(encoding="utf-8"))
     map_target_registry = build_verified_map_target_registry(tasks, map_points)
-    all_results = search_public_tasks(
+    # A short cancer intent must not inherit unrelated "진단"/"검사" task
+    # matches. Reviewed guides below supply the relevant existing task link.
+    cancer_intent = normalize(query)
+    cancer_queries = {'암진단', '암진단검사', '암진단지원', '암검진', '암검진검사'}
+    all_results = [] if cancer_intent in cancer_queries else search_public_tasks(
         searchable_tasks, query, 100, map_target_registry
     )
+    guide_query = cancer_intent if cancer_intent in {'암진단', '암검진'} else query
+    menu_ids = menu_guide_ids(query)
+    vaccination = search_vaccination(guide_query, region='dongtan', source_scope='current', include_ids=menu_ids)
+    examinations = search_examinations(guide_query, include_ids=menu_ids)
+    services = search_official_services(guide_query, include_ids=menu_ids)
+    # Explicitly reviewed relationships extend discovery without changing the
+    # permanent catalog, contact ownership, maps or public task schema.
+    matched_guides = ([g for g in vaccination['guides'] if not g['expired']] + examinations['guides']
+                      + [g for g in services['guides'] if not g['expired']])
+    matched_ids = {item['id'] for item in all_results}
+    by_id = {item['id']: item for item in searchable_tasks}
+    for guide in matched_guides:
+        for task_id in guide['related_task_ids']:
+            if task_id in by_id and task_id not in matched_ids:
+                all_results.append({**by_id[task_id], 'score': 0})
+                matched_ids.add(task_id)
     expansions = []
-    if not all_results and _allow_query_expansion(query):
+    if not all_results and cancer_intent not in cancer_queries and _allow_query_expansion(query):
         expansions = expand_query(query)
         merged = {}
         for expanded in expansions:
@@ -240,7 +275,7 @@ def search():
                     merged[item["id"]] = item
         all_results = sorted(merged.values(), key=_public_rank_key)
 
-    items = attach_public_contacts(all_results[:10])
+    items = attach_public_contacts(all_results[:limit])
     best_effort_log("search", result_count=len(all_results))
     return jsonify({
         "query": query,
@@ -251,7 +286,28 @@ def search():
         "displayed_count": len(items),
         "items": items,
         "expanded_terms": expansions,
+        "vaccination": vaccination,
+        "examinations": examinations,
+        "services": services,
     })
+
+
+@app.post("/api/vaccination/search")
+@limiter.limit("60 per minute")
+def vaccination_search():
+    payload = request.get_json(silent=True)
+    if not isinstance(payload, dict):
+        return jsonify({"error": "검색 조건을 확인하십시오."}), 400
+    query = str(payload.get("query", "")).strip()
+    page = payload.get("page", 1)
+    kind = payload.get("kind", "sources")
+    region = payload.get("region", "dongtan")
+    source_scope = payload.get("source_scope", "current")
+    if (not 2 <= len(query) <= 80 or kind not in ("sources", "facilities")
+            or region not in ('dongtan', 'all') or source_scope not in ('current', 'archive', 'all')
+            or isinstance(page, bool) or not isinstance(page, int) or not 1 <= page <= 1000):
+        return jsonify({"error": "검색어와 페이지를 확인하십시오."}), 400
+    return jsonify(search_vaccination(query, kind=kind, page=page, region=region, source_scope=source_scope))
 
 
 @app.get("/api/tasks/<task_id>")
@@ -262,13 +318,27 @@ def task_detail(task_id):
     return jsonify(attach_public_contacts([task])[0])
 
 
+@app.get("/api/services")
+def services():
+    # Same public serializer as search/detail: never expose raw task records,
+    # internal aliases or unverified contacts through the HOME directory.
+    items = attach_public_contacts(get_all_tasks())
+    return jsonify({"results": items, "total": len(items)})
+
+
 @app.post("/api/sms")
 @limiter.limit("3 per minute")
 def send_sms():
     origin = request.headers.get("Origin")
+    if os.getenv('VERCEL') == '1':
+        from sms_cloud_guard import allowed_origin
+        if not allowed_origin(origin):
+            return jsonify({'error': '허용되지 않았거나 아직 설정되지 않은 발송 출처입니다.'}), 403
     if origin and origin.rstrip("/") != request.host_url.rstrip("/"):
         return jsonify({"error": "허용되지 않은 요청 출처입니다."}), 403
     payload = request.get_json(silent=True) or {}
+    if not isinstance(payload, dict):
+        return jsonify({"error": "올바른 요청 형식이 아닙니다."}), 400
     if payload.get("consent") is not True:
         return jsonify({"error": "문자 전송을 위한 휴대전화번호 이용에 동의해야 합니다."}), 400
     task = get_task(str(payload.get("task_id", "")))
@@ -280,13 +350,45 @@ def send_sms():
         # 문자용 필드 선택은 공개 API 응답에 노출하지 않고 서버 안에서만 사용한다.
         task["_sms_fields"] = list(guidance["sms_fields"])
     try:
-        result = send_contact_sms(task, payload.get("recipient"))
+        if "message_kind" in payload or "request_id" in payload:
+            cloud_options = ({'client_ip': request.headers.get('X-Forwarded-For', '').strip()}
+                             if os.getenv('VERCEL') == '1' else {})
+            result = send_contact_sms(task, payload.get("recipient"), payload.get("message_kind", "combined"), payload.get("request_id"), **cloud_options)
+        else:
+            result = send_contact_sms(task, payload.get("recipient"))
+    except SmsConfigurationError as exc:
+        return jsonify({"error": str(exc)}), 503
+    except SmsDeliveryError as exc:
+        return jsonify({"error": str(exc)}), 502
     except ValueError as exc:
         return jsonify({"error": str(exc)}), 400
     except Exception:
         return jsonify({"error": "문자 발송 서비스가 응답하지 않습니다. 잠시 후 다시 시도하십시오."}), 502
     best_effort_log("sms_success", task_id=task["id"])
     return jsonify(result)
+
+
+@app.post("/api/sms/preview")
+@limiter.limit("30 per minute")
+def sms_preview():
+    origin = request.headers.get("Origin")
+    if origin and origin.rstrip("/") != request.host_url.rstrip("/"):
+        return jsonify({"error": "허용되지 않은 요청 출처입니다."}), 403
+    payload = request.get_json(silent=True) or {}
+    if not isinstance(payload, dict):
+        return jsonify({"error": "올바른 요청 형식이 아닙니다."}), 400
+    raw = get_task(str(payload.get("task_id", "")))
+    if raw is None:
+        return jsonify({"error": "업무를 찾을 수 없습니다."}), 404
+    task = attach_public_contacts([raw])[0]
+    guidance = PUBLIC_GUIDANCE.get(task['id'])
+    if guidance:
+        task['_sms_fields'] = list(guidance['sms_fields'])
+    try:
+        text = build_message(task, payload.get('message_kind', 'guidance'))
+    except ValueError as exc:
+        return jsonify({"error": str(exc)}), 400
+    return jsonify({"text": text, **sms_capability()})
 
 
 if __name__ == "__main__":

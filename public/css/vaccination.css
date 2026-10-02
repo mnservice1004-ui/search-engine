@@ -1,0 +1,42 @@
+#vaccination-results { margin: 24px 34px; padding-top: 20px; border-top: 1px solid #d9e5ec; color: #173d49; }
+#vaccination-results[hidden], #vaccination-results [hidden] { display: none !important; }
+.vx-heading { margin: 0 0 10px; font-size: 25px; }
+.vx-intro { margin: 0 0 8px; font-weight: 700; }
+.vx-updated, .vx-meta, .vx-directory-note { color: #536872; font-size: 14px; line-height: 1.65; }
+.vx-guides { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 18px 0 12px; align-items: start; }
+.vx-guide { border: 1px solid #c8dde0; border-radius: 12px; background: #fff; overflow-wrap: anywhere; }
+.vx-guide summary { cursor: pointer; padding: 20px; }
+.vx-guide summary strong { font-size: 18px; line-height: 1.5; }
+.vx-summary { display: block; line-height: 1.7; margin: 9px 0; font-size: 15px; font-weight: 400; }
+.vx-expand { display: block; color: #00697e; font-size: 13px; font-weight: 700; }
+.vx-body { padding: 0 20px 20px; line-height: 1.8; font-size: 15px; }
+.vx-body ul { padding-left: 20px; margin: 4px 0 12px; }
+.vx-body li + li { margin-top: 8px; }
+.vx-caution { padding: 10px 12px; border-left: 3px solid #b87917; background: #fff7e8; color: #67410a; font-size: 14px; line-height: 1.7; }
+.vx-guide > .vx-caution { margin: 0 20px 12px; }
+.vx-link { color: #006a80; text-decoration: underline; text-underline-offset: 3px; overflow-wrap: anywhere; }
+.vx-refs { display: grid; gap: 7px; font-size: 14px; }
+.vx-phone { font-weight: 700; color: #006a80; white-space: nowrap; }
+.vx-button { border: 1px solid #b7d2d7; padding: 9px 13px; border-radius: 7px; background: #fff; color: #15566a; font: inherit; font-size: 14px; cursor: pointer; min-height: 40px; }
+.vx-button:hover { background: #eef8f8; }
+.vx-button[aria-pressed="true"] { background: #006a80; border-color: #006a80; color: white; }
+.vx-button:disabled { opacity: .45; cursor: default; }
+.vx-related { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.vx-directory { margin-top: 18px; border: 1px solid #cfdee1; border-radius: 10px; padding: 16px 20px; background: #f8fbfb; }
+.vx-directory > summary { font-weight: 700; font-size: 17px; cursor: pointer; }
+.vx-record { padding: 17px 0; border-top: 1px solid #d8e4e6; overflow-wrap: anywhere; }
+.vx-record > .vx-link { font-weight: 700; line-height: 1.65; }
+.vx-record h4 { margin: 0 0 6px; font-size: 17px; }
+.vx-address, .vx-meta { margin: 7px 0 0; }
+.vx-programs { padding-left: 20px; font-size: 14px; line-height: 1.8; }
+.vx-nav { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 16px; }
+.vx-page-status { font-size: 14px; }
+#vaccination-results :focus-visible { outline: 3px solid #006d86; outline-offset: 3px; }
+@media (max-width: 700px) {
+  #vaccination-results { margin: 20px 16px; }
+  .vx-guides { grid-template-columns: 1fr; }
+  .vx-heading { font-size: 22px; }
+  .vx-directory { padding: 14px; }
+  .vx-guide summary { padding: 16px; }
+  .vx-body { padding: 0 16px 16px; }
+}

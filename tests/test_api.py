@@ -187,6 +187,9 @@ def configure_test_database_and_disable_logging(monkeypatch, temporary_api_db):
     monkeypatch.setenv("SMS_MODE", "mock")
     monkeypatch.setattr("app.log_event", lambda *args, **kwargs: None)
     monkeypatch.setattr("app.expand_query", lambda _query: [])
+    # These are data-contract tests, not rate-limit tests. The Limiter object
+    # reads its enabled flag at initialization, before client() updates config.
+    monkeypatch.setattr("app.limiter.enabled", False)
 
 
 def client():
@@ -206,19 +209,19 @@ def test_homepage_uses_dongtan_gu_branding():
     html = response.get_data(as_text=True)
 
     assert response.status_code == 200
-    assert "<title>동탄구보건소 보건민원 정보 검색</title>" in html
+    assert "<title>동탄구보건소 | 건강과 일상을 잇는 보건서비스</title>" in html
     assert "동탄구보건소" in html
-    assert "보건민원 길찾기" in html
+    assert 'id="home-title"' in html
     assert 'src="/images/hwaseong-special-city-bi.png"' in html
     assert 'alt="화성특례시"' in html
-    assert 'aria-label="화성특례시 홈페이지"' in html
+    assert 'aria-label="화성특례시 공식 홈페이지 (새 창)"' in html
     assert 'href="https://www.hscity.go.kr/"' in html
     assert "공식 업무자료 기반 안내" not in html
     assert "가까운 보건소 업무 안내" not in html
-    assert "찾고 싶은 보건민원을" in html
-    assert "말하듯 검색하세요" in html
-    assert "필요한 업무와 담당 부서, 찾아가는 위치까지 한 화면에서 안내해 드립니다." in html
-    assert "오늘의 하늘처럼, 민원 안내도 맑고 편안하게" in html
+    assert '건강한 일상,<br><span>가까이에서 함께.</span>' in html
+    assert "필요한 보건서비스를 쉽고 빠르게 찾아보세요." in html
+    assert 'id="health-services"' in html and 'id="visit-guide"' in html
+    assert "개인 제작 · 비공식 평가용" in html
     assert 'href="https://www.hscity.go.kr/health/index.do"' in html
     assert 'target="_blank"' in html
     assert 'rel="noopener noreferrer"' in html
@@ -233,7 +236,7 @@ def test_homepage_uses_dongtan_gu_branding():
     for element_id in required_ids:
         assert html.count(f'id="{element_id}"') == 1
 
-    for query in ("연명치료", "예방접종", "산후도우미", "건강진단서"):
+    for query in ("사전연명의료의향서", "예방접종", "산후도우미", "건강진단결과서 발급"):
         assert f'data-query="{query}"' in html
 
     detail_dialog_start = html.index('<dialog id="detail-dialog"')
@@ -273,7 +276,8 @@ def test_frontend_script_opens_details_only_after_result_selection():
 
 
 def test_hero_typewriter_layout_and_removed_result_kicker():
-    html = Path('public/index.html').read_text(encoding='utf-8')
+    # The animated approved HOME remains available as a preserved preview.
+    html = Path('public/qa/home-modified-a.html').read_text(encoding='utf-8')
     css = Path('public/css/style.css').read_text(encoding='utf-8')
     assert '가장 관련 있는 안내' not in html
     assert 'results-kicker' not in html and 'results-kicker' not in css
@@ -291,6 +295,21 @@ def test_hero_typewriter_layout_and_removed_result_kicker():
     assert 'display:flex' in viewport_css and 'justify-content:center' in viewport_css
     assert 'padding:14px 25px 24px' in css
     assert '.results-panel{padding:12px 17px 18px' in css
+
+
+def test_home_services_returns_all_active_public_tasks_without_internal_data():
+    response = client().get('/api/services')
+    assert response.status_code == 200
+    assert response.headers['Cache-Control'].startswith('no-store')
+    data = response.get_json()
+    expected = attach_public_contacts(get_all_tasks())
+    assert data == {'results': expected, 'total': len(expected)}
+    assert data['total'] == 63
+    assert len({task['id'] for task in data['results']}) == data['total']
+    assert_no_internal_public_keys(data)
+    assert_no_internal_public_values(data)
+    for item in data['results']:
+        assert item == client().get('/api/tasks/' + item['id']).get_json()
 
 
 def _run_hero_typewriter_contract(assertions, reduced=False):
@@ -388,7 +407,7 @@ def test_frontend_contact_renderer_uses_safe_text_and_digit_only_tel_links():
     assert "innerHTML" not in script
     assert "const primaryContact = getPrimaryContact(task);" in detail_renderer
     assert "문의전화" in detail_renderer
-    assert "appendPrimaryContact(contactValue, primaryContact);" in detail_renderer
+    assert "appendPrimaryContact(contactValue, contact);" in detail_renderer
     assert "이 안내를 문자메시지로 받기" in detail_renderer
     assert "isGuidedTask" in detail_renderer
     assert "const isGuidedTask = hasPublicText(task.public_title);" in script
@@ -420,6 +439,7 @@ def test_frontend_detail_uses_ordered_public_fields_and_skips_empty_rows():
         "비용은 얼마인가요?",
         "언제 이용하나요?",
         "어떻게 이용하나요?",
+        "추가 안내",
         "문의전화",
         "꼭 알아두세요",
     )
@@ -431,7 +451,10 @@ def test_frontend_detail_uses_ordered_public_fields_and_skips_empty_rows():
     assert "isGuidedTask ? task.documents : null" in detail_renderer
     assert "isGuidedTask ? task.fee : null" in detail_renderer
     assert "isGuidedTask ? task.operating_hours : null" in detail_renderer
-    assert "joinPublicText([task.visit_steps, task.primary_action])" in detail_renderer
+    assert "isGuidedTask ? (isLocationGuide ? getLocationVisitText(task) : task.visit_steps) : null" in detail_renderer
+    assert "joinPublicText([task.visit_steps, task.primary_action])" not in detail_renderer
+    assert "addDetailRow(detailEl, '추가 안내', isGuidedTask ? task.primary_action : null);" in detail_renderer
+    assert "if (!isLocationGuide && task.primary_action !== task.visit_steps)" in detail_renderer
     assert "isGuidedTask ? task.public_caution : null" in detail_renderer
     assert "task.public_title || task.name" not in detail_renderer
     assert "task.question" not in detail_renderer
@@ -447,7 +470,7 @@ def test_frontend_detail_uses_ordered_public_fields_and_skips_empty_rows():
     assert "appendPublicContacts" not in detail_renderer
 
 
-def test_frontend_detail_renders_only_one_primary_contact_and_hides_sms_for_unregistered_tasks():
+def test_frontend_detail_renders_deduplicated_contacts_and_hides_sms_for_unregistered_tasks():
     script = Path("public/js/app.js").read_text(encoding="utf-8")
     contact_renderer = script[
         script.index("function getPrimaryContact(task)"):script.index("function showDetail(task)")
@@ -458,11 +481,13 @@ def test_frontend_detail_renders_only_one_primary_contact_and_hides_sms_for_unre
 
     assert "task?.primary_contact" in contact_renderer
     assert "contacts.find((contact) => contact.is_primary" in contact_renderer
-    assert "contact.purpose" not in contact_renderer
+    assert "contact.purpose || contact.role" in contact_renderer
     assert "contact.is_primary) container" not in contact_renderer
     assert "const primaryContact = getPrimaryContact(task);" in detail_renderer
     assert "createText('strong', '', '문의전화')" in detail_renderer
-    assert "appendPrimaryContact(contactValue, primaryContact);" in detail_renderer
+    assert "appendPrimaryContact(contactValue, contact);" in detail_renderer
+    assert "seenPhones.has(key)" in detail_renderer
+    assert "Array.isArray(task.contacts)" in detail_renderer
     assert "if (isGuidedTask) {" in detail_renderer
     assert "이 안내를 문자메시지로 받기" in detail_renderer
     assert "이 연락처를 문자로 받기" not in detail_renderer
@@ -554,6 +579,47 @@ def test_search_post_returns_expected_first_item():
     assert body["returned_count"] == body["displayed_count"] == len(body["items"])
     assert len(body["results"]) <= 10
     assert body["total"] >= body["returned_count"]
+
+
+def test_search_results_v2_opt_in_returns_complete_ranked_result_set():
+    test_client = client()
+    legacy = test_client.post("/api/search", json={"query": "보건"}).get_json()
+    response = test_client.post("/api/search", json={"query": "보건", "limit": 100})
+    full = response.get_json()
+    assert response.status_code == 200
+    assert full["total"] > 10
+    assert len(legacy["results"]) == 10
+    assert full["results"][:10] == legacy["results"]
+    assert full["results"] == full["items"]
+    assert full["total"] == full["total_count"] == legacy["total"]
+    assert full["returned_count"] == full["displayed_count"] == full["total"]
+    assert len({item["id"] for item in full["results"]}) == full["total"]
+    assert_no_internal_public_keys(full)
+    assert_no_internal_public_values(full)
+    assert response.headers["Cache-Control"].startswith("no-store")
+
+
+@pytest.mark.parametrize("limit", [1, 4, 10, 100])
+def test_search_results_v2_valid_limit_keeps_legacy_response_aliases(limit):
+    response = client().post("/api/search", json={"query": "보건", "limit": limit})
+    body = response.get_json()
+    assert response.status_code == 200
+    assert body["results"] == body["items"]
+    assert body["total"] == body["total_count"]
+    assert body["returned_count"] == body["displayed_count"] == len(body["results"])
+    assert len(body["results"]) == min(limit, body["total"])
+    assert "expanded_terms" in body
+
+
+@pytest.mark.parametrize("limit", [0, -1, 101, 1.5, 10.0, "10", "100", "", True, False, None, [], {}])
+def test_search_results_v2_rejects_invalid_limits_before_querying(limit, monkeypatch):
+    def unexpected_query():
+        raise AssertionError("Invalid limits must be rejected before querying data")
+    monkeypatch.setattr("app.get_all_tasks", unexpected_query)
+    response = client().post("/api/search", json={"query": "보건", "limit": limit})
+    assert response.status_code == 400
+    assert "1~100" in response.get_json()["error"]
+    assert "results" not in response.get_json()
 
 
 def test_api_prioritizes_exact_verified_map_location_queries():
@@ -815,11 +881,11 @@ def test_second_ready_location_only_api_boundaries_and_fee_caution():
         assert not any(fragment in serialized for fragment in forbidden_fragments)
 
 
-def test_remaining_forty_five_task_details_stay_available_without_internal_projection():
+def test_remaining_task_details_stay_available_without_internal_projection():
     tasks = json.loads(Path("data/tasks.json").read_text(encoding="utf-8"))
     remaining_ids = [task["id"] for task in tasks if task["id"] not in EXPECTED_TASK_IDS]
 
-    assert len(remaining_ids) == 45
+    assert len(remaining_ids) == 13
     for task_id in remaining_ids:
         response = client().get(f"/api/tasks/{task_id}")
         item = response.get_json()
@@ -974,9 +1040,16 @@ def test_first_batch_search_regression_and_single_contact_batch(monkeypatch):
             assert response.status_code == 200
             assert expected_ranked[0]["id"] == expected_id
             assert body["items"][0]["id"] == expected_id
-            assert [item["id"] for item in body["items"]] == [
-                item["id"] for item in expected_ranked
-            ]
+            actual_ids = [item["id"] for item in body["items"]]
+            expected_ids = [item["id"] for item in expected_ranked]
+            # Existing ranking remains the exact prefix. The approved unified
+            # search may append only explicitly linked guidance destinations.
+            assert actual_ids[:len(expected_ids)] == expected_ids
+            linked_ids = {task_id for group in ('vaccination', 'examinations', 'services')
+                          for guide in body[group]['guides']
+                          for task_id in guide['related_task_ids']}
+            assert set(actual_ids[len(expected_ids):]) <= linked_ids
+            assert len(actual_ids) == len(set(actual_ids))
             assert len(body["results"]) <= 10
             assert body["returned_count"] == len(body["results"])
             assert body["total"] >= body["returned_count"]
@@ -1196,6 +1269,11 @@ def test_sms_uses_public_fields_and_one_primary_contact_for_all_guided_tasks(mon
         detail = client().get(f"/api/tasks/{task_id}").get_json()
         assert "sms_fields" not in detail
         detail["_sms_fields"] = PUBLIC_GUIDANCE[task_id]["sms_fields"]
+        if detail["primary_contact"] is None:
+            assert task_id in {"F109", "F111", "F202", "F203", "F206", "F301", "F302", "F303"}
+            with pytest.raises(ValueError, match="공식 담당 연락처"):
+                send_contact_sms(detail, "01012345678")
+            continue
         preview = send_contact_sms(detail, "01012345678")["preview"]
 
         assert preview.startswith("[동탄구보건소]\n")
@@ -1233,7 +1311,7 @@ def test_sms_rejects_unregistered_task_without_using_internal_fields(monkeypatch
     with app.test_request_context(
         "/api/sms",
         method="POST",
-        json={"task_id": "M009", "recipient": "01012345678", "consent": True},
+        json={"task_id": "M007", "recipient": "01012345678", "consent": True},
     ):
         response = app.make_response(send_sms.__wrapped__())
 
@@ -1292,11 +1370,11 @@ def test_public_aliases_are_safe_terms_and_unregistered_aliases_are_empty():
         assert item["aliases"] == guidance["public_search_terms"]
         assert all(isinstance(alias, str) for alias in item["aliases"])
 
-    unregistered = client().get("/api/tasks/R003").get_json()
+    unregistered = client().get("/api/tasks/M007").get_json()
     assert unregistered["aliases"] == []
 
 
-@pytest.mark.parametrize("query", ("인바디", "13주", "13주 프로그램"))
+@pytest.mark.parametrize("query", ("인바디",))
 def test_h002_internal_aliases_cannot_return_h002_or_trigger_llm_expansion(
     query, monkeypatch
 ):

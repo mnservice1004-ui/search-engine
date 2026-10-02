@@ -5,14 +5,30 @@
   "look": "sunset-wide",
   "playbackRate": 3.5,
   "referenceUrl": "http://127.0.0.1:5037/?revision=a-whole-sky",
+  "layoutOnlyRevision": {
+    "date": "2026-09-06",
+    "scope": "Map layout and SMS dialog controls only; approved background CSS prefix and all renderer assets remain unchanged.",
+    "originalStyleSha256": "d1aaefcb5cda35c7e3c8ef620b5b1786e530ae0728f3c9aef16c3baea25d7afd"
+  },
+  "footerVisibilityRevision": {
+    "date": "2026-09-07",
+    "scope": "User requested hiding the homepage footer and its layout space. HTML hidden attribute and an appended CSS guard only; approved renderer, speed, assets, and original CSS prefix remain unchanged."
+  },
+  "smsDialogRevision": {
+    "date": "2026-09-07",
+    "scope": "User requested removing the SMS content selector, routine sending-mode notice, and storage-policy paragraph with their layout space. Guidance with registered contact is the fixed default; consent, preview, recipient, and error/status controls are retained. Approved background renderer, speed, assets, and original CSS prefix remain unchanged."
+  },
+  "sourceLocations": {
+    "public/index.html": "public/qa/home-modified-a.html"
+  },
   "sourceSha256": {
-    "public/index.html": "9cfe21ecbba68fba0452c38f2cd2302063599bf86aec24c6902760705e2637e9",
+    "public/index.html": "cb85419f0b3bb17ffe48b167bed5d8183f6bcc445d1b59f6bca65535df1646c7",
     "public/qa/layer-engine.js": "2617e80c95a7c801d102bae6f6ec976069e6d898a21283c2093c4b3078e0b916",
     "public/qa/layer-home.js": "164e0deceb1a43d7524aee3dbff9a8db6e48abd112a78cfb601090bb0ef830a6",
     "public/qa/sunset-compare.html": "7b9be4bf0fc8b58ccfbfbbdda50b1b9e190cb3407683d8ced79259ec79ba5e12",
     "public/qa/sunset-compare.css": "eb7c62f00b22f7a507a6bf64212e10020ff08585bc6579fe0e72e0b746b00e88",
     "public/qa/sunset-compare.js": "e1887ba36837850fdc1533ce27d18b826165ef7470e8718ef7447f8285912247",
-    "public/css/style.css": "d1aaefcb5cda35c7e3c8ef620b5b1786e530ae0728f3c9aef16c3baea25d7afd",
+    "public/css/style.css": "97a75c90f749a243cc6d39bc4e701bb7623795ded9bdf61ac5c829e44630d766",
     "public/qa/assets/clouds-a-mask.png": "cf504481386355a614e23707a98789de0864d9c57806b2e8e29ac259c9326818",
     "public/qa/assets/clouds-b-mask.png": "56d7fa7f3fc4d7efcfe9f2167eddc6283189666212eaff89698d70abe18b4e36",
     "public/qa/assets/detail.jpg": "4dff9c17294588606fc57bdec4be125048caf2858275ad924f91a961e8a47083",
@@ -20,5 +36,25 @@
     "public/qa/assets/original.jpg": "ec53099e0e40ace51ab9c384bd93cd4318f749a67613e5786323eff7b5aa4c6e",
     "public/qa/assets/sky-sunset-v1.png": "387ab5cedef6c1494468860940b252697a1a2c6718ed719410f620f638227672",
     "public/qa/assets/sky.png": "523c20611f796cc579a57d73c734979c55a3e09819bb92c3972813ce00d566db"
+  },
+  "homeCompositionRevision": {
+    "date": "2026-09-07",
+    "referenceSize": [2048, 874],
+    "scope": "User confirmed proportional HOME logo, title and search layout while retaining animated modified A at 3.5x and the typewriter. One desktop scale unit fits the reference inside the viewport; mobile and short-screen readable wrapping remains. Initial empty results are hidden, searches reveal normal-flow results, and startup focus cannot auto-scroll. No background renderer, asset, map, detail or SMS changes."
+  },
+  "smsDialogRefreshRevision": {
+    "date": "2026-09-08",
+    "scope": "User requested compact heading, 안내내용 and 수신자 번호 labels, distinct field colors, shorter required consent with a prominent checkbox, and a separate dismissible result dialog after successful sending. Accepted provider responses and mock responses remain distinct; failures stay visible and busy requests block duplicate clicks and dismissal. HOME composition, name color, background, maps and backend SMS behavior unchanged."
+  },
+  "smsHeadingRevision": {
+    "date": "2026-09-08",
+    "title": "안내내용 문자로 받기",
+    "scope": "SMS dialog heading only: vaccination supporting sentence changed to 예방접종 장소와 준비사항을 알려드릴게요., inset by 12px. Faint gray section dividers below heading, supporting sentence and field labels. Search titles, task data, actual message content, send behavior and all other UI remain unchanged."
+  },
+  "healthCenterNameColorRevision": {
+    "date": "2026-09-08",
+    "color": "#E2C46E",
+    "previousColor": "#D4B45F",
+    "scope": "User approved a slightly brighter soft gold for the health-center name only. Existing color declaration updated; size, weight, position, text shadow, title, logo, animations and all business functionality unchanged."
   }
 }

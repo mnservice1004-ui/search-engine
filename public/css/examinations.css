@@ -1,0 +1,16 @@
+#service-guide-dialog { width: min(780px, calc(100% - 32px)); max-height: 88vh; padding: 0; border: 1px solid #c8dde0; border-radius: 18px; color: #173d49; background: #fff; box-shadow: 0 20px 65px #173d4940; }
+#service-guide-dialog::backdrop { background: #102c4c66; }
+.service-guide-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 18px; padding: 22px 24px; border-bottom: 1px solid #d9e5ec; background: #f3f9fb; }
+.service-guide-head h2 { margin: 0; font-size: 24px; line-height: 1.45; overflow-wrap: anywhere; }
+.service-guide-head button { flex-shrink: 0; }
+#service-guide-body { padding: 10px 24px 26px; overflow-wrap: anywhere; }
+.service-guide-summary { font-size: 18px; font-weight: 700; }
+.ex-fee { color: #005c70; font-weight: 700; line-height: 1.6; }
+.ex-contacts { margin: 16px 0; font-size: 15px; }
+.ex-contacts p { margin: 7px 0; }
+#service-guide-dialog :focus-visible { outline: 3px solid #006d86; outline-offset: 3px; }
+@media (max-width: 600px) {
+  .service-guide-head { padding: 18px 16px; gap: 10px; }
+  .service-guide-head h2 { font-size: 20px; }
+  #service-guide-body { padding: 8px 16px 22px; }
+}

@@ -190,7 +190,7 @@ def test_second_ready_fourteen_public_terms_rank_the_expected_task_first():
     searchable = build_public_search_tasks(_raw_tasks(), guidance)
 
     assert sum(len(terms) for terms in SECOND_READY_PUBLIC_TERMS.values()) == 14
-    assert not {"A002", "A004", "A008", "F101", "F106", "F204", "R006"} & set(
+    assert not {"F101", "M007", "F304"} & set(
         guidance
     )
     for task_id, terms in SECOND_READY_PUBLIC_TERMS.items():
@@ -235,7 +235,7 @@ def test_unregistered_task_name_and_alias_rankings_are_unchanged():
     ]
     searchable = build_public_search_tasks(raw_tasks, guidance)
 
-    assert len(unregistered) == 45
+    assert len(unregistered) == 13
     for task in unregistered:
         queries = [task["name"], *[alias["text"] for alias in task["aliases"]]]
         for query in queries:

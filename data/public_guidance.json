@@ -10,7 +10,12 @@
         "결핵 관리",
         "결핵 관련 상담"
       ],
-      "sms_fields": ["public_summary", "location", "visit_steps", "public_caution"],
+      "sms_fields": [
+        "public_summary",
+        "location",
+        "visit_steps",
+        "public_caution"
+      ],
       "public_summary": "결핵 상담과 관리를 안내해 드립니다.",
       "eligibility": "결핵 치료 중 관리가 필요하거나 결핵환자와 함께 지낸 뒤 상담이 필요한 분",
       "documents": null,
@@ -40,7 +45,12 @@
         "결핵 검사 문의",
         "결핵 검사를 받으러 왔어요"
       ],
-      "sms_fields": ["public_summary", "location", "visit_steps", "public_caution"],
+      "sms_fields": [
+        "public_summary",
+        "location",
+        "visit_steps",
+        "public_caution"
+      ],
       "public_summary": "결핵 검사를 원하시면 검사 종류를 먼저 안내받으세요.",
       "eligibility": "결핵 검사를 원하거나 어떤 검사를 받아야 할지 문의하는 분",
       "documents": null,
@@ -72,7 +82,12 @@
         "AI·IoT 어르신 건강관리",
         "스마트워치 건강관리"
       ],
-      "sms_fields": ["public_summary", "eligibility", "location", "public_caution"],
+      "sms_fields": [
+        "public_summary",
+        "eligibility",
+        "location",
+        "public_caution"
+      ],
       "public_summary": "65세 이상 어르신이 스마트폰과 건강기기를 이용해 6개월 동안 건강관리를 받을 수 있는 사업입니다.",
       "eligibility": "만성질환 관리 또는 건강생활 실천이 필요한 65세 이상 어르신",
       "documents": null,
@@ -103,7 +118,13 @@
         "진료 접수",
         "진료를 받으러 왔어요"
       ],
-      "sms_fields": ["eligibility", "location", "documents", "fee", "operating_hours"],
+      "sms_fields": [
+        "eligibility",
+        "location",
+        "documents",
+        "fee",
+        "operating_hours"
+      ],
       "public_summary": "고혈압, 당뇨, 고지혈증 같은 만성질환과 일부 감염질환을 진료합니다.",
       "eligibility": "화성시민이 이용할 수 있습니다.",
       "documents": "준비물: 실물 신분증을 준비해 주세요.",
@@ -134,7 +155,13 @@
         "골밀도 검사 예약",
         "예약한 골다공증 검사"
       ],
-      "sms_fields": ["eligibility", "location", "documents", "fee", "public_caution"],
+      "sms_fields": [
+        "eligibility",
+        "location",
+        "documents",
+        "fee",
+        "public_caution"
+      ],
       "public_summary": "화성시민이 예약 후 요추와 고관절의 골밀도를 검사받는 서비스입니다.",
       "eligibility": "주민등록등본상 화성시민이 연 1회 이용할 수 있습니다.",
       "documents": "준비물: 신분증을 준비해 주세요.",
@@ -165,7 +192,12 @@
         "금연상담 예약",
         "담배 끊기 상담"
       ],
-      "sms_fields": ["public_summary", "location", "visit_steps", "public_caution"],
+      "sms_fields": [
+        "public_summary",
+        "location",
+        "visit_steps",
+        "public_caution"
+      ],
       "public_summary": "금연상담과 금연보조제, 니코틴 검사를 안내받는 서비스입니다.",
       "eligibility": "담배를 끊기 위한 상담을 원하는 화성시민",
       "documents": null,
@@ -196,7 +228,12 @@
         "운동 영양 상담",
         "만성질환 건강상담"
       ],
-      "sms_fields": ["eligibility", "location", "visit_steps", "public_caution"],
+      "sms_fields": [
+        "eligibility",
+        "location",
+        "visit_steps",
+        "public_caution"
+      ],
       "public_summary": "만성질환 위험요인이 있는 분의 건강관리와 지역주민 대상 운동·영양 상담을 안내합니다.",
       "eligibility": "30세부터 69세까지의 화성시민 중 만성질환 위험요인이 있는 분이 대상입니다. 운동·영양 상담은 지역주민이 이용할 수 있습니다.",
       "documents": null,
@@ -227,7 +264,13 @@
         "선천성대사이상 환아 지원",
         "신생아 선천성대사이상 지원"
       ],
-      "sms_fields": ["eligibility", "location", "documents", "fee", "public_caution"],
+      "sms_fields": [
+        "eligibility",
+        "location",
+        "documents",
+        "fee",
+        "public_caution"
+      ],
       "public_summary": "신생아 검사비와 확진된 환아의 의료비·특수식이를 지원하는 사업입니다.",
       "eligibility": "검사비는 대상 영아의 부모가 출생일로부터 1년 이내에 신청할 수 있습니다. 환아 지원은 해당 질환이 있는 만 19세 미만이 대상입니다.",
       "documents": "준비물: 지원신청서, 검사비 영수증과 세부내역서, 통장 사본, 주민등록등본을 준비해 주세요. 확진검사비와 환아 지원은 진단서 등 추가 서류가 필요합니다.",
@@ -259,7 +302,13 @@
         "인공수정 지원",
         "난임 시술비 사전신청"
       ],
-      "sms_fields": ["eligibility", "location", "documents", "visit_steps", "public_caution"],
+      "sms_fields": [
+        "eligibility",
+        "location",
+        "documents",
+        "visit_steps",
+        "public_caution"
+      ],
       "public_summary": "난임 진단을 받은 부부의 체외수정과 인공수정 시술비를 지원합니다.",
       "eligibility": "화성시에 거주하고 난임 진단과 건강보험 자격을 갖춘 법률혼 또는 사실혼 부부가 신청할 수 있습니다.",
       "documents": "준비물: 난임진단서, 주민등록등본, 건강보험 서류와 혼인관계에 따른 추가서류를 준비해 주세요.",
@@ -290,14 +339,20 @@
         "출산가정 방문 건강관리",
         "산후도우미 지원"
       ],
-      "sms_fields": ["public_summary", "location", "documents", "fee", "visit_steps"],
+      "sms_fields": [
+        "public_summary",
+        "eligibility",
+        "location",
+        "documents",
+        "visit_steps"
+      ],
       "public_summary": "건강관리사가 출산가정을 방문해 산모의 회복과 신생아 양육을 돕는 서비스의 이용비 일부를 지원합니다.",
-      "eligibility": "화성시의 모든 출산가정이 신청할 수 있습니다.",
+      "eligibility": "기준중위소득 150% 이하 화성시 출산가정이 기본 대상입니다. 150% 초과 라형 예외지원은 2026년 10월 1일 사업 종료로 안내되어 기존 결정자의 적용 여부는 담당 부서에 확인해야 합니다.",
       "documents": "준비물: 산모 신분증, 산모수첩 또는 출생증명과 필요한 가족·보험 서류를 준비해 주세요.",
       "fee": "비용 지원: 출산 유형과 소득 유형에 따라 정부지원액과 본인부담액이 다릅니다.",
       "operating_hours": null,
       "visit_steps": "출산예정일 40일 전부터 출산일 60일 후까지 보건소나 복지로에서 신청하세요. 유산·사산 또는 신생아 입원은 신청기한이 다릅니다.",
-      "public_caution": "바우처가 생성된 뒤에는 서비스 기간을 변경할 수 없으므로 제공기관과 일정을 먼저 확인해 주세요.",
+      "public_caution": "150% 초과 라형의 종료 적용과 기존 결정자의 이용 여부를 확인해 주세요. 바우처 생성 후에는 서비스 기간을 변경할 수 없습니다.",
       "primary_action": "출산 상황에 맞는 신청기한을 대표전화로 먼저 확인해 주세요.",
       "verified_date": "2026-08-26",
       "organization": {
@@ -321,7 +376,13 @@
         "고위험 임산부 의료비",
         "고위험 임신 의료비 지원"
       ],
-      "sms_fields": ["eligibility", "location", "documents", "fee", "primary_action"],
+      "sms_fields": [
+        "eligibility",
+        "location",
+        "documents",
+        "fee",
+        "primary_action"
+      ],
       "public_summary": "고위험 임신질환으로 입원치료를 받은 분의 의료비 일부를 지원합니다.",
       "eligibility": "가구 소득과 관계없이 19개 고위험 임신질환으로 진단받아 입원치료를 받고, 분만일로부터 6개월 이내인 분이 신청할 수 있습니다.",
       "documents": "준비물: 진단서, 입퇴원확인서, 영수증과 세부내역서, 통장 사본, 신분증 등을 준비해 주세요.",
@@ -353,7 +414,13 @@
         "아기 기저귀 지원",
         "아기 분유 지원"
       ],
-      "sms_fields": ["eligibility", "location", "documents", "fee", "public_caution"],
+      "sms_fields": [
+        "eligibility",
+        "location",
+        "documents",
+        "fee",
+        "public_caution"
+      ],
       "public_summary": "지원 대상 가정의 만 2세 미만 영아에게 기저귀와 조제분유 구매비를 바우처로 지원합니다.",
       "eligibility": "기저귀는 만 2세 미만 영아가 있는 기초생활보장·차상위·한부모 가정과 소득 기준을 충족한 장애인·다자녀 가정이 대상입니다. 조제분유는 이 중 모유수유가 어려운 경우 등 추가 조건을 충족해야 합니다.",
       "documents": "준비물: 주민등록등본과 자격 증명, 필요한 경우 가족·소득·진단 서류를 준비해 주세요.",
@@ -383,7 +450,13 @@
         "선천성이상아 의료비 지원",
         "미숙아 선천성이상아 지원"
       ],
-      "sms_fields": ["eligibility", "location", "documents", "visit_steps", "public_caution"],
+      "sms_fields": [
+        "eligibility",
+        "location",
+        "documents",
+        "visit_steps",
+        "public_caution"
+      ],
       "public_summary": "입원치료를 받은 미숙아와 선천성이상아의 의료비 일부를 지원합니다.",
       "eligibility": "미숙아는 출생 후 24시간 이내 긴급한 수술이나 치료가 필요하여 신생아 중환자실(NICU)에 입원한 임신 37주 미만 또는 출생 시 체중 2.5kg 미만 영아가 대상입니다. 선천성이상아는 출생 후 2년 이내 진단받고 해당 질환을 치료하기 위해 입원해 수술한 경우가 대상입니다.",
       "documents": "준비물: 신청서, 영수증과 세부내역서, 통장 사본, 주민등록등본과 출생·진단·입퇴원 증빙을 준비해 주세요.",
@@ -414,7 +487,13 @@
         "건강진단서 발급 준비",
         "외국인 결핵검진 확인서 발급"
       ],
-      "sms_fields": ["location", "documents", "fee", "visit_steps", "public_caution"],
+      "sms_fields": [
+        "location",
+        "documents",
+        "fee",
+        "visit_steps",
+        "public_caution"
+      ],
       "public_summary": "건강진단결과서(보건증), 건강진단서와 외국인 결핵검진 확인서의 검사·발급을 안내합니다.",
       "eligibility": "건강진단결과서, 건강진단서 또는 체류자격 변경·연장 등을 위한 외국인 결핵검진 확인서가 필요한 분",
       "documents": "건강진단결과서와 건강진단서는 사진이 있는 국가기관 발급 신분증이 필요합니다. 미성년자와 외국인은 필요한 서류가 다르므로 방문 전에 확인해 주세요.",
@@ -443,7 +522,11 @@
         "보건소 진료실 찾아가는 길",
         "일반진료 받는 곳 안내"
       ],
-      "sms_fields": ["location", "primary_action", "public_caution"],
+      "sms_fields": [
+        "location",
+        "primary_action",
+        "public_caution"
+      ],
       "public_summary": "보건소 1층 진료실 위치를 안내합니다.",
       "eligibility": "보건소 진료실 위치를 찾는 분",
       "documents": null,
@@ -472,7 +555,11 @@
         "보건소 민원 접수 장소 안내",
         "민원 창구 찾아가는 길"
       ],
-      "sms_fields": ["location", "primary_action", "public_caution"],
+      "sms_fields": [
+        "location",
+        "primary_action",
+        "public_caution"
+      ],
       "public_summary": "민원 접수와 수납을 처리하는 1층 민원실 위치를 안내합니다.",
       "eligibility": "민원접수·수납 등 민원 업무로 민원실 위치를 찾는 분",
       "documents": null,
@@ -501,7 +588,11 @@
         "보건소 만성질환 상담 장소 안내",
         "건강관리센터 찾아가는 길"
       ],
-      "sms_fields": ["location", "primary_action", "public_caution"],
+      "sms_fields": [
+        "location",
+        "primary_action",
+        "public_caution"
+      ],
       "public_summary": "보건소 2층 만성질환관리센터 위치를 안내합니다.",
       "eligibility": "만성질환관리센터 위치를 찾는 분",
       "documents": null,
@@ -531,7 +622,13 @@
         "소독 의무시설 서류 제출",
         "소독업 신고 준비 안내"
       ],
-      "sms_fields": ["public_summary", "location", "documents", "visit_steps", "public_caution"],
+      "sms_fields": [
+        "public_summary",
+        "location",
+        "documents",
+        "visit_steps",
+        "public_caution"
+      ],
       "public_summary": "취약지역의 위생해충 방제와 소독 의무시설·소독업 관련 업무를 안내합니다.",
       "eligibility": "취약지역 방역을 문의하거나 법정 소독 의무시설을 관리하거나 소독업 신고를 준비하는 분",
       "documents": "소독 의무시설 관련 제출에는 소독증명서 또는 소독 자율점검표가 필요합니다. 그 밖의 서류는 전화로 확인해 주세요.",
@@ -550,6 +647,1103 @@
         "room": null,
         "route_text": "방문 장소는 전화로 확인해 주세요.",
         "show_map": false
+      }
+    },
+    {
+      "task_id": "A004",
+      "public_title": "이름을 밝히지 않고 HIV 검사를 받고 싶으신가요?",
+      "public_search_terms": [
+        "이름을 밝히지 않고 HIV 검사를 받고 싶으신가요?",
+        "익명 HIV 검사",
+        "익명 검사",
+        "HIV 검사",
+        "에이즈 검사",
+        "에이즈"
+      ],
+      "sms_fields": [
+        "location",
+        "fee",
+        "operating_hours",
+        "visit_steps",
+        "public_caution"
+      ],
+      "public_summary": "이름을 밝히지 않고 무료로 HIV 검사를 받을 수 있습니다. 익명 검사는 민원실이 아닌 1층 검사실에서 접수합니다.",
+      "eligibility": "익명으로 HIV 검사를 받기를 원하는 분",
+      "documents": null,
+      "fee": "무료입니다.",
+      "operating_hours": "평일 09:00~18:00이며 점심시간은 12:00~13:00입니다. 방문 전 검사 접수 가능 시간을 문의해 주세요.",
+      "visit_steps": "1층 검사실에서 익명 검사 접수 → 검사 → 결과 확인 방법과 시기를 안내받으세요.",
+      "public_caution": "실명 검사와 익명 검사는 접수 장소가 다릅니다. 익명 검사를 원하시면 검사실에 바로 문의해 주세요.",
+      "primary_action": "문의전화로 익명 검사 접수 가능 시간을 확인한 뒤 1층 검사실로 가세요.",
+      "verified_date": "2026-09-06",
+      "organization": {
+        "department": "보건행정과",
+        "team": null
+      },
+      "location": {
+        "floor": "1층",
+        "room": "검사실",
+        "route_text": "익명 HIV 검사는 민원실이 아닌 1층 검사실로 바로 가세요.",
+        "show_map": true
+      }
+    },
+    {
+      "task_id": "F102",
+      "public_title": "영상의학실 또는 방사선실을 찾으시나요?",
+      "public_search_terms": [
+        "영상의학실 또는 방사선실을 찾으시나요?",
+        "영상의학실 위치",
+        "방사선실 위치",
+        "엑스레이실 위치"
+      ],
+      "sms_fields": [
+        "location",
+        "primary_action",
+        "public_caution"
+      ],
+      "public_summary": "보건소 1층 영상의학실 위치를 안내합니다. 지도에는 같은 공간이 방사선실로 표시되어 있습니다.",
+      "eligibility": "영상의학실·방사선실 위치를 찾는 분",
+      "documents": null,
+      "fee": null,
+      "operating_hours": null,
+      "visit_steps": "문의전화로 검사 종류에 맞는 예약·접수 절차를 확인한 뒤 안내받은 접수를 하고 1층 영상의학실로 가세요.",
+      "public_caution": "흉부 X선 검사는 민원실 접수가 필요하며, 골다공증 검사는 전화예약 절차가 있습니다. 검사별 비용과 준비사항을 먼저 확인해 주세요.",
+      "primary_action": "받으려는 검사 이름을 알려주고 예약과 접수 장소를 문의해 주세요.",
+      "verified_date": "2026-09-06",
+      "organization": {
+        "department": "보건행정과",
+        "team": null
+      },
+      "location": {
+        "floor": "1층",
+        "room": "영상의학실(방사선실)",
+        "route_text": "1층 영상의학실(지도 표기: 방사선실)로 가세요.",
+        "show_map": true
+      }
+    },
+    {
+      "task_id": "F104",
+      "public_title": "검사실을 찾으시나요?",
+      "public_search_terms": [
+        "검사실을 찾으시나요?",
+        "검사실 위치",
+        "진단검사실 찾아가는 길"
+      ],
+      "sms_fields": [
+        "location",
+        "primary_action",
+        "public_caution"
+      ],
+      "public_summary": "보건소 1층 검사실 위치를 안내합니다. 공식 시설 안내의 진단검사실에 해당합니다.",
+      "eligibility": "검사실·진단검사실 위치를 찾는 분",
+      "documents": null,
+      "fee": null,
+      "operating_hours": null,
+      "visit_steps": "받으려는 검사의 접수 장소와 준비사항을 문의한 뒤 1층 검사실로 가세요.",
+      "public_caution": "검사 종류에 따라 접수 장소·준비물·비용이 다릅니다. 익명 HIV 검사는 민원실이 아닌 검사실에서 접수합니다.",
+      "primary_action": "검사 이름을 알려주고 먼저 접수할 곳과 준비사항을 문의해 주세요.",
+      "verified_date": "2026-09-06",
+      "organization": {
+        "department": "보건행정과",
+        "team": null
+      },
+      "location": {
+        "floor": "1층",
+        "room": "검사실",
+        "route_text": "1층 검사실로 가세요.",
+        "show_map": true
+      }
+    },
+    {
+      "task_id": "F106",
+      "public_title": "재활보건실을 찾으시나요?",
+      "public_search_terms": [
+        "재활보건실을 찾으시나요?",
+        "재활보건실 위치",
+        "보건소 재활보건실 찾아가는 길"
+      ],
+      "sms_fields": [
+        "location",
+        "primary_action",
+        "public_caution"
+      ],
+      "public_summary": "보건소 1층 재활보건실 위치를 안내합니다.",
+      "eligibility": "재활보건실 위치를 찾는 분",
+      "documents": null,
+      "fee": null,
+      "operating_hours": null,
+      "visit_steps": "문의전화로 방문하려는 업무의 이용 가능 여부와 장소를 확인한 뒤 안내받은 곳으로 가세요.",
+      "public_caution": "이 안내는 재활보건실 위치 안내입니다. 재활 프로그램과 보조기기 대여·반납의 장소·예약·준비물은 업무별로 확인해 주세요.",
+      "primary_action": "문의전화로 방문 목적을 알려주고 실제 방문 장소를 확인해 주세요.",
+      "verified_date": "2026-09-06",
+      "organization": {
+        "department": "건강증진과",
+        "team": "지역보건팀"
+      },
+      "location": {
+        "floor": "1층",
+        "room": "재활보건실",
+        "route_text": "재활보건실은 1층에 있습니다. 업무별 방문 장소는 먼저 문의해 주세요.",
+        "show_map": true
+      }
+    },
+    {
+      "task_id": "F204",
+      "public_title": "금연상담실을 찾으시나요?",
+      "public_search_terms": [
+        "금연상담실을 찾으시나요?",
+        "금연상담실 위치",
+        "금연상담 예약 장소"
+      ],
+      "sms_fields": [
+        "location",
+        "operating_hours",
+        "primary_action",
+        "public_caution"
+      ],
+      "public_summary": "보건소 2층 금연상담실 위치를 안내합니다. 금연 상담은 전화로 예약한 뒤 방문해 주세요.",
+      "eligibility": "금연상담실 위치를 찾는 분",
+      "documents": null,
+      "fee": null,
+      "operating_hours": "평일 예약제로 운영합니다. 전화로 상담 날짜와 시간을 예약해 주세요.",
+      "visit_steps": "문의전화로 상담 예약 → 예약한 시간에 2층 금연상담실 방문 → 상담 안내를 받으세요.",
+      "public_caution": "상담 가능 일정과 준비사항을 예약할 때 확인해 주세요.",
+      "primary_action": "방문하기 전에 문의전화로 상담 날짜와 시간을 예약해 주세요.",
+      "verified_date": "2026-09-06",
+      "organization": {
+        "department": "건강증진과",
+        "team": "건강증진팀"
+      },
+      "location": {
+        "floor": "2층",
+        "room": "금연상담실",
+        "route_text": "2층 금연상담실로 가세요.",
+        "show_map": true
+      }
+    },
+    {
+      "task_id": "A002",
+      "public_title": "일반 검사를 접수하고 싶으신가요?",
+      "public_search_terms": [
+        "일반 검사를 접수하고 싶으신가요?",
+        "일반 검사 접수",
+        "혈액검사 접수",
+        "소변검사 접수",
+        "검사 준비물 문의"
+      ],
+      "sms_fields": [
+        "location",
+        "documents",
+        "visit_steps",
+        "public_caution"
+      ],
+      "public_summary": "혈액·소변 등 받으려는 검사를 먼저 확인하고 접수하도록 안내합니다.",
+      "eligibility": "보건소에서 시행하는 일반 검사의 항목과 접수 방법을 확인하려는 분",
+      "documents": "일반 검사에는 실물 신분증이 필요합니다. 내국인은 주민등록증·운전면허증, 외국인은 외국인등록증·국내거소신고증을 준비하세요. 주민등록증 발급 전 미성년자는 청소년증 또는 학생증과 주민등록등본을 함께 준비하세요. 촬영본·이미지 파일은 접수되지 않습니다.",
+      "fee": "검사 항목별로 다르며 변경될 수 있습니다. 받을 검사의 비용을 먼저 확인해 주세요.",
+      "operating_hours": null,
+      "visit_steps": "검사 이름·가능 시간·준비사항을 문의 → 민원실 접수가 필요한 검사라면 1층 민원실에서 접수 → 안내받은 검사실로 이동 → 결과 확인 방법과 날짜를 안내받으세요.",
+      "public_caution": "모든 검사에 금식이 필요한 것은 아닙니다. 금식 여부는 검사별로 확인하세요. 익명 HIV 검사는 검사실에서 직접 접수하며, 골다공증 검사는 별도 전화예약이 필요합니다.",
+      "primary_action": "문의전화로 검사 이름을 알려주고 접수 장소·준비물·비용을 확인해 주세요.",
+      "verified_date": "2026-09-06",
+      "organization": {
+        "department": "보건행정과",
+        "team": null
+      },
+      "location": {
+        "floor": "1층",
+        "room": "민원실",
+        "route_text": "민원실 접수가 필요한 일반 검사는 먼저 1층 민원실로 가세요.",
+        "show_map": true
+      }
+    },
+    {
+      "task_id": "A005",
+      "public_title": "임산부 등록과 지원을 안내받고 싶으신가요?",
+      "public_search_terms": [
+        "임산부 등록과 지원을 안내받고 싶으신가요?",
+        "임산부 일반 상담",
+        "임산부 등록 문의",
+        "임산부 영양제 검사 안내"
+      ],
+      "sms_fields": [
+        "location",
+        "documents",
+        "visit_steps",
+        "public_caution"
+      ],
+      "public_summary": "임산부 영양제와 초기·막달 검사 등 필요한 지원을 구분해 안내받으세요.",
+      "eligibility": "임산부 지원을 문의하려는 분. 영양제와 초기·막달 검사 지원은 화성시에 주민등록을 둔 임산부가 대상이며 임신 주수에 따라 달라집니다.",
+      "documents": "영양제 또는 초기·막달 검사 지원을 받으려면 신분증과 산모수첩 또는 임신확인서를 준비하세요. 다른 지원사업의 서류는 별도로 확인해 주세요.",
+      "fee": null,
+      "operating_hours": "동탄구보건소 영양제 안내는 월~금 09:00~18:00, 초기·막달 검사 안내는 월~금 09:00~17:30입니다. 실제 방문 가능 시간을 먼저 문의해 주세요.",
+      "visit_steps": "문의전화로 임신 주수와 원하는 지원을 알려주세요 → 대상 여부·준비물·방문 시간을 확인하세요 → 안내받은 창구에서 상담 또는 신청을 진행하세요.",
+      "public_caution": "모든 임산부 지원을 같은 조건으로 받을 수 있는 것은 아닙니다. 영양제 지급, 검사, 의료비 지원은 대상과 신청 절차가 다르며 교육 장소도 프로그램별로 확인해야 합니다.",
+      "primary_action": "문의전화로 필요한 지원 종류와 임신 주수를 알려주고 방문할 곳을 확인해 주세요.",
+      "verified_date": "2026-09-06",
+      "organization": {
+        "department": "건강증진과",
+        "team": "모자보건팀"
+      },
+      "location": {
+        "floor": "1층",
+        "room": "모자보건실·예방접종실",
+        "route_text": "지도는 1층 모자보건실·예방접종실 위치입니다. 지원 종류별 방문 창구는 먼저 문의해 주세요.",
+        "show_map": true
+      }
+    },
+    {
+      "task_id": "A009",
+      "public_title": "성매개감염병 검사를 받고 싶으신가요?",
+      "public_search_terms": [
+        "성매개감염병 검사를 받고 싶으신가요?",
+        "성매개감염병 검사",
+        "성병 검사",
+        "성병그린검진",
+        "매독 임질 클라미디아 검사"
+      ],
+      "sms_fields": [
+        "location",
+        "visit_steps",
+        "public_caution"
+      ],
+      "public_summary": "성병그린검진과 진료를 통한 검사는 접수 절차가 다르므로 받을 검사부터 확인해 주세요.",
+      "eligibility": "성매개감염병 검사를 원하는 분. 성병그린검진은 화성시민 대상 연 1회로 안내되므로 해당 여부를 먼저 확인하세요.",
+      "documents": "성병그린검진은 신분증을 준비하세요. 다른 검사·진료의 준비사항은 문의할 때 확인해 주세요.",
+      "fee": null,
+      "operating_hours": null,
+      "visit_steps": "문의전화로 검사 종류를 확인하세요. 성병그린검진은 1층 민원실 접수 → 검사실 검사 → 결과 확인 순서입니다. 진료가 필요한 경우에는 진료실 → 검사실 → 진료실 안내를 받으세요.",
+      "public_caution": "그린검진의 결과 확인은 검사 후 7일로 안내됩니다. 진료·검사별 비용과 가능 시간은 먼저 문의하세요. 익명 HIV 검사는 민원실이 아닌 검사실에서 직접 접수합니다.",
+      "primary_action": "문의전화로 그린검진인지 진료가 필요한 검사인지 먼저 확인해 주세요.",
+      "verified_date": "2026-09-06",
+      "organization": {
+        "department": "보건행정과",
+        "team": null
+      },
+      "location": {
+        "floor": "1층",
+        "room": "민원실",
+        "route_text": "성병그린검진은 1층 민원실에서 먼저 접수하세요. 다른 검사 절차는 문의해 주세요.",
+        "show_map": true
+      }
+    },
+    {
+      "task_id": "M009",
+      "public_title": "예방접종 장소와 준비사항을 확인하고 싶으신가요?",
+      "public_search_terms": [
+        "예방접종 장소와 준비사항을 확인하고 싶으신가요?",
+        "예방접종",
+        "예방접종 준비물",
+        "성인 예방접종 문의",
+        "영유아 예방접종 장소"
+      ],
+      "sms_fields": [
+        "location",
+        "documents",
+        "visit_steps",
+        "public_caution"
+      ],
+      "public_summary": "백신과 접종 대상에 따라 보건소 또는 위탁의료기관을 이용합니다. 방문 전에 접종 가능한 곳을 확인해 주세요.",
+      "eligibility": "본인이나 자녀의 예방접종을 문의하는 분. 접종 대상과 지원 조건은 나이·거주지·백신·접종 이력에 따라 다릅니다.",
+      "documents": "성인 접종은 신분증과 접종대상 증빙서류를 준비하세요. 영유아 접종의 준비물과 보호자 동행 사항은 예약한 의료기관에 확인해 주세요.",
+      "fee": "백신과 지원 대상에 따라 무료 또는 유료이며 변경될 수 있습니다. 접종 전에 확인해 주세요.",
+      "operating_hours": "동탄구보건소 성인 접종 안내는 월·화·목 09:00~15:00이며 12:00~13:00는 점심시간입니다. 위탁의료기관 일정은 다르므로 방문 전에 확인해 주세요.",
+      "visit_steps": "문의전화로 백신명·나이·접종 이력을 알려주세요 → 보건소 접종 가능 여부 또는 위탁의료기관을 확인하세요 → 필요한 예약과 준비를 마친 뒤 지정된 장소로 방문하세요.",
+      "public_caution": "영유아 접종을 모두 보건소에서 받을 수 있는 것은 아닙니다. 동탄 지역 피내용 BCG도 안내된 위탁의료기관에 사전 문의·예약 후 방문하세요. 아래 지도는 보건소 내 예방접종실 위치이며 모든 백신의 접종 장소를 뜻하지 않습니다.",
+      "primary_action": "먼저 문의전화로 해당 백신을 어디에서 언제 받을 수 있는지 확인해 주세요.",
+      "verified_date": "2026-09-06",
+      "organization": {
+        "department": "건강증진과",
+        "team": "모자보건팀"
+      },
+      "location": {
+        "floor": "1층",
+        "room": "모자보건실·예방접종실",
+        "route_text": "보건소에서 접종하도록 안내받은 경우에만 1층 모자보건실·예방접종실로 가세요.",
+        "show_map": true
+      }
+    },
+    {
+      "task_id": "F110",
+      "public_title": "모자보건교육실 또는 수유실을 찾으시나요?",
+      "public_search_terms": [
+        "모자보건교육실 또는 수유실을 찾으시나요?",
+        "모자보건교육실 위치",
+        "수유실 위치",
+        "모유수유 교육 장소 문의"
+      ],
+      "sms_fields": [
+        "location",
+        "primary_action",
+        "public_caution"
+      ],
+      "public_summary": "보건소 1층 모자보건교육실 위치를 안내합니다. 평면도에는 모자보건교육실(수유실)로 표시되어 있습니다.",
+      "eligibility": "모자보건교육실·수유실의 위치와 이용 여부를 확인하려는 분",
+      "documents": null,
+      "fee": null,
+      "operating_hours": null,
+      "visit_steps": "문의전화로 교육 또는 수유실 이용 목적을 알려주세요 → 이용 가능 여부와 실제 장소를 확인하세요 → 안내받은 곳으로 방문하세요.",
+      "public_caution": "교육은 프로그램별로 예약과 장소가 다릅니다. 출산교실이 2층 대강당에서 열리는 경우도 있으므로 교육을 모두 이 방으로 찾아오지 마세요. 수유실 이용 가능 시간은 별도로 문의해 주세요.",
+      "primary_action": "교육명이나 수유실 이용 목적을 알려주고 이용 가능 시간과 장소를 먼저 확인해 주세요.",
+      "verified_date": "2026-09-06",
+      "organization": {
+        "department": "건강증진과",
+        "team": "모자보건팀"
+      },
+      "location": {
+        "floor": "1층",
+        "room": "모자보건교육실(수유실)",
+        "route_text": "1층 모자보건교육실(수유실) 위치입니다. 교육 장소와 이용 가능 여부는 먼저 확인해 주세요.",
+        "show_map": true
+      }
+    },
+    {
+      "task_id": "H003",
+      "public_title": "비만타파·근력강화 운동교실 참여 안내",
+      "public_search_terms": [
+        "비만타파·근력강화 운동교실 참여 안내",
+        "비만타파 운동교실",
+        "근력강화 운동교실"
+      ],
+      "sms_fields": [
+        "public_summary",
+        "location",
+        "visit_steps",
+        "public_caution"
+      ],
+      "public_summary": "체중 관리와 근력 운동을 위한 교실입니다. 기수별 모집 여부를 먼저 확인해 주세요.",
+      "eligibility": "운동교실 참여를 원하는 주민. 연령·건강 조건과 선발 기준은 해당 기수 공고를 확인하세요.",
+      "documents": null,
+      "fee": null,
+      "operating_hours": null,
+      "visit_steps": "보건소 보건소식에서 해당 기수 모집 공고를 확인하세요. 신청기간·대상·수업장소를 확인한 뒤 안내된 방법으로 신청하고, 참여 확정 후 방문하세요.",
+      "public_caution": "하반기 비만타파 공고가 있어도 현재 접수 중이라는 뜻은 아닙니다. 근력강화반의 일정·조건을 다른 반과 같다고 생각하지 마세요.",
+      "primary_action": "참여를 원하는 반과 현재 추가 접수 가능 여부를 문의해 주세요.",
+      "verified_date": "2026-09-06",
+      "organization": {
+        "department": "건강증진과",
+        "team": null
+      },
+      "location": {
+        "floor": "2층",
+        "room": "대강당",
+        "route_text": "참여 장소를 2층 대강당으로 안내받은 경우에만 이 지도를 이용하세요.",
+        "show_map": true
+      }
+    },
+    {
+      "task_id": "M001",
+      "public_title": "희귀질환 의료비 지원 신청 안내",
+      "public_search_terms": [
+        "희귀질환 의료비 지원 신청 안내",
+        "희귀질환 의료비 지원",
+        "희귀질환 지원 신청"
+      ],
+      "sms_fields": [
+        "public_summary",
+        "location",
+        "visit_steps",
+        "public_caution"
+      ],
+      "public_summary": "희귀질환 산정특례 등록 후 주민등록지 관할 보건소에 의료비 지원을 신청하는 제도입니다.",
+      "eligibility": "대상 희귀질환으로 산정특례에 등록한 분. 질환·보험자격·소득·재산 등에 따라 지원 여부와 항목이 달라집니다.",
+      "documents": "신청서, 최근 3개월 이내 최종진단서, 통장사본 등이 필요합니다. 가족관계·소득·재산 및 해당자 추가 서류는 가구 상황에 맞게 안내받으세요.",
+      "fee": null,
+      "operating_hours": null,
+      "visit_steps": "산정특례 등록 여부를 확인하세요. 담당자에게 대상 질환과 본인에게 필요한 서류를 확인한 뒤 관할 보건소에 신청하고, 심사 결과를 안내받으세요.",
+      "public_caution": "지원은 신청서 접수일부터 적용되며 그 이전 의료비는 소급 지원되지 않습니다. 산정특례 등록만으로 의료비 지원이 자동 신청되지는 않습니다.",
+      "primary_action": "진단명과 산정특례 등록 여부를 확인한 뒤 신청 서류를 문의해 주세요.",
+      "verified_date": "2026-09-06",
+      "organization": {
+        "department": "건강증진과",
+        "team": null
+      },
+      "location": {
+        "floor": null,
+        "room": null,
+        "route_text": "방문 장소는 전화로 확인해 주세요.",
+        "show_map": false
+      }
+    },
+    {
+      "task_id": "R001",
+      "public_title": "암환자 의료비 지원 신청 안내",
+      "public_search_terms": [
+        "암환자 의료비 지원 신청 안내",
+        "암환자 의료비 지원",
+        "암 의료비 신청"
+      ],
+      "sms_fields": [
+        "public_summary",
+        "location",
+        "visit_steps",
+        "public_caution"
+      ],
+      "public_summary": "암 치료비 지원 대상과 신청 절차를 안내합니다. 성인과 소아의 지원 기준은 다릅니다.",
+      "eligibility": "암 진단을 받은 환자와 가족. 연령, 보험자격, 진단 내용 및 소아의 소득·재산 조건 등에 따라 대상 여부를 확인합니다.",
+      "documents": "등록·지원 신청서, 동의서, 진단서, 통장사본, 진료비·약제비 영수증 등이 필요합니다. 소아·대리 신청은 추가 서류를 안내받으세요.",
+      "fee": null,
+      "operating_hours": null,
+      "visit_steps": "환자 연령·보험자격·진단일을 확인하여 담당자에게 문의하세요. 적용 가능한 지원 유형과 서류를 안내받은 뒤 신청하고, 보완 요청과 심사 결과를 확인하세요.",
+      "public_caution": "암 진단만으로 모든 치료비를 지원받는 것은 아닙니다. 다른 지원금·보험금과의 관계 및 본인에게 인정되는 비용을 확인해 주세요.",
+      "primary_action": "성인 또는 소아 중 어떤 기준이 적용되는지 먼저 문의해 주세요.",
+      "verified_date": "2026-09-06",
+      "organization": {
+        "department": "건강증진과",
+        "team": null
+      },
+      "location": {
+        "floor": null,
+        "room": null,
+        "route_text": "방문 장소는 전화로 확인해 주세요.",
+        "show_map": false
+      }
+    },
+    {
+      "task_id": "R003",
+      "public_title": "사전연명의료의향서 작성 안내",
+      "public_search_terms": [
+        "사전연명의료의향서 작성 안내",
+        "사전연명의료의향서 작성",
+        "연명의료의향서 등록",
+        "연명치료"
+      ],
+      "sms_fields": [
+        "public_summary",
+        "location",
+        "visit_steps",
+        "public_caution"
+      ],
+      "public_summary": "본인이 지정 등록기관의 설명을 듣고 연명의료에 관한 의사를 미리 기록하는 절차입니다.",
+      "eligibility": "사전연명의료의향서를 직접 작성하려는 19세 이상 성인",
+      "documents": "본인 확인용 신분증",
+      "fee": "사전연명의료의향서 작성에는 비용이 들지 않습니다.",
+      "operating_hours": null,
+      "visit_steps": "국립연명의료관리기관의 등록기관 안내에서 방문할 곳을 확인하세요. 상담 가능 시간과 예약 여부를 문의하고, 본인 신분증을 지참하여 설명을 들은 뒤 직접 작성하세요.",
+      "public_caution": "가족이 대신 작성할 수 없습니다. 작성 후에도 등록기관을 통해 변경하거나 철회할 수 있습니다. 보건소 방문은 상담 장소를 안내받은 뒤 결정하세요.",
+      "primary_action": "작성 가능한 등록기관과 상담 시간을 먼저 확인해 주세요.",
+      "verified_date": "2026-09-06",
+      "organization": {
+        "department": "건강증진과",
+        "team": null
+      },
+      "location": {
+        "floor": null,
+        "room": null,
+        "route_text": "방문 장소는 전화로 확인해 주세요.",
+        "show_map": false
+      }
+    },
+    {
+      "task_id": "R004",
+      "public_title": "장기기증 희망등록 방법 안내",
+      "public_search_terms": [
+        "장기기증 희망등록 방법 안내",
+        "장기기증 희망등록",
+        "장기기증 등록 문의"
+      ],
+      "sms_fields": [
+        "public_summary",
+        "location",
+        "visit_steps",
+        "public_caution"
+      ],
+      "public_summary": "장기기증 의사를 미리 등록하는 방법을 안내합니다. 실제 기증 수술 신청과는 다른 절차입니다.",
+      "eligibility": "장기기증 희망등록 방법을 알아보거나 본인의 등록 여부를 확인하려는 분",
+      "documents": null,
+      "fee": null,
+      "operating_hours": null,
+      "visit_steps": "국립장기조직혈액관리원 누리집의 기증희망등록 안내를 확인하세요. 온라인 신규 신청은 본인인증 후 정보를 입력하는 순서이며, 방문을 원하면 등록기관과 필요한 서류를 먼저 확인하세요.",
+      "public_caution": "희망등록이 실제 기증 수술을 즉시 진행한다는 뜻은 아닙니다. 미성년자·대리 신청 가능 여부와 변경·철회 방법은 등록기관에 확인하세요.",
+      "primary_action": "온라인 안내를 먼저 확인하고, 방문 신청을 원하면 가능한 등록기관을 문의해 주세요.",
+      "verified_date": "2026-09-06",
+      "organization": {
+        "department": "건강증진과",
+        "team": null
+      },
+      "location": {
+        "floor": null,
+        "room": null,
+        "route_text": "방문 장소는 전화로 확인해 주세요.",
+        "show_map": false
+      }
+    },
+    {
+      "task_id": "R005",
+      "public_title": "무릎인공관절 수술비 지원 문의 안내",
+      "public_search_terms": [
+        "무릎인공관절 수술비 지원 문의 안내",
+        "무릎인공관절 수술비 지원",
+        "무릎 수술비 지원 문의"
+      ],
+      "sms_fields": [
+        "public_summary",
+        "location",
+        "visit_steps",
+        "public_caution"
+      ],
+      "public_summary": "노인의료나눔재단 사업의 지원 조건과 접수 가능 여부를 확인하는 안내입니다. 신규 접수 종료 공지가 있어 사전 확인이 필요합니다.",
+      "eligibility": "신청일 기준 60세 이상으로 기초생활수급자·차상위계층·한부모가족 지원대상 등에 해당하며 무릎인공관절 수술이 필요한 분",
+      "documents": null,
+      "fee": null,
+      "operating_hours": null,
+      "visit_steps": "신규 신청이 가능한지 먼저 문의하세요. 접수가 가능하다고 안내받은 경우에만 진단서와 자격 서류 등을 준비하여 보건소에 신청하고, 선정 통보 후 안내된 절차를 따르세요.",
+      "public_caution": "2026년 7월 예산 소진에 따른 신규 접수 종료 안내가 게시되었습니다. 현재 신청 가능하다고 단정하지 마세요. 지원대상 통보 전에 발생한 검사·진료·수술 비용은 지원에서 제외됩니다.",
+      "primary_action": "서류 발급이나 수술비 지원 신청을 준비하기 전에 접수 재개 여부부터 문의해 주세요.",
+      "verified_date": "2026-09-06",
+      "organization": {
+        "department": "건강증진과",
+        "team": null
+      },
+      "location": {
+        "floor": null,
+        "room": null,
+        "route_text": "방문 장소는 전화로 확인해 주세요.",
+        "show_map": false
+      }
+    },
+    {
+      "task_id": "R006",
+      "public_title": "휠체어 대여·반납 이용 안내",
+      "public_search_terms": [
+        "휠체어 대여·반납 이용 안내",
+        "휠체어 대여",
+        "휠체어 반납"
+      ],
+      "sms_fields": [
+        "public_summary",
+        "location",
+        "visit_steps",
+        "public_caution"
+      ],
+      "public_summary": "보건소의 휠체어·워커 등 보조기기 대여를 이용하려면 재고와 수령 장소를 먼저 확인해 주세요.",
+      "eligibility": "일시적으로 휠체어 등 보조기기가 필요한 화성시 거주 시민",
+      "documents": null,
+      "fee": null,
+      "operating_hours": null,
+      "visit_steps": "필요한 기기와 이용 희망 기간을 전화로 알려 주세요. 재고·대여 조건·준비물·수령 장소를 확인하고, 대여 시 사용법과 반납일을 안내받으세요. 반납도 장소와 시간을 먼저 확인하세요.",
+      "public_caution": "연중 운영 안내가 있어도 원하는 날짜에 기기가 남아 있다는 뜻은 아닙니다. 대여 기간·비용·보증금·반납 창구는 임의로 단정하지 마세요.",
+      "primary_action": "보조기기 재고와 실제 수령·반납 장소를 먼저 문의해 주세요.",
+      "verified_date": "2026-09-06",
+      "organization": {
+        "department": "건강증진과",
+        "team": null
+      },
+      "location": {
+        "floor": null,
+        "room": null,
+        "route_text": "방문 장소는 전화로 확인해 주세요.",
+        "show_map": false
+      }
+    },
+    {
+      "task_id": "D002",
+      "public_title": "치매쉼터·치매예방교실 참여 안내",
+      "public_search_terms": [
+        "치매쉼터·치매예방교실 참여 안내",
+        "치매쉼터 참여",
+        "치매예방교실 신청"
+      ],
+      "sms_fields": [
+        "public_summary",
+        "location",
+        "visit_steps",
+        "public_caution"
+      ],
+      "public_summary": "치매환자 쉼터와 예방·가족 프로그램 중 본인에게 맞는 과정을 안내받으세요.",
+      "eligibility": "치매환자, 치매 예방 활동을 원하는 주민, 치매환자의 가족·보호자. 과정별 참여 대상은 서로 다릅니다.",
+      "documents": null,
+      "fee": null,
+      "operating_hours": null,
+      "visit_steps": "환자 쉼터·예방교실·가족교육 중 원하는 과정을 알려 주세요. 담당자에게 등록 여부와 참여 조건·접수 일정·실제 교육장소를 확인한 뒤 신청하고, 참여 확정 후 방문하세요.",
+      "public_caution": "환자 쉼터의 이용 조건과 시간을 모든 예방교실에 적용하지 마세요. 장기요양서비스 이용 여부 등 참여 조건을 확인하고, 보건소 안의 방 위치만 보고 바로 방문하지 마세요.",
+      "primary_action": "현재 모집하는 과정과 본인의 참여 가능 여부부터 문의해 주세요.",
+      "verified_date": "2026-09-06",
+      "organization": {
+        "department": "건강증진과",
+        "team": null
+      },
+      "location": {
+        "floor": null,
+        "room": null,
+        "route_text": "방문 장소는 전화로 확인해 주세요.",
+        "show_map": false
+      }
+    },
+    {
+      "task_id": "A008",
+      "public_title": "성매개감염병 상담·관리 안내",
+      "public_search_terms": [
+        "성매개감염병 상담·관리 안내",
+        "성매개감염병 상담",
+        "성매개감염병 관리 문의"
+      ],
+      "sms_fields": [
+        "public_summary",
+        "location",
+        "visit_steps",
+        "public_caution"
+      ],
+      "public_summary": "성매개감염병 상담과 관리에 관한 문의를 안내합니다. 검사를 받으려는 경우는 별도 검사 안내를 확인하세요.",
+      "eligibility": "성매개감염병 상담·관리가 필요하거나 검사·진료 연계를 문의하는 분",
+      "documents": null,
+      "fee": null,
+      "operating_hours": null,
+      "visit_steps": "담당자에게 상담 또는 검사가 필요한지 알려 주세요. 검사·진료가 필요하면 접수 장소와 방문 절차를 안내받고, 결과 상담과 후속 관리 방법을 확인하세요.",
+      "public_caution": "상담 담당 부서와 실제 검사실은 다릅니다. 일반 성매개감염병 검사와 익명 HIV 검사의 절차·비용을 같다고 생각하지 마세요.",
+      "primary_action": "상담이 필요한지 검사를 원하는지 구분하여 먼저 문의해 주세요.",
+      "verified_date": "2026-09-06",
+      "organization": {
+        "department": "보건행정과",
+        "team": null
+      },
+      "location": {
+        "floor": null,
+        "room": null,
+        "route_text": "방문 장소는 전화로 확인해 주세요.",
+        "show_map": false
+      }
+    },
+    {
+      "task_id": "A017",
+      "public_title": "의약무 관련 제증명 수납 안내",
+      "public_search_terms": [
+        "의약무 관련 제증명 수납 안내",
+        "의약무 제증명 수납",
+        "의약무 수수료 납부"
+      ],
+      "sms_fields": [
+        "public_summary",
+        "location",
+        "visit_steps",
+        "public_caution"
+      ],
+      "public_summary": "의약무 관련 서류의 수수료 납부를 안내받은 분을 위한 민원실 위치·수납 확인 안내입니다.",
+      "eligibility": "의약무 업무 담당자로부터 제증명 수납을 안내받은 분",
+      "documents": null,
+      "fee": null,
+      "operating_hours": null,
+      "visit_steps": "발급 또는 신청하는 서류의 정확한 이름을 확인하세요. 담당자에게 수납 대상·금액·납부 방법을 안내받은 뒤 민원실에서 수납하고, 영수증과 다음 절차를 확인하세요.",
+      "public_caution": "수납만으로 인허가 심사나 서류 발급이 완료되는 것은 아닙니다. 건강진단결과서 발급과 의약무 관련 제증명은 구분해 주세요.",
+      "primary_action": "서류명과 수납 안내 내용을 확인한 뒤 민원실에 문의해 주세요.",
+      "verified_date": "2026-09-06",
+      "organization": {
+        "department": "보건행정과",
+        "team": null
+      },
+      "location": {
+        "floor": "1층",
+        "room": "민원실",
+        "route_text": "의약무 제증명 수납을 안내받은 경우 1층 민원실로 가세요.",
+        "show_map": true
+      }
+    },
+    {
+      "task_id": "A018",
+      "public_title": "예방접종 비용 수납 안내",
+      "public_search_terms": [
+        "예방접종 비용 수납 안내",
+        "예방접종 수납",
+        "예방접종 비용 납부"
+      ],
+      "sms_fields": [
+        "public_summary",
+        "location",
+        "visit_steps",
+        "public_caution"
+      ],
+      "public_summary": "보건소 예방접종 비용 납부를 안내받은 분을 위한 수납 안내입니다.",
+      "eligibility": "보건소에서 접종 가능 여부를 확인하고 비용 납부를 안내받은 분",
+      "documents": null,
+      "fee": null,
+      "operating_hours": null,
+      "visit_steps": "예방접종실에서 접종 종류와 가능 여부를 먼저 확인하세요. 수납이 필요하다고 안내받으면 금액·납부 방법을 확인하여 민원실에서 납부하고, 안내받은 접종 절차를 따르세요.",
+      "public_caution": "모든 예방접종이 유료이거나 보건소에서 가능한 것은 아닙니다. 위탁의료기관에서 받는 접종 비용을 이 민원실에서 납부하는 것으로 생각하지 마세요.",
+      "primary_action": "접종 종류와 수납 필요 여부를 예방접종실에 먼저 확인해 주세요.",
+      "verified_date": "2026-09-06",
+      "organization": {
+        "department": "보건행정과",
+        "team": null
+      },
+      "location": {
+        "floor": "1층",
+        "room": "민원실",
+        "route_text": "보건소 예방접종 수납을 안내받은 경우 1층 민원실로 가세요.",
+        "show_map": true
+      }
+    },
+    {
+      "task_id": "F107",
+      "public_title": "치매안심쉼터 위치 안내",
+      "public_search_terms": [
+        "치매안심쉼터 위치 안내",
+        "치매안심쉼터",
+        "치매안심쉼터 어디에 있나요"
+      ],
+      "sms_fields": [
+        "public_summary",
+        "location",
+        "visit_steps",
+        "public_caution"
+      ],
+      "public_summary": "동탄구보건소 배치도에 표시된 1층 치매안심쉼터 위치를 안내합니다.",
+      "eligibility": "치매쉼터의 위치를 찾는 분",
+      "documents": null,
+      "fee": null,
+      "operating_hours": null,
+      "visit_steps": "프로그램 담당자에게 이용 일정과 실제 운영 장소를 확인한 뒤 방문하세요.",
+      "public_caution": "이 위치 안내는 모든 치매 프로그램이 이 방에서 열린다는 의미가 아닙니다. 치매 검사·등록은 별도 안내를 확인하세요.",
+      "primary_action": "방문 안내에 적힌 장소와 지도 명칭이 같은지 확인해 주세요.",
+      "verified_date": "2026-09-06",
+      "organization": {
+        "department": "건강증진과",
+        "team": null
+      },
+      "location": {
+        "floor": "1층",
+        "room": "치매안심쉼터",
+        "route_text": "1층 치매안심쉼터 위치를 확인하세요.",
+        "show_map": true
+      }
+    },
+    {
+      "task_id": "F109",
+      "public_title": "모자보건실·예방접종실 위치 안내",
+      "public_search_terms": [
+        "모자보건실·예방접종실 위치 안내",
+        "모자보건실",
+        "예방접종실"
+      ],
+      "sms_fields": [
+        "public_summary",
+        "location",
+        "visit_steps",
+        "public_caution"
+      ],
+      "public_summary": "동탄구보건소 배치도에 표시된 1층 모자보건실·예방접종실 위치를 안내합니다.",
+      "eligibility": "모자보건실 또는 예방접종실을 찾는 분",
+      "documents": null,
+      "fee": null,
+      "operating_hours": null,
+      "visit_steps": "보건소 1층 정문으로 들어오세요.\n지도에 표시된 경로를 따라 모자보건실·예방접종실로 이동하세요.",
+      "public_caution": "예방접종이나 임산부 관련 업무로 방문하시는 경우, 방문 전에 담당 부서에 이용 가능 여부와 시간을 확인해 주세요.\n이 화면은 위치 안내입니다. 예약·신청이 필요한 업무는 별도로 절차를 확인해 주세요.",
+      "primary_action": "방문 안내에 적힌 장소와 지도 명칭이 같은지 확인해 주세요.",
+      "verified_date": "2026-09-06",
+      "organization": {
+        "department": "건강증진과",
+        "team": null
+      },
+      "location": {
+        "floor": "1층",
+        "room": "모자보건실·예방접종실",
+        "route_text": "1층 모자보건실·예방접종실 위치를 확인하세요.",
+        "show_map": true
+      }
+    },
+    {
+      "task_id": "F111",
+      "public_title": "통합건강증진실 위치 안내",
+      "public_search_terms": [
+        "통합건강증진실 위치 안내",
+        "통합건강증진실",
+        "통합건강증진실 어디에 있나요"
+      ],
+      "sms_fields": [
+        "public_summary",
+        "location",
+        "visit_steps",
+        "public_caution"
+      ],
+      "public_summary": "동탄구보건소 배치도에 표시된 1층 통합건강증진실 위치를 안내합니다.",
+      "eligibility": "배치도에 표시된 통합건강증진실을 찾는 분",
+      "documents": null,
+      "fee": null,
+      "operating_hours": null,
+      "visit_steps": "배치도에 인쇄된 명칭을 확인하세요. 받은 예약·방문 안내에 이 방이 기재되어 있는지 확인하고 방문하세요.",
+      "public_caution": "통합건강증진실의 위치 안내입니다. 모든 건강증진 사업의 접수처이거나 자유 이용 시설이라는 뜻은 아닙니다.",
+      "primary_action": "방문 안내에 적힌 장소와 지도 명칭이 같은지 확인해 주세요.",
+      "verified_date": "2026-09-06",
+      "organization": {
+        "department": "건강증진과",
+        "team": null
+      },
+      "location": {
+        "floor": "1층",
+        "room": "통합건강증진실",
+        "route_text": "1층 통합건강증진실 위치를 확인하세요.",
+        "show_map": true
+      }
+    },
+    {
+      "task_id": "F112",
+      "public_title": "정신건강복지센터 위치 안내",
+      "public_search_terms": [
+        "정신건강복지센터 위치 안내",
+        "정신건강복지센터",
+        "정신건강복지센터 어디에 있나요"
+      ],
+      "sms_fields": [
+        "public_summary",
+        "location",
+        "visit_steps",
+        "public_caution"
+      ],
+      "public_summary": "동탄구보건소 배치도에 표시된 1층 정신건강복지센터 위치를 안내합니다.",
+      "eligibility": "정신건강복지센터 동탄분소의 위치를 찾는 분",
+      "documents": null,
+      "fee": null,
+      "operating_hours": null,
+      "visit_steps": "센터에 동탄분소 방문을 원한다고 알려 주세요. 상담 가능 시간과 예약·접수 방법을 확인하고 안내받은 일정에 방문하세요.",
+      "public_caution": "표시된 연락처는 센터 공통 번호이므로 동탄분소 이용이라고 말씀해 주세요. 이 공간은 응급실이나 의료기관 진료실 안내가 아닙니다.",
+      "primary_action": "방문 안내에 적힌 장소와 지도 명칭이 같은지 확인해 주세요.",
+      "verified_date": "2026-09-06",
+      "organization": {
+        "department": "정신건강복지센터",
+        "team": null
+      },
+      "location": {
+        "floor": "1층",
+        "room": "정신건강복지센터",
+        "route_text": "1층 정신건강복지센터 위치를 확인하세요.",
+        "show_map": true
+      }
+    },
+    {
+      "task_id": "F202",
+      "public_title": "운동실 위치 안내",
+      "public_search_terms": [
+        "운동실 위치 안내",
+        "운동실",
+        "운동실 어디에 있나요"
+      ],
+      "sms_fields": [
+        "public_summary",
+        "location",
+        "visit_steps",
+        "public_caution"
+      ],
+      "public_summary": "동탄구보건소 배치도에 표시된 2층 운동실 위치를 안내합니다.",
+      "eligibility": "배치도에 표시된 운동실을 찾는 분",
+      "documents": null,
+      "fee": null,
+      "operating_hours": null,
+      "visit_steps": "2층 운동실의 인쇄 명칭을 확인하세요. 참여를 안내받은 프로그램의 장소가 운동실인지 확인한 뒤 방문하세요.",
+      "public_caution": "옆의 운동지도실과 다른 방입니다. 위치 표시가 자유로운 시설 이용이나 수업 신청을 보장하지는 않습니다.",
+      "primary_action": "방문 안내에 적힌 장소와 지도 명칭이 같은지 확인해 주세요.",
+      "verified_date": "2026-09-06",
+      "organization": {
+        "department": "건강증진과",
+        "team": null
+      },
+      "location": {
+        "floor": "2층",
+        "room": "운동실",
+        "route_text": "2층 운동실 위치를 확인하세요.",
+        "show_map": true
+      }
+    },
+    {
+      "task_id": "F203",
+      "public_title": "운동지도실 위치 안내",
+      "public_search_terms": [
+        "운동지도실 위치 안내",
+        "운동지도실",
+        "운동지도실 어디에 있나요"
+      ],
+      "sms_fields": [
+        "public_summary",
+        "location",
+        "visit_steps",
+        "public_caution"
+      ],
+      "public_summary": "동탄구보건소 배치도에 표시된 2층 운동지도실 위치를 안내합니다.",
+      "eligibility": "배치도에 표시된 운동지도실을 찾는 분",
+      "documents": null,
+      "fee": null,
+      "operating_hours": null,
+      "visit_steps": "2층 운동지도실의 인쇄 명칭을 확인하세요. 상담·운동 지도를 안내받은 경우 해당 일정과 장소를 확인하고 방문하세요.",
+      "public_caution": "운동실과 운동지도실은 서로 다른 명칭입니다. 운영시간·준비물은 안내받은 프로그램을 기준으로 확인하세요.",
+      "primary_action": "방문 안내에 적힌 장소와 지도 명칭이 같은지 확인해 주세요.",
+      "verified_date": "2026-09-06",
+      "organization": {
+        "department": "건강증진과",
+        "team": null
+      },
+      "location": {
+        "floor": "2층",
+        "room": "운동지도실",
+        "route_text": "2층 운동지도실 위치를 확인하세요.",
+        "show_map": true
+      }
+    },
+    {
+      "task_id": "F206",
+      "public_title": "대강당 위치 안내",
+      "public_search_terms": [
+        "대강당 위치 안내",
+        "대강당",
+        "대강당 어디에 있나요"
+      ],
+      "sms_fields": [
+        "public_summary",
+        "location",
+        "visit_steps",
+        "public_caution"
+      ],
+      "public_summary": "동탄구보건소 배치도에 표시된 2층 대강당 위치를 안내합니다.",
+      "eligibility": "보건소 행사나 프로그램의 대강당 위치를 찾는 분",
+      "documents": null,
+      "fee": null,
+      "operating_hours": null,
+      "visit_steps": "행사 안내에서 일시와 장소를 확인하세요. 동탄구보건소 2층 대강당이라고 안내받은 경우 이 지도를 이용하세요.",
+      "public_caution": "시설 위치 안내이며 대관 신청이나 자유 출입 허용 안내가 아닙니다. 신청이 필요한 행사는 참여 확정 여부를 먼저 확인하세요.",
+      "primary_action": "방문 안내에 적힌 장소와 지도 명칭이 같은지 확인해 주세요.",
+      "verified_date": "2026-09-06",
+      "organization": {
+        "department": "공용시설",
+        "team": null
+      },
+      "location": {
+        "floor": "2층",
+        "room": "대강당",
+        "route_text": "2층 대강당 위치를 확인하세요.",
+        "show_map": true
+      }
+    },
+    {
+      "task_id": "F301",
+      "public_title": "보건소장실 위치 안내",
+      "public_search_terms": [
+        "보건소장실 위치 안내",
+        "보건소장실",
+        "보건소장실 어디에 있나요"
+      ],
+      "sms_fields": [
+        "public_summary",
+        "location",
+        "visit_steps",
+        "public_caution"
+      ],
+      "public_summary": "동탄구보건소 배치도에 표시된 3층 보건소장실 위치를 안내합니다.",
+      "eligibility": "보건소장실 방문을 안내받은 분",
+      "documents": null,
+      "fee": null,
+      "operating_hours": null,
+      "visit_steps": "방문 목적과 약속 여부를 안내받은 담당자에게 확인한 뒤 3층에서 보건소장실 명칭을 찾으세요.",
+      "public_caution": "소장실 위치 표시가 면담 예약을 의미하지는 않습니다. 일반 민원은 먼저 해당 업무의 접수 안내를 확인하세요.",
+      "primary_action": "방문 안내에 적힌 장소와 지도 명칭이 같은지 확인해 주세요.",
+      "verified_date": "2026-09-06",
+      "organization": {
+        "department": "보건소장실",
+        "team": null
+      },
+      "location": {
+        "floor": "3층",
+        "room": "보건소장실",
+        "route_text": "3층 보건소장실 위치를 확인하세요.",
+        "show_map": true
+      }
+    },
+    {
+      "task_id": "F302",
+      "public_title": "보건행정과 위치 안내",
+      "public_search_terms": [
+        "보건행정과 위치 안내",
+        "보건행정과",
+        "보건행정과 어디에 있나요"
+      ],
+      "sms_fields": [
+        "public_summary",
+        "location",
+        "visit_steps",
+        "public_caution"
+      ],
+      "public_summary": "동탄구보건소 배치도에 표시된 3층 보건행정과 위치를 안내합니다.",
+      "eligibility": "보건행정과의 사무실 위치를 찾는 분",
+      "documents": null,
+      "fee": null,
+      "operating_hours": null,
+      "visit_steps": "방문할 업무의 이름을 먼저 확인하세요. 보건행정과 방문을 안내받았다면 3층 사무실에서 해당 업무 담당자에게 안내받으세요.",
+      "public_caution": "담당 부서의 위치입니다. 검사·진료·수납 등 실제 방문 장소는 해당 민원 안내와 다를 수 있습니다.",
+      "primary_action": "방문 안내에 적힌 장소와 지도 명칭이 같은지 확인해 주세요.",
+      "verified_date": "2026-09-06",
+      "organization": {
+        "department": "보건행정과",
+        "team": null
+      },
+      "location": {
+        "floor": "3층",
+        "room": "보건행정과",
+        "route_text": "담당 부서 위치: 3층 보건행정과입니다.",
+        "show_map": true
+      }
+    },
+    {
+      "task_id": "F303",
+      "public_title": "건강증진과 위치 안내",
+      "public_search_terms": [
+        "건강증진과 위치 안내",
+        "건강증진과",
+        "건강증진과 어디에 있나요"
+      ],
+      "sms_fields": [
+        "public_summary",
+        "location",
+        "visit_steps",
+        "public_caution"
+      ],
+      "public_summary": "동탄구보건소 배치도에 표시된 3층 건강증진과 위치를 안내합니다.",
+      "eligibility": "건강증진과의 사무실 위치를 찾는 분",
+      "documents": null,
+      "fee": null,
+      "operating_hours": null,
+      "visit_steps": "문의할 사업명을 확인하세요. 건강증진과 방문을 안내받았다면 3층 사무실에서 해당 사업 담당자에게 안내받으세요.",
+      "public_caution": "담당 부서의 위치입니다. 교육·지원 신청·상담이 모두 이 사무실에서 진행되는 것은 아닙니다.",
+      "primary_action": "방문 안내에 적힌 장소와 지도 명칭이 같은지 확인해 주세요.",
+      "verified_date": "2026-09-06",
+      "organization": {
+        "department": "건강증진과",
+        "team": null
+      },
+      "location": {
+        "floor": "3층",
+        "room": "건강증진과",
+        "route_text": "담당 부서 위치: 3층 건강증진과입니다.",
+        "show_map": true
+      }
+    },
+    {
+      "task_id": "F305",
+      "public_title": "건강증진과 과장실 위치 안내",
+      "public_search_terms": [
+        "건강증진과 과장실 위치 안내",
+        "건강증진과 과장실",
+        "건강증진과 과장실 어디에 있나요"
+      ],
+      "sms_fields": [
+        "public_summary",
+        "location",
+        "visit_steps",
+        "public_caution"
+      ],
+      "public_summary": "동탄구보건소 배치도에 표시된 3층 건강증진과 과장실 위치를 안내합니다.",
+      "eligibility": "건강증진과 과장실 방문을 안내받은 분",
+      "documents": null,
+      "fee": null,
+      "operating_hours": null,
+      "visit_steps": "방문 안내와 약속 여부를 먼저 확인하세요. 3층 배치도에서 건강증진과 과장실 명칭을 찾으세요.",
+      "public_caution": "일반 건강증진과 사무실과 별도 공간입니다. 이 안내는 면담 예약이나 자유 출입을 의미하지 않습니다.",
+      "primary_action": "방문 안내에 적힌 장소와 지도 명칭이 같은지 확인해 주세요.",
+      "verified_date": "2026-09-06",
+      "organization": {
+        "department": "건강증진과",
+        "team": null
+      },
+      "location": {
+        "floor": "3층",
+        "room": "건강증진과 과장실",
+        "route_text": "3층 건강증진과 과장실 위치를 확인하세요.",
+        "show_map": true
       }
     }
   ]

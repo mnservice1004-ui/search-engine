@@ -291,6 +291,9 @@ function resetMap() {
 }
 
 function resetSearchView(message = '검색 결과가 이곳에 표시됩니다.', preserveHeading = false) {
+  window.VaccinationView?.reset();
+  window.ServiceGuidanceView?.reset();
+  window.ResultsView?.reset();
   state.selectedTask = null;
   if (!preserveHeading) resultsHeadingEl.textContent = '민원 검색 결과';
   clearChildren(resultsEl);
@@ -444,6 +447,8 @@ function getPrimaryContact(task) {
 }
 
 function appendPrimaryContact(container, contact) {
+  const purpose = contact.purpose || contact.role;
+  if (purpose) container.appendChild(createText('span', '', `${purpose}: `));
   const displayPhone = contact.display_phone || contact.phone || '';
   const telDigits = String(contact.phone || displayPhone).replace(/\D/g, '');
   if (telDigits) {
@@ -459,16 +464,36 @@ function appendPrimaryContact(container, contact) {
   }
 }
 
+// Reviewed facility/department LOCATION guides, independent of title wording.
+// Unlisted and future tasks keep full guidance; never infer from an '안내' suffix.
+const LOCATION_ONLY_GUIDE_IDS = new Set([
+  'F102', 'F103', 'F104', 'F106', 'F107', 'F108', 'F109', 'F110',
+  'F111', 'F112', 'F201', 'F202', 'F203', 'F204', 'F206',
+  'F301', 'F302', 'F303', 'F305'
+]);
+function isLocationOnlyGuide(task) {
+  return Boolean(hasPublicText(task?.public_title) && LOCATION_ONLY_GUIDE_IDS.has(task?.id));
+}
+
+function getLocationVisitText(task) {
+  // Directions and cautions have different meanings; never merge them into
+  // an apparent sequence of actions for a visitor.
+  return task?.visit_steps || '';
+}
+
 function showDetail(task) {
   state.selectedTask = task;
   clearChildren(detailEl);
   detailEl.className = 'detail-grid';
   const isGuidedTask = hasPublicText(task.public_title);
+  const isLocationGuide = isLocationOnlyGuide(task);
   if (isGuidedTask) detailEl.appendChild(createText('h3', '', task.public_title));
 
   const publicLocation = isGuidedTask ? task.route : null;
-  addDetailRow(detailEl, '어떤 업무인가요?', isGuidedTask ? task.public_summary : null);
-  addDetailRow(detailEl, '누가 이용할 수 있나요?', isGuidedTask ? task.eligibility : null);
+  if (!isLocationGuide) {
+    addDetailRow(detailEl, '어떤 업무인가요?', isGuidedTask ? task.public_summary : null);
+    addDetailRow(detailEl, '누가 이용할 수 있나요?', isGuidedTask ? task.eligibility : null);
+  }
   addDetailRow(detailEl, '어디로 가나요?', publicLocation);
   addDetailRow(detailEl, '무엇을 준비하나요?', isGuidedTask ? task.documents : null);
   addDetailRow(detailEl, '비용은 얼마인가요?', isGuidedTask ? task.fee : null);
@@ -476,16 +501,31 @@ function showDetail(task) {
   addDetailRow(
     detailEl,
     '어떻게 이용하나요?',
-    isGuidedTask ? joinPublicText([task.visit_steps, task.primary_action]) : null,
+    isGuidedTask ? (isLocationGuide ? getLocationVisitText(task) : task.visit_steps) : null,
     'script-box'
   );
+  if (!isLocationGuide && task.primary_action !== task.visit_steps) {
+    addDetailRow(detailEl, '추가 안내', isGuidedTask ? task.primary_action : null);
+  }
 
   const primaryContact = getPrimaryContact(task);
-  if (primaryContact) {
+  const detailContacts = [];
+  const seenPhones = new Set();
+  for (const contact of [primaryContact, ...(Array.isArray(task.contacts) ? task.contacts : [])]) {
+    if (!contact) continue;
+    const key = String(contact.phone || contact.display_phone || '').replace(/\D/g, '');
+    if (!key || seenPhones.has(key)) continue;
+    seenPhones.add(key);
+    detailContacts.push(contact);
+  }
+  if (detailContacts.length) {
     const phoneRow = createText('div', 'detail-row', '');
     phoneRow.appendChild(createText('strong', '', '문의전화'));
     const contactValue = createText('span', '', '');
-    appendPrimaryContact(contactValue, primaryContact);
+    for (const contact of detailContacts) {
+      if (contactValue.children.length) contactValue.appendChild(document.createElement('br'));
+      appendPrimaryContact(contactValue, contact);
+    }
     phoneRow.appendChild(contactValue);
     detailEl.appendChild(phoneRow);
   }
@@ -494,17 +534,16 @@ function showDetail(task) {
   if (isGuidedTask) {
     const smsButton = createText('button', 'contact-button', '이 안내를 문자메시지로 받기');
     smsButton.type = 'button';
-    smsButton.disabled = !primaryContact?.phone;
-    if (!primaryContact?.phone) {
-      smsButton.title = '공식 문의전화가 등록된 뒤 사용할 수 있습니다.';
-    }
     smsButton.addEventListener('click', openSmsDialog);
     detailEl.appendChild(smsButton);
     if (!primaryContact?.phone) {
-      detailEl.appendChild(createText('p', 'help', '공식 문의전화 미등록으로 문자 기능이 비활성화되어 있습니다.'));
+      detailEl.appendChild(createText('p', 'help', detailContacts.length
+        ? '위 문의전화에서 필요한 업무의 번호를 선택해 주세요.'
+        : '문의전화는 미등록 상태이며, 안내 내용은 문자로 받을 수 있습니다.'));
     }
   }
   showMap(task);
+  window.DetailView?.render(task, {isLocationGuide, primaryContact});
 }
 
 function renderResults(items) {
@@ -519,7 +558,7 @@ function renderResults(items) {
     button.dataset.taskId = task.id;
     button.setAttribute('aria-pressed', 'false');
     button.setAttribute('aria-haspopup', 'dialog');
-    button.setAttribute('aria-controls', 'detail-dialog');
+    button.setAttribute('aria-controls', task.result_kind === 'guide' ? 'service-guide-dialog' : 'detail-dialog');
 
     button.appendChild(createText('span', 'result-index', String(index + 1).padStart(2, '0')));
 
@@ -550,6 +589,7 @@ function renderResults(items) {
     button.appendChild(side);
 
     button.addEventListener('click', () => {
+      if (task.result_kind === 'guide') { task.open(button); return; }
       document.querySelectorAll('.result-card').forEach((card) => {
         card.classList.remove('active');
         card.setAttribute('aria-pressed', 'false');
@@ -564,25 +604,33 @@ function renderResults(items) {
     });
     resultsEl.appendChild(button);
   });
+  window.ResultsView?.render(items);
 }
 
 async function runSearch(value = queryInput.value) {
   const query = value.trim();
+  const workspace = el('search-workspace');
+  workspace.hidden = false;
   if (state.searchController) state.searchController.abort();
+  window.VaccinationView?.reset();
+  window.ServiceGuidanceView?.reset();
   if (query.length < 2) {
     resetSearchView();
     statusEl.textContent = '두 글자 이상의 검색어를 입력하십시오.';
+    workspace.scrollIntoView({block: 'start', behavior: 'auto'});
     return;
   }
   statusEl.textContent = '검색 중입니다...';
   state.searchController = new AbortController();
+  const controller = state.searchController;
   try {
     const data = await getJson('/api/search', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({query}),
-      signal: state.searchController.signal
+      body: JSON.stringify(document.body.classList.contains('results-v2') ? {query, limit: 100} : {query}),
+      signal: controller.signal
     });
+    if (controller.signal.aborted || state.searchController !== controller) return;
     if (query !== queryInput.value.trim()) return;
     const aiNotice = data.expanded_terms?.length
       ? ' · AI 보조 검색어를 사용했습니다.'
@@ -595,11 +643,27 @@ async function runSearch(value = queryInput.value) {
       : `관련 업무 ${total}건`;
     resultsHeadingEl.textContent = `“${query}” 검색 결과`;
     statusEl.textContent = `${shown}${aiNotice}`;
-    renderResults(items);
+    const guides = window.ServiceGuidanceView?.entries(data, query, async (taskId, trigger) => {
+      const task = await getJson(`/api/tasks/${encodeURIComponent(taskId)}`);
+      if (query !== queryInput.value.trim() || !trigger.isConnected) return;
+      state.detailTrigger = trigger;
+      if (!detailDialogEl.open) detailDialogEl.showModal();
+      showDetail(task);
+    }) || [];
+    const entries = window.ServiceGuidanceView?.compose(guides, items) || items;
+    renderResults(entries);
+    window.VaccinationView?.render(data.vaccination, query);
+    statusEl.textContent = `검색 결과 ${entries.length}건 · 이용 안내 ${guides.length}건 · 업무·위치 ${entries.length - guides.length}건`;
+    if (!guides.length && !items.length && window.VaccinationView?.hasResults()) {
+      resultsEl.querySelector('.empty').textContent = '일치하는 업무·이용 안내가 없습니다. 아래 참고자료를 확인할 수 있습니다.';
+    }
+    workspace.scrollIntoView({block: 'start', behavior: 'auto'});
   } catch (error) {
+    if (controller.signal.aborted || state.searchController !== controller) return;
     if (error.name === 'AbortError') return;
     resetSearchView('검색 중 오류가 발생했습니다. 잠시 후 다시 시도하십시오.');
     statusEl.textContent = error.message;
+    workspace.scrollIntoView({block: 'start', behavior: 'auto'});
   }
 }
 
@@ -633,18 +697,77 @@ async function loadSuggestions() {
   }
 }
 
-function openSmsDialog() {
-  el('sms-task-name').textContent = state.selectedTask?.public_title || '';
+const SMS_MESSAGE_KIND = 'guidance';
+let smsPreviewVersion = 0;
+let smsRequestId = null;
+let smsBusy = false;
+let smsPreviewReady = false;
+let smsDialogTrigger = null;
+
+async function updateSmsPreview() {
+  const version = ++smsPreviewVersion;
+  smsRequestId = crypto.randomUUID();
+  smsPreviewReady = false;
+  el('send-sms').disabled = true;
+  el('sms-preview').value = '';
+  el('sms-status').textContent = '발송 내용을 확인하고 있습니다...';
+  try {
+    const data = await getJson('/api/sms/preview', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({task_id: state.selectedTask.id, message_kind: SMS_MESSAGE_KIND})
+    });
+    if (version !== smsPreviewVersion) return;
+    el('sms-preview').value = data.text;
+    smsPreviewReady = data.ready;
+    el('sms-status').textContent = smsPreviewReady ? '' : (data.notice || '문자 발송 준비가 완료되지 않았습니다. 잠시 후 다시 시도해 주세요.');
+    el('send-sms').disabled = !smsPreviewReady || smsBusy;
+  } catch (error) {
+    if (version === smsPreviewVersion) el('sms-status').textContent = error.message;
+  }
+}
+
+function smsTaskHeading(task) {
+  const title = task?.public_title || '';
+  return title === '예방접종 장소와 준비사항을 확인하고 싶으신가요?'
+    ? '예방접종 장소와 준비사항을 알려드릴게요.'
+    : title;
+}
+
+function openSmsDialog(event) {
+  if (smsBusy) return;
+  smsDialogTrigger = event?.currentTarget || document.activeElement;
+  el('sms-task-name').textContent = smsTaskHeading(state.selectedTask);
   el('sms-status').textContent = '';
   el('recipient').value = '';
   el('consent').checked = false;
   el('sms-dialog').showModal();
+  updateSmsPreview();
+}
+
+function showSmsResult(data) {
+  const mocked = data.status === 'mocked';
+  el('sms-result-title').textContent = mocked ? '모의 발송이 완료되었습니다' : '발송되었습니다';
+  el('sms-result-message').textContent = mocked
+    ? '테스트 모드입니다. 실제 문자는 발송되지 않았습니다.'
+    : '발송 서비스에 요청이 접수되었습니다.\n실제 수신까지는 시간이 걸릴 수 있습니다.';
+  el('sms-dialog').close();
+  el('sms-result-dialog').showModal();
+}
+
+function dismissSmsResult(event) {
+  // Native dialog backdrops and the card's own empty padding target the dialog.
+  if (event.target === el('sms-result-dialog')) el('sms-result-dialog').close();
 }
 
 async function submitSms(event) {
   event.preventDefault();
+  if (smsBusy || !smsPreviewReady) return;
+  smsBusy = true;
   const sendButton = el('send-sms');
   sendButton.disabled = true;
+  el('recipient').readOnly = true;
+  el('consent').disabled = true;
+  el('cancel-sms').disabled = true;
   el('sms-status').textContent = '전송 중입니다...';
   try {
     const data = await getJson('/api/sms', {
@@ -653,16 +776,25 @@ async function submitSms(event) {
       body: JSON.stringify({
         task_id: state.selectedTask.id,
         recipient: el('recipient').value,
-        consent: el('consent').checked
+        consent: el('consent').checked,
+        message_kind: SMS_MESSAGE_KIND,
+        request_id: smsRequestId
       })
     });
-    el('sms-status').textContent = data.status === 'mocked'
-      ? '모의 전송에 성공했습니다. SMS_MODE=live에서 실제 전송됩니다.'
-      : '문자 발송 요청이 접수되었습니다.';
+    if (data.status !== 'accepted' && data.status !== 'mocked') {
+      throw new Error('문자 발송 결과를 확인할 수 없습니다. 중복 발송하지 말고 관리자에게 확인해 주세요.');
+    }
+    smsPreviewReady = false;
+    el('sms-status').textContent = '';
+    showSmsResult(data);
   } catch (error) {
     el('sms-status').textContent = error.message;
   } finally {
-    sendButton.disabled = false;
+    smsBusy = false;
+    sendButton.disabled = !smsPreviewReady;
+    el('recipient').readOnly = false;
+    el('consent').disabled = false;
+    el('cancel-sms').disabled = false;
   }
 }
 
@@ -673,8 +805,10 @@ el('clear-button').addEventListener('click', () => {
   queryInput.value = '';
   clearChildren(suggestionsEl);
   resetSearchView();
+  el('search-workspace').hidden = true;
   statusEl.textContent = '검색어를 입력해 주세요.';
-  queryInput.focus();
+  queryInput.focus({preventScroll: true});
+  window.scrollTo({top: 0, behavior: 'auto'});
 });
 document.querySelectorAll('.quick-suggestion').forEach((button) => {
   button.addEventListener('click', () => {
@@ -691,7 +825,14 @@ queryInput.addEventListener('input', () => {
   state.suggestionTimer = setTimeout(loadSuggestions, 300);
 });
 el('sms-form').addEventListener('submit', submitSms);
-el('cancel-sms').addEventListener('click', () => el('sms-dialog').close());
+el('recipient').addEventListener('input', () => { smsRequestId = crypto.randomUUID(); });
+el('cancel-sms').addEventListener('click', () => { if (!smsBusy) el('sms-dialog').close(); });
+el('sms-dialog').addEventListener('cancel', (event) => { if (smsBusy) event.preventDefault(); });
+el('sms-result-dialog').addEventListener('click', dismissSmsResult);
+el('close-sms-result').addEventListener('click', () => el('sms-result-dialog').close());
+el('sms-result-dialog').addEventListener('close', () => {
+  if (smsDialogTrigger?.isConnected) smsDialogTrigger.focus({preventScroll: true});
+});
 el('close-detail').addEventListener('click', () => detailDialogEl.close());
 detailDialogEl.addEventListener('close', () => {
   if (state.detailTrigger?.isConnected) state.detailTrigger.focus();
@@ -764,7 +905,10 @@ getJson('/api/map-points').then((data) => {
   state.mapPointsError = true;
   if (state.selectedTask) showMap(state.selectedTask);
 });
-queryInput.focus();
+// Preserve the initial HOME composition; do not scroll or open a mobile keyboard.
+if (matchMedia('(min-width: 761px) and (pointer: fine)').matches) {
+  queryInput.focus({preventScroll: true});
+}
 
 
 

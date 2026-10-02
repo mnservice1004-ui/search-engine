@@ -26,8 +26,9 @@ function element(tag, className, text) {
   };
 }
 const measured = [];
-const context = {
-  createText: element,
+  const context = {
+    window: {},
+    createText: element,
   clearChildren() { cards.length = 0; },
   resultsEl: {appendChild(card) { cards.push(card); }},
   document: {querySelectorAll() { return cards; }},

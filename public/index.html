@@ -3,46 +3,55 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>동탄구보건소 보건민원 정보 검색</title>
+  <title>동탄구보건소 | 건강과 일상을 잇는 보건서비스</title>
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="/css/style.css?revision=hero-atmosphere-1">
-  <script src="/js/app.js?revision=hero-typewriter-2" defer></script>
-  <script src="/qa/layer-engine.js?revision=a-whole-sky" defer></script>
-  <script src="/qa/layer-home.js?revision=a-whole-sky" defer></script>
+  <link rel="stylesheet" href="/css/home-v2.css?revision=20261001-ui-copy">
+  <link rel="stylesheet" href="/css/results-v2.css?revision=results-reference-3">
+  <link rel="stylesheet" href="/css/detail-v2.css?revision=detail-intro-removed-1">
+  <link rel="stylesheet" href="/css/monthly-plans.css">
+  <link rel="stylesheet" href="/css/vaccination.css">
+  <script src="/js/vaccination.js" defer></script>
+  <link rel="stylesheet" href="/css/examinations.css">
+  <script src="/js/examinations.js" defer></script>
+  <link rel="preload" as="image" href="/images/hero-building-v2.png">
+  <script src="/js/app.js?revision=detail-copy-2" defer></script>
+  <script src="/js/results-v2.js?revision=results-v2-1" defer></script>
+  <script src="/js/detail-v2.js?revision=detail-intro-removed-1" defer></script>
+  <script src="/js/home-v2.js?revision=home-v2-1" defer></script>
+  <script src="/js/monthly-plans.js" defer></script>
+  <link rel="stylesheet" href="/css/home-v3.css?revision=20261001-1" media="(min-width: 821px)">
+  <script src="/js/home-v3.js?revision=20261001-1" defer></script>
+  <link rel="preload" href="/fonts/PretendardVariable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/readability.css?revision=20261001-ui-copy" media="(min-width: 821px)">
+  <link rel="stylesheet" href="/css/hero-slideshow.css?revision=20261001-1" media="(min-width: 821px)">
+  <script src="/js/hero-slideshow.js?revision=20261001-2" defer></script>
+  <link rel="stylesheet" href="/css/mobile-home.css?revision=20261001-restore" media="(max-width: 820px)">
+  <script src="/js/mobile-home.js?revision=20261001-restore" defer></script>
 </head>
-<body>
-  <div class="hero-stage">
-    <canvas id="hero-atmosphere" class="hero-atmosphere" aria-hidden="true" hidden></canvas>
-    <header class="site-header">
-      <div class="topbar">
-        <div class="topbar-brand-row">
-          <a class="city-bi-link" href="https://www.hscity.go.kr/"
-             aria-label="화성특례시 홈페이지">
-            <img class="city-bi" src="/images/hwaseong-special-city-bi.png" alt="화성특례시">
-          </a>
-          <a class="health-center-link" href="https://www.hscity.go.kr/health/index.do">동탄구보건소</a>
-        </div>
-      </div>
+<body class="home-v2 results-v2 home-v3">
+  <a class="home-skip-link" href="#query">검색창으로 바로가기</a>
+  <div class="portal-utility"><div class="portal-width"><span>시민의 건강한 일상과 함께합니다</span><div><span class="home-pilot-badge">개인 제작 · 비공식 평가용</span><a href="https://www.hscity.go.kr/health/index.do" target="_blank" rel="noopener noreferrer">화성시 보건소 공식 홈페이지 ↗</a></div></div></div>
+  <header class="home-header">
+    <div class="home-brand">
+      <a class="home-city-logo" href="https://www.hscity.go.kr/" target="_blank" rel="noopener noreferrer" aria-label="화성특례시 공식 홈페이지 (새 창)"><img src="/images/hwaseong-special-city-bi.png" alt="화성특례시"></a>
+      <a id="home-reset" class="home-brand-name" href="/" data-home-reset>동탄구보건소</a>
+    </div>
+    <button id="portal-menu-toggle" class="portal-menu-toggle" type="button" aria-expanded="false" aria-controls="portal-navigation">메뉴 <span aria-hidden="true">☰</span></button>
+    <nav id="portal-navigation" class="home-nav" aria-label="주요 메뉴">
+      <a href="/#health-services">업무·사업 안내</a>
+      <a href="/monthly-plans.html">일정·프로그램</a>
+      <a href="/#visit-guide">방문 안내</a>
+      <button class="home-location-button" type="button" data-home-location>위치·문의 <span aria-hidden="true">↗</span></button>
+    </nav>
+  </header>
 
-      <div class="hero-intro">
-        <div class="service-signature">
-          <span>보건민원 길찾기</span>
-        </div>
-        <h1 class="hero-title">
-          <span class="hero-title-line hero-title-line--top">찾고 싶은 보건민원을</span>
-          <span class="hero-title-line hero-title-line--bottom">말하듯 검색하세요</span>
-        </h1>
-        <div class="hero-subtitle-viewport" tabindex="0" role="button" aria-pressed="false"
-             aria-label="필요한 업무와 담당 부서, 찾아가는 위치까지 한 화면에서 안내해 드립니다."
-             aria-describedby="hero-subtitle-help">
-          <p class="hero-subtitle" aria-hidden="true">필요한 업무와 담당 부서, 찾아가는 위치까지 한 화면에서 안내해 드립니다.</p>
-        </div>
-        <span id="hero-subtitle-help" class="sr-only">클릭하거나 Enter 또는 Space 키를 누르면 안내문 애니메이션을 일시정지하거나 다시 재생합니다.</span>
-      </div>
-    </header>
-
-    <main>
-      <section class="search-panel" aria-labelledby="search-heading">
+  <main id="home-main">
+    <section class="home-hero" aria-labelledby="home-title">
+      <div class="home-hero-inner">
+        <h1 id="home-title">건강한 일상,<br><span>가까이에서 함께.</span></h1>
+        <p class="home-description">검사부터 예방접종, 나에게 맞는 지원까지.<br>필요한 보건서비스를 쉽고 빠르게 찾아보세요.</p>
+        <section class="search-panel" aria-labelledby="search-heading">
         <h2 id="search-heading" class="sr-only">민원 검색</h2>
         <label for="query" class="sr-only">어떤 업무를 찾으십니까?</label>
         <div class="search-row">
@@ -52,8 +61,8 @@
               <path d="m16 16 4.2 4.2"/>
             </svg>
             <input id="query" type="search" maxlength="80" autocomplete="off"
-                   placeholder="찾으시는 민원을 말하듯 입력해 보세요"
-                   aria-describedby="search-help" aria-controls="suggestions">
+                   placeholder="업무명이나 궁금한 내용"
+                   aria-describedby="search-help search-examples home-privacy" aria-controls="suggestions">
             <button id="clear-button" class="clear-button" type="button" aria-label="검색어 지우기">
               <span aria-hidden="true">×</span>
             </button>
@@ -65,47 +74,157 @@
             </svg>
           </button>
         </div>
+        <p id="search-examples" class="search-examples">예: 보건증, 접종, 암진단, 산후도우미</p>
         <p id="search-help" class="sr-only">두 글자 이상의 핵심어를 입력하십시오.</p>
         <div class="recommendation-row">
-          <span class="recommendation-label">추천</span>
-          <div class="quick-suggestions" aria-label="추천 검색어">
-            <button type="button" class="quick-suggestion" data-query="연명치료">연명치료</button>
-            <button type="button" class="quick-suggestion" data-query="예방접종">예방접종</button>
-            <button type="button" class="quick-suggestion" data-query="산후도우미">산후도우미</button>
-            <button type="button" class="quick-suggestion" data-query="건강진단서">건강진단서</button>
+          <span class="recommendation-label">많이 찾는 민원</span>
+          <div class="quick-suggestions" aria-label="많이 찾는 민원 검색">
+            <button type="button" class="quick-suggestion" data-query="건강진단결과서 발급">건강진단결과서 발급 안내</button>
+            <button type="button" class="quick-suggestion" data-query="예방접종">예방접종 안내</button>
+            <button type="button" class="quick-suggestion" data-query="산후도우미">산후도우미 지원 안내</button>
+            <button type="button" class="quick-suggestion" data-query="사전연명의료의향서">사전연명의료의향서 상담</button>
           </div>
           <div id="suggestions" class="suggestions" aria-label="입력어 추천" aria-live="polite"></div>
         </div>
+        </section>
+        <p id="home-privacy" class="home-privacy"><span aria-hidden="true">ⓘ</span> 주민등록번호와 연락처 등 개인정보는 입력하지 마세요.</p>
+      </div>
+      <section class="portal-hero-visual hero-slideshow" id="hero-slideshow" aria-label="동탄구보건소 사진" aria-roledescription="슬라이드쇼">
+        <div class="hero-slides" aria-live="off">
+          <img class="hero-slide is-active" src="/images/hero-building-v2.png" alt="동탄구보건소 외관" aria-hidden="false" data-caption="우리 동네 건강의 시작" decoding="async">
+          <img class="hero-slide" data-src="/images/hero-photo-1.jpg" alt="동탄구보건소 정문" aria-hidden="true" data-caption="방문을 맞이하는 정문" decoding="async">
+          <img class="hero-slide" data-src="/images/hero-photo-2.jpg" alt="보건소 로비와 민원실" aria-hidden="true" data-caption="로비와 민원실" decoding="async">
+          <img class="hero-slide" data-src="/images/hero-photo-3.jpg" alt="보건소 복도와 층별 안내판" aria-hidden="true" data-caption="복도와 층별 안내" decoding="async">
+        </div>
+        <div class="portal-photo-caption"><span id="hero-photo-caption">우리 동네 건강의 시작</span><strong>동탄구보건소</strong></div>
+        <div class="hero-slide-controls" hidden>
+          <button type="button" id="hero-photo-prev" aria-label="이전 사진"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg></button>
+          <span id="hero-photo-count" aria-label="전체 4장 중 1번째 사진">1 / 4</span>
+          <button type="button" id="hero-photo-next" aria-label="다음 사진"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m10 6 6 6-6 6"/></svg></button>
+          <button type="button" id="hero-photo-toggle" aria-label="사진 자동 전환 일시정지"><svg class="hero-pause-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6v12M15 6v12"/></svg><svg class="hero-play-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 10 7-10 7Z"/></svg></button>
+        </div>
       </section>
+    </section>
 
-      <div class="workspace">
+      <div id="search-workspace" class="workspace" hidden>
         <section class="results-panel" aria-labelledby="results-heading">
+          <nav class="results-breadcrumb" aria-label="현재 위치">
+            <button type="button" data-home-reset aria-label="HOME으로 돌아가기"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 9-8 9 8M6 10v11h5v-7h2v7h5V10"/></svg></button>
+            <span aria-hidden="true">›</span><a href="#query">통합검색</a><span aria-hidden="true">›</span><span aria-current="page">검색결과</span>
+          </nav>
           <div class="results-head">
             <div>
               <h2 id="results-heading">민원 검색 결과</h2>
             </div>
+            <p id="results-count"></p>
             <p id="status" class="sr-only" role="status" aria-live="polite">검색어를 입력해 주세요.</p>
           </div>
+          <div id="results-filters" class="results-filters" role="group" aria-label="검색 결과 분류" hidden></div>
           <div id="results" class="results">
             <p class="empty">검색 결과가 이곳에 표시됩니다.</p>
           </div>
+          <nav id="results-pagination" class="results-pagination" aria-label="검색 결과 페이지" hidden></nav>
+          <section id="vaccination-results" aria-label="관련 의료기관·참고자료" hidden></section>
+          <div id="results-extras" hidden>
+            <section class="results-related" aria-labelledby="related-heading">
+              <div class="results-related-head"><h3 id="related-heading">함께 보면 좋은 서비스</h3><button type="button" data-home-browse>더보기 <span aria-hidden="true">›</span></button></div>
+              <div class="results-related-grid">
+                <a href="https://hsikium.hscity.go.kr/contents/content1.jsp?seq=49" target="_blank" rel="noopener noreferrer"><span class="related-icon"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M11 18a14 14 0 0 1 26 0l3 5c6 1 5 9 0 9h-2c-2 8-8 12-14 12S12 40 10 32H8c-5 0-6-8 0-9Z"/><path d="M21 13c-5-1-5-7 0-8s9 2 5 6c-2 2-5 0-3-2M19 34q5 4 10 0"/><circle class="icon-solid" cx="17" cy="25" r="1.8"/><circle class="icon-solid" cx="31" cy="25" r="1.8"/></svg></span><span><strong>영유아 건강검진</strong><small>아이의 건강한 성장을 응원합니다.</small></span><b aria-hidden="true">›</b></a>
+                <a href="https://www.hscity.go.kr/health/business/promotion/healthLiving.jsp" target="_blank" rel="noopener noreferrer"><span class="related-icon"><svg viewBox="0 0 48 48" aria-hidden="true"><path class="icon-solid" d="M24 43 6 25C-5 13 10-3 24 11 38-3 53 13 42 25Z"/><path class="icon-cutout" d="M7 25h9l4-9 5 19 4-15 3 5h9"/></svg></span><span><strong>건강생활실천</strong><small>건강한 생활습관, 지금 시작하세요.</small></span><b aria-hidden="true">›</b></a>
+                <button type="button" data-home-location><span class="related-icon"><svg viewBox="0 0 48 48" aria-hidden="true"><path class="icon-solid" d="M4 43V23h9v20Zm11 0V11l9-8 9 8v32Zm20 0V23h9v20Z"/><path class="icon-window" d="M7 27h3v4H7Zm0 8h3v4H7Zm31-8h3v4h-3Zm0 8h3v4h-3ZM19 22h3v4h-3Zm7 0h3v4h-3Zm-7 7h3v4h-3Zm7 0h3v4h-3Zm-5 7h6v7h-6Z"/><circle class="icon-window" cx="24" cy="14" r="4"/><path d="M24 11.5v5M21.5 14h5"/></svg></span><span><strong>보건소 오시는 길</strong><small>동탄구보건소 위치와 교통편을 안내합니다.</small></span><b aria-hidden="true">›</b></button>
+                <a href="https://g.answerny.ai/chatbot/projects/hscity/chatbot_hscity.html" target="_blank" rel="noopener noreferrer" title="화성시청 화성 소통봇 — 새 창"><span class="related-icon"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 24v-6a16 16 0 0 1 32 0v6M40 33v3a7 7 0 0 1-7 7h-7"/><rect x="4" y="21" width="8" height="16" rx="4"/><rect x="36" y="21" width="8" height="16" rx="4"/><rect x="20" y="40" width="8" height="5" rx="2.5"/></svg></span><span><strong>온라인 챗봇</strong><small>궁금한 사항을 문의하세요.</small></span><b aria-hidden="true">›</b></a>
+              </div>
+            </section>
+            <section class="results-help" aria-label="이용 도움말">
+              <h3>도움이 필요하신가요?</h3>
+              <a href="tel:03151895175"><span class="help-symbol"><svg viewBox="0 0 32 32" aria-hidden="true"><path class="icon-solid" d="M8 3c-2 0-5 3-5 6 1 10 10 19 20 20 3 0 6-3 6-5l-1-2-6-4-4 4c-4-2-6-4-8-8l4-4-4-6Z"/></svg></span><span><strong>대표전화</strong><small>031-5189-5175</small></span></a>
+              <button type="button" data-home-location title="점심 12:00~13:00 · 접수 09:00~11:40 / 13:00~17:40, 업무별 방문 전 확인"><span class="help-symbol"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="12"/><path d="M16 8v9h7"/></svg></span><span><strong>운영시간</strong><small>평일 09:00 ~ 18:00</small></span></button>
+              <button type="button" data-results-help><span class="help-symbol"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M7 5h18a4 4 0 0 1 4 4v12a4 4 0 0 1-4 4H14l-7 5v-5a4 4 0 0 1-4-4V9a4 4 0 0 1 4-4Z"/><circle class="icon-solid" cx="10" cy="15" r="1.5"/><circle class="icon-solid" cx="16" cy="15" r="1.5"/><circle class="icon-solid" cx="22" cy="15" r="1.5"/></svg></span><span><strong>자주 묻는 질문</strong><small>빠른 답변을 확인하세요.</small></span></button>
+              <a href="https://www.hscity.go.kr/www/user/bbs/BD_selectBbsList.do?q_bbsCode=1018&amp;q_healthChk=1" target="_blank" rel="noopener noreferrer"><span class="help-symbol"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M9 3h11l6 6v18a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V6a3 3 0 0 1 3-3ZM19 3v8h7M11 15h10M11 20h10M11 25h7"/></svg></span><span><strong>민원 안내</strong><small>각종 민원서식을 확인하세요.</small></span></a>
+            </section>
+          </div>
         </section>
       </div>
-    </main>
+    <section id="quick-services" class="home-services" aria-labelledby="home-services-title">
+      <div class="home-services-head">
+        <h2 id="home-services-title">업무 분야별 안내</h2>
+        <button type="button" data-home-browse>전체 업무 보기 <span aria-hidden="true">→</span></button>
+      </div>
+      <div class="home-service-grid">
+        <button class="home-service-card" type="button" data-home-category="certificate">
+          <span class="home-card-icon home-card-icon--mint"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M13 5h15l10 10v27H13a3 3 0 0 1-3-3V8a3 3 0 0 1 3-3Z"/><path d="M27 5v12h11M18 24h13M18 30h13M18 36h9"/></svg></span>
+          <span class="home-card-copy"><strong>증명서 발급</strong><span>건강진단결과서·제증명 안내</span></span><span class="home-card-arrow" aria-hidden="true">→</span>
+        </button>
+        <button class="home-service-card" type="button" data-home-category="vaccination">
+          <span class="home-card-icon home-card-icon--coral"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="m29 6 13 13M32 9l-7 7M39 16l-7 7M24 12l12 12-18 18-12-12ZM7 41l-4 4M17 23l5 5M22 18l5 5"/></svg></span>
+          <span class="home-card-copy"><strong>예방접종 안내</strong><span>접종 대상·준비사항 안내</span></span><span class="home-card-arrow" aria-hidden="true">→</span>
+        </button>
+        <button class="home-service-card" type="button" data-home-category="family">
+          <span class="home-card-icon home-card-icon--purple"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="20" cy="10" r="7"/><path d="M22 22c-11-4-17 2-17 11v8h12M34 29c7 0 10 5 10 12H22c0-7 4-12 12-12Z"/><circle cx="33" cy="24" r="5"/></svg></span>
+          <span class="home-card-copy"><strong>임신·출산 지원</strong><span>산모·신생아 지원사업 안내</span></span><span class="home-card-arrow" aria-hidden="true">→</span>
+        </button>
+        <button class="home-service-card" type="button" data-home-location>
+          <span class="home-card-icon home-card-icon--blue"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M38 19c0 10-14 24-14 24S10 29 10 19a14 14 0 1 1 28 0Z"/><circle cx="24" cy="19" r="6"/><path d="m9 35-4 8M39 35l4 8"/></svg></span>
+          <span class="home-card-copy"><strong>보건소 위치·운영시간</strong><span>찾아오시는 길·문의전화 안내</span></span><span class="home-card-arrow" aria-hidden="true">→</span>
+        </button>
+      </div>
+    </section>
+    <section id="health-services" class="portal-section portal-home-only" aria-labelledby="portal-services-title">
+      <div class="portal-section-head"><div><h2 id="portal-services-title">어떤 도움이 필요하세요?</h2><p>나와 가족에게 필요한 보건서비스를 분야별로 살펴보세요.</p></div><button id="browse-services" type="button" class="portal-text-button">전체 업무 보기 <span aria-hidden="true">↗</span></button></div>
+      <div class="portal-topic-grid">
+        <article class="portal-topic"><span class="portal-topic-number" aria-hidden="true">01</span><h3>진료·검사</h3><p>검사와 건강검진, 증명서 발급을 안내합니다.</p><ul><li><a href="/?q=%EC%9D%BC%EB%B0%98%EC%A7%84%EB%A3%8C" data-portal-query="일반진료">진료<span aria-hidden="true">↗</span></a></li><li><a href="/?q=%EA%B2%80%EC%82%AC" data-portal-query="검사">검사<span aria-hidden="true">↗</span></a></li><li><a href="/?q=%EC%95%94%EA%B2%80%EC%A7%84" data-portal-query="암검진">국가암검진<span aria-hidden="true">↗</span></a></li><li><a href="/?q=%EA%B1%B4%EA%B0%95%EC%A7%84%EB%8B%A8%EA%B2%B0%EA%B3%BC%EC%84%9C%20%EB%B0%9C%EA%B8%89" data-portal-query="건강진단결과서 발급">증명서 발급<span aria-hidden="true">↗</span></a></li></ul></article>
+        <article class="portal-topic"><span class="portal-topic-number" aria-hidden="true">02</span><h3>예방접종·감염병</h3><p>예방접종 대상과 감염병 관련 업무를 확인하세요.</p><ul><li><a href="/?q=%EC%A0%91%EC%A2%85" data-portal-query="접종">예방접종<span aria-hidden="true">↗</span></a></li><li><a href="/?q=%ED%8F%90%EB%A0%B4" data-portal-query="폐렴">어르신 폐렴구균<span aria-hidden="true">↗</span></a></li><li><a href="/?q=%EA%B2%B0%ED%95%B5" data-portal-query="결핵">결핵 관리<span aria-hidden="true">↗</span></a></li><li><a href="/?q=%EA%B0%90%EC%97%BC%EB%B3%91" data-portal-query="감염병">감염병 예방<span aria-hidden="true">↗</span></a></li></ul></article>
+        <article class="portal-topic"><span class="portal-topic-number" aria-hidden="true">03</span><h3>임신·출산·아이 건강</h3><p>임신 준비부터 출산과 양육까지 함께합니다.</p><ul><li><a href="/?q=%EC%9E%84%EC%8B%A0%EC%82%AC%EC%A0%84%EA%B1%B4%EA%B0%95%EA%B4%80%EB%A6%AC" data-portal-query="임신사전건강관리">임신 준비<span aria-hidden="true">↗</span></a></li><li><a href="/?q=%EC%82%B0%ED%9B%84%EB%8F%84%EC%9A%B0%EB%AF%B8" data-portal-query="산후도우미">산모·신생아 지원<span aria-hidden="true">↗</span></a></li><li><a href="/?q=%EB%82%9C%EC%9E%84" data-portal-query="난임">난임 지원<span aria-hidden="true">↗</span></a></li><li><a href="/?q=%EC%98%81%EC%9C%A0%EC%95%84" data-portal-query="영유아">영유아 건강<span aria-hidden="true">↗</span></a></li></ul></article>
+        <article class="portal-topic"><span class="portal-topic-number" aria-hidden="true">04</span><h3>건강한 생활</h3><p>일상에서 실천하는 건강관리를 시작하세요.</p><ul><li><a href="/?q=%EA%B1%B4%EA%B0%95%EC%83%9D%ED%99%9C%EC%8B%A4%EC%B2%9C" data-portal-query="건강생활실천">운동·걷기<span aria-hidden="true">↗</span></a></li><li><a href="/?q=%EC%98%81%EC%96%91%ED%94%8C%EB%9F%AC%EC%8A%A4" data-portal-query="영양플러스">영양플러스<span aria-hidden="true">↗</span></a></li><li><a href="/?q=%EA%B8%88%EC%97%B0" data-portal-query="금연">금연클리닉<span aria-hidden="true">↗</span></a></li><li><a href="/?q=%EA%B5%AC%EA%B0%95" data-portal-query="구강">구강 건강<span aria-hidden="true">↗</span></a></li><li><a href="/?q=%EB%A7%8C%EC%84%B1%EC%A7%88%ED%99%98" data-portal-query="만성질환">만성질환 관리<span aria-hidden="true">↗</span></a></li></ul></article>
+        <article class="portal-topic"><span class="portal-topic-number" aria-hidden="true">05</span><h3>어르신·마음 건강</h3><p>어르신 건강과 마음 돌봄 서비스를 찾아보세요.</p><ul><li><a href="/?q=%EC%B9%98%EB%A7%A4" data-portal-query="치매">치매 상담·검사<span aria-hidden="true">↗</span></a></li><li><a href="/?q=%EB%B0%A9%EB%AC%B8%EB%B3%B4%EA%B1%B4" data-portal-query="방문보건">방문건강관리<span aria-hidden="true">↗</span></a></li><li><a href="/?q=%EC%A0%95%EC%8B%A0%EA%B1%B4%EA%B0%95" data-portal-query="정신건강">정신건강<span aria-hidden="true">↗</span></a></li><li><a href="/?q=%EC%9E%AC%ED%99%9C" data-portal-query="재활">재활 지원<span aria-hidden="true">↗</span></a></li></ul></article>
+        <article class="portal-topic"><span class="portal-topic-number" aria-hidden="true">06</span><h3>의료비·생활 지원</h3><p>지원사업과 가까운 의료기관을 안내합니다.</p><ul><li><a href="/?q=%EC%95%94%EC%A7%84%EB%8B%A8%20%EC%A7%80%EC%9B%90" data-portal-query="암진단 지원">암환자 의료비<span aria-hidden="true">↗</span></a></li><li><a href="/?q=%ED%9D%AC%EA%B7%80%EC%A7%88%ED%99%98" data-portal-query="희귀질환">희귀질환 지원<span aria-hidden="true">↗</span></a></li><li><a href="/?q=%EC%9D%98%EB%A3%8C%EA%B8%B0%EA%B4%80%EC%B0%BE%EA%B8%B0" data-portal-query="의료기관찾기">의료기관·약국<span aria-hidden="true">↗</span></a></li><li><a href="/?q=%EC%9D%98%EC%95%BD%EB%AC%B4" data-portal-query="의약무">보건 민원<span aria-hidden="true">↗</span></a></li></ul></article>
+      </div>
+    </section>
+    <section id="visit-guide" class="portal-visit portal-home-only" aria-labelledby="portal-visit-title">
+      <div class="portal-width">
+        <div class="portal-section-head"><div><h2 id="portal-visit-title">방문 전, 미리 확인하세요</h2><p>필요한 안내를 확인하면 방문이 한결 편해집니다.</p></div></div>
+        <div class="portal-visit-grid">
+          <a href="/#query" class="portal-visit-step"><span class="portal-step-number">01</span><h3>대상·준비물 확인</h3><p>이용할 업무를 검색하고 <br>대상, 준비물, 비용을 확인하세요.</p><span class="portal-step-action">업무 검색하기 →</span></a>
+          <button type="button" class="portal-visit-step" data-home-location><span class="portal-step-number">02</span><h3>위치·운영시간 확인</h3><p>찾아오시는 길과 문의전화를 <br>방문 전에 확인하세요.</p><span class="portal-step-action">방문 정보 보기 →</span></button>
+          <a href="/?category=location" class="portal-visit-step"><span class="portal-step-number">03</span><h3>층별 시설 찾기</h3><p>방문할 장소와 이동 경로를 <br>층별 배치도로 살펴보세요.</p><span class="portal-step-action">층별 안내 보기 →</span></a>
+        </div>
+      </div>
+    </section>
+    <section id="monthly-discovery" class="monthly-discovery" aria-labelledby="monthly-discovery-title">
+      <div>
+        <h2 id="monthly-discovery-title">2026년 10월 월간 일정·프로그램</h2>
+        <p>행사·교육·지원사업의 월간 계획을 확인하세요.</p>
+        <a id="monthly-query-link" class="monthly-search-link" href="/monthly-plans.html" hidden>월간 계획에서도 찾아보기</a>
+      </div>
+      <a id="monthly-all-link" href="/monthly-plans.html">10월 월간 계획 보기</a>
+    </section>
+    <section class="portal-contact portal-home-only" aria-labelledby="portal-contact-title"><div><h2 id="portal-contact-title">찾는 안내가 없으신가요?</h2><p>업무별 문의전화와 보건소 위치를 확인하세요.</p></div><button type="button" data-home-location>위치·문의 안내 <span aria-hidden="true">↗</span></button></section>
+  </main>
+  <footer class="home-footer">
+    <div class="home-footer-inner">
+      <div class="home-footer-rights">
+        <p class="home-footer-copyright">Copyright © <span lang="en">roh kang woo. All rights reserved.</span></p>
+        <p class="home-footer-note">자체 제작 콘텐츠 기준 · 개인 제작·비공식 평가용</p>
+        <p class="home-footer-note"><a href="https://www.hscity.go.kr/agree/copyright_policy.jsp" target="_blank" rel="noopener noreferrer" aria-label="화성시 저작권정책 (새 창)">화성시 로고·공식 자료</a>의 권리는 각 권리자에게 있습니다.</p>
+      </div>
+    </div>
+  </footer>
 
-    <footer class="site-footer">
-      <button id="background-motion-toggle" class="background-motion-toggle" type="button"
-              aria-pressed="true" aria-label="배경 움직임" hidden>배경 움직임 <span>켜짐</span></button>
-      <p class="footer-tagline">오늘의 하늘처럼, 민원 안내도 맑고 편안하게</p>
-    </footer>
-  </div>
+  <dialog id="service-guide-dialog" aria-labelledby="service-guide-title">
+    <div class="service-guide-head">
+      <h2 id="service-guide-title">이용 안내</h2>
+      <button type="button" id="service-guide-close" class="vx-button" aria-label="이용 안내 닫기">닫기 ×</button>
+    </div>
+    <div id="service-guide-body" class="vx-body"></div>
+  </dialog>
 
-  <dialog id="detail-dialog" class="detail-dialog" aria-labelledby="detail-dialog-title">
+  <dialog id="detail-dialog" class="detail-dialog detail-v2" aria-labelledby="detail-dialog-title" aria-describedby="detail-subtitle">
     <div class="detail-dialog-shell">
       <div class="detail-dialog-head">
         <div>
-          <p>선택한 민원 안내</p>
+          <p class="detail-breadcrumb"><span id="detail-context">보건민원</span><span aria-hidden="true"> › </span><span>위치·이용 안내</span></p>
           <h2 id="detail-dialog-title">위치와 상세정보</h2>
+          <p id="detail-subtitle"></p>
         </div>
         <button id="close-detail" class="dialog-close" type="button" aria-label="상세 안내 닫기">
           <span>닫기</span><span aria-hidden="true">×</span>
@@ -123,6 +242,15 @@
             <button type="button" data-floor="2층" aria-pressed="false">2층</button>
             <button type="button" data-floor="3층" aria-pressed="false">3층</button>
           </div>
+          <div class="detail-map-toolbar">
+            <div class="detail-location-pill"><span aria-hidden="true">⌖</span><strong id="detail-map-label"></strong></div>
+            <div class="detail-map-zoom" role="group" aria-label="지도 크기 조절">
+              <button id="detail-zoom-in" type="button" aria-label="지도 확대">+</button>
+              <button id="detail-zoom-reset" type="button" aria-label="지도 원래 크기로">100%</button>
+              <button id="detail-zoom-out" type="button" aria-label="지도 축소" disabled>−</button>
+            </div>
+          </div>
+          <div class="detail-map-viewport" tabindex="0" role="region" aria-label="지도와 이동 경로. 확대 후 스크롤하여 이동할 수 있습니다.">
           <div class="map-stage">
             <img id="floor-image" alt="선택한 층의 배치도">
             <svg id="map-route" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
@@ -130,6 +258,16 @@
             </svg>
             <div id="map-marker" aria-hidden="true"><span class="map-runner"><span class="map-runner-sprite"></span></span></div>
           </div>
+          </div>
+          <div class="detail-map-footer">
+            <div class="detail-map-legend" aria-label="지도 범례">
+              <span><i class="detail-legend-start" aria-hidden="true"></i>경로 시작점</span>
+              <span><i class="detail-legend-route" aria-hidden="true"></i>이동 경로</span>
+              <span><i class="detail-legend-runner" aria-hidden="true"></i>도착지</span>
+            </div>
+            <button id="detail-map-expand" type="button" aria-expanded="false">지도 크게 보기</button>
+          </div>
+          <p id="detail-map-status" role="status"></p>
           <p id="route-text" class="help">검색 결과를 선택하면 위치가 표시됩니다.</p>
         </section>
 
@@ -148,24 +286,58 @@
     </div>
   </dialog>
 
+  <dialog id="location-dialog" class="home-location-dialog" aria-labelledby="location-title">
+    <div class="home-location-head"><h2 id="location-title">보건소 위치·운영시간</h2><button id="close-location" type="button" aria-label="위치 안내 닫기">×</button></div>
+    <dl>
+      <div><dt>주소</dt><dd>경기도 화성시 동탄구 노작로 226-9</dd></div>
+      <div><dt>운영시간</dt><dd>업무별 접수·운영시간이 다를 수 있습니다. 방문 전 담당 부서에 확인해 주세요.</dd></div>
+      <div><dt>보건행정과 문의</dt><dd><a href="tel:03151894377">031-5189-4377</a></dd></div>
+    </dl>
+    <p class="home-location-note">공식 안내를 확인하거나, 층별 시설 안내에서 방문할 장소를 찾아보세요.</p>
+    <div class="home-location-actions">
+      <a href="https://www.hscity.go.kr/health/intro/location/dongtanMap.jsp" target="_blank" rel="noopener noreferrer">공식 찾아오시는 길 ↗</a>
+      <button type="button" data-home-category="location">층별 시설 안내 →</button>
+    </div>
+    <p class="home-location-source">주소·문의전화: <a href="https://www.hscity.go.kr/www/intro/ctyhllInfo/ctyhllOtlnmap00/ctyhllOtlnmap02.jsp" target="_blank" rel="noopener noreferrer">화성특례시 직속기관 안내</a> · 2026.09.08 확인</p>
+  </dialog>
+
+  <dialog id="results-help-dialog" class="home-location-dialog" aria-labelledby="results-help-title">
+    <div class="home-location-head"><h2 id="results-help-title">자주 묻는 질문</h2><button id="close-results-help" type="button" aria-label="이용 도움말 닫기">×</button></div>
+    <div class="results-faq">
+      <details open><summary>업무명을 몰라도 검색할 수 있나요?</summary><p>궁금한 내용을 두 글자 이상의 문장이나 핵심어로 입력하세요. 결과가 없으면 더 짧은 핵심어로 다시 검색하거나 전체 업무에서 찾아보세요.</p></details>
+      <details><summary>방문할 장소는 어디에서 확인하나요?</summary><p>검색 결과를 선택하면 상세 안내가 열립니다. 확인된 장소는 층별 지도와 함께 표시되며, 장소가 지정되지 않은 업무는 안내된 문의전화로 확인해 주세요.</p></details>
+      <details><summary>안내 내용을 문자로 받을 수 있나요?</summary><p>상세 안내에서 ‘이 안내를 문자메시지로 받기’를 선택하세요. 내용을 확인한 후 수신자 번호를 입력하고 발송 서비스 제공에 동의하면 문자 보내기를 이용할 수 있습니다.</p></details>
+    </div>
+  </dialog>
+
   <dialog id="sms-dialog" aria-labelledby="sms-title">
     <form id="sms-form" method="dialog">
-      <h2 id="sms-title">담당 연락처 문자로 받기</h2>
-      <p id="sms-task-name"></p>
-      <label for="recipient">받을 휴대전화번호</label>
+      <div class="sms-heading">
+        <h2 id="sms-title">안내내용 문자로 받기</h2>
+        <p id="sms-task-name"></p>
+      </div>
+      <label for="sms-preview">안내내용</label>
+      <textarea id="sms-preview" rows="7" readonly></textarea>
+      <label for="recipient">수신자 번호</label>
       <input id="recipient" name="recipient" inputmode="numeric" autocomplete="tel"
              placeholder="01012345678" maxlength="13" required>
       <label class="consent-row">
         <input id="consent" type="checkbox" required>
-        <span>입력한 번호를 문자 발송 목적으로 일시 이용하는 데 동의합니다.</span>
+        <span>문자 발송을 위해 번호와 내용을 발송 서비스에 제공하는 것에 동의합니다.</span>
       </label>
-      <p class="help">이 예제는 번호를 DB와 분석 로그에 저장하지 않습니다.</p>
       <p id="sms-status" role="status" aria-live="polite"></p>
       <div class="dialog-actions">
         <button id="cancel-sms" type="button" class="secondary">취소</button>
         <button id="send-sms" type="submit">문자 보내기</button>
       </div>
     </form>
+  </dialog>
+
+  <dialog id="sms-result-dialog" aria-labelledby="sms-result-title" aria-describedby="sms-result-message">
+    <div class="sms-result-icon" aria-hidden="true">✓</div>
+    <h2 id="sms-result-title"></h2>
+    <p id="sms-result-message"></p>
+    <button id="close-sms-result" type="button" autofocus>확인</button>
   </dialog>
 
 </body>
